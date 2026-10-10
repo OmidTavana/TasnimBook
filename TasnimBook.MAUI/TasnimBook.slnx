@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="../Api/webapicore/webapicore.csproj" />
+  <Project Path="../TasnimBook.Core/TasnimBook.Core.csproj" />
+  <Project Path="../TasnimBook.Data/TasnimBook.Data.csproj" Id="bb10a156-6edc-42cd-a3be-00d1d7942fce" />
+  <Project Path="TasnimBook.MAUI/TasnimBook.MAUI.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+</Solution>

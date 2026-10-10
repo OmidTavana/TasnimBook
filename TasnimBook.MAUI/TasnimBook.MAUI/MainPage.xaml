@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TasnimBook.MAUI.MainPage"
+             FlowDirection="RightToLeft"
+             BackgroundColor="#FAFAFA">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid Grid.Row="0" BackgroundColor="#FFB321" Padding="20,18,20,16" ColumnDefinitions="Auto,*">
+            <Button Grid.Column="0" Text="⌕" FontSize="26" TextColor="#24211E" BackgroundColor="Transparent" Padding="0" Clicked="SearchClicked" />
+            <Label Grid.Column="1" Text="تسنیم‌بوک" FontSize="32" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" TextColor="#24211E" />
+        </Grid>
+
+        <RefreshView Grid.Row="1" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+            <ScrollView>
+                <VerticalStackLayout Padding="16,12,16,24" Spacing="18">
+                    <ActivityIndicator Color="#FFB321" HeightRequest="90" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+                    <Label Text="{Binding ErrorMessage}" TextColor="#746F69" HorizontalTextAlignment="Center" />
+
+                    <Border Stroke="#E8E3DC" Padding="10,12">
+                        <VerticalStackLayout Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="کتاب‌های تازه" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                                <Button Grid.Column="1" Text="مشاهده همه  ‹" TextColor="#FFB321" BackgroundColor="Transparent" Padding="0" Clicked="NewBooksClicked" />
+                            </Grid>
+                            <CollectionView x:Name="NewBooksView" ItemsSource="{Binding NewBooks}" HeightRequest="224" ItemsLayout="HorizontalList" SelectionMode="Single" SelectionChanged="BookSelected">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <VerticalStackLayout WidthRequest="126" Spacing="6">
+                                            <Border HeightRequest="178" StrokeThickness="0" BackgroundColor="#2C5AA0">
+                                                <Image Source="{Binding ImageUrl}" Aspect="AspectFill" />
+                                            </Border>
+                                            <Label Text="{Binding Title}" FontSize="14" MaxLines="2" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" />
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Stroke="#E8E3DC" Padding="10,12">
+                        <VerticalStackLayout Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="کتاب‌های پیشنهادی" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                                <Button Grid.Column="1" Text="مشاهده همه  ‹" TextColor="#FFB321" BackgroundColor="Transparent" Padding="0" Clicked="SuggestedBooksClicked" />
+                            </Grid>
+                            <CollectionView x:Name="SuggestedBooksView" ItemsSource="{Binding SuggestedBooks}" HeightRequest="224" ItemsLayout="HorizontalList" SelectionMode="Single" SelectionChanged="BookSelected">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <VerticalStackLayout WidthRequest="126" Spacing="6">
+                                            <Border HeightRequest="178" StrokeThickness="0" BackgroundColor="#2C5AA0"><Image Source="{Binding ImageUrl}" Aspect="AspectFill" /></Border>
+                                            <Label Text="{Binding Title}" FontSize="14" MaxLines="2" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" />
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Stroke="#E8E3DC" Padding="10,12">
+                        <VerticalStackLayout Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="کتاب‌های صوتی" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                                <Button Grid.Column="1" Text="مشاهده همه  ‹" TextColor="#FFB321" BackgroundColor="Transparent" Padding="0" Clicked="AudioBooksClicked" />
+                            </Grid>
+                            <CollectionView x:Name="AudioBooksView" ItemsSource="{Binding AudioBooks}" HeightRequest="224" ItemsLayout="HorizontalList" SelectionMode="Single" SelectionChanged="BookSelected">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <VerticalStackLayout WidthRequest="126" Spacing="6">
+                                            <Border HeightRequest="178" StrokeThickness="0" BackgroundColor="#2C5AA0"><Image Source="{Binding ImageUrl}" Aspect="AspectFill" /></Border>
+                                            <Label Text="{Binding Title}" FontSize="14" MaxLines="2" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" />
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <Grid Grid.Row="2" Padding="12,8" BackgroundColor="White" ColumnDefinitions="*,*,*">
+            <Button Text="⌂&#10;خانه" FontSize="13" TextColor="#FFB321" BackgroundColor="Transparent" Clicked="HomeClicked" />
+            <Button Grid.Column="1" Text="⌕&#10;جست‌وجو" FontSize="13" TextColor="#746F69" BackgroundColor="Transparent" Clicked="SearchClicked" />
+            <Button Grid.Column="2" Text="♫&#10;کتاب صوتی" FontSize="13" TextColor="#746F69" BackgroundColor="Transparent" Clicked="AudioBooksClicked" />
+        </Grid>
+    </Grid>
+</ContentPage>

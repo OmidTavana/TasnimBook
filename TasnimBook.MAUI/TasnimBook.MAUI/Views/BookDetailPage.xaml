@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TasnimBook.MAUI.Views.BookDetailPage"
+             FlowDirection="RightToLeft"
+             Title="جزئیات کتاب">
+    <ScrollView>
+        <VerticalStackLayout Padding="28,20" Spacing="18">
+            <Border HorizontalOptions="Center" WidthRequest="230" HeightRequest="320" BackgroundColor="#2C5AA0" StrokeThickness="0" StrokeShape="RoundRectangle 8"><Image x:Name="CoverImage" Aspect="AspectFill" /></Border>
+            <Label x:Name="TitleLabel" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="End" />
+            <Label x:Name="AuthorLabel" FontSize="18" TextColor="#746F69" HorizontalTextAlignment="End" />
+            <Button Text="دانلود کتاب" BackgroundColor="#FFB321" TextColor="#24211E" FontAttributes="Bold" Clicked="DownloadClicked" />
+            <Label x:Name="MetadataLabel" FontSize="14" TextColor="#746F69" HorizontalTextAlignment="End" />
+            <Label Text="درباره کتاب" FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="End" />
+            <Label x:Name="DescriptionLabel" FontSize="17" HorizontalTextAlignment="End" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

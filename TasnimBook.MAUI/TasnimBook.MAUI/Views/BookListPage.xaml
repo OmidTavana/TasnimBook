@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TasnimBook.MAUI.Views.BookListPage"
+             FlowDirection="RightToLeft"
+             BackgroundColor="#FAFAFA">
+    <Grid RowDefinitions="Auto,*">
+        <SearchBar x:Name="BookSearchBar" Grid.Row="0" Margin="16,10" Placeholder="نام کتاب یا نویسنده…" SearchButtonPressed="SearchRequested" TextChanged="SearchTextChanged" />
+        <CollectionView x:Name="BooksView" Grid.Row="1" Margin="16,0" SelectionMode="Single" SelectionChanged="BookSelected">
+            <CollectionView.EmptyView>
+                <Label x:Name="EmptyLabel" Text="کتابی برای نمایش نیست." TextColor="#746F69" HorizontalTextAlignment="Center" Margin="0,36" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,5" Stroke="#ECE8E2" StrokeShape="RoundRectangle 10" Padding="8">
+                        <Grid ColumnDefinitions="82,*" ColumnSpacing="14">
+                            <Border HeightRequest="116" StrokeThickness="0" StrokeShape="RoundRectangle 8" BackgroundColor="#2C5AA0"><Image Source="{Binding ImageUrl}" Aspect="AspectFill" /></Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="5">
+                                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                                <Label Text="{Binding AuthorName}" FontSize="15" TextColor="#746F69" HorizontalTextAlignment="End" />
+                                <Label Text="کتاب صوتی  •  پخش" IsVisible="{Binding IsAudioBook}" FontSize="13" TextColor="#FFB321" HorizontalTextAlignment="End" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

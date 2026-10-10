@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TasnimBook.MAUI.Views.AudioPlayerPage"
+             FlowDirection="RightToLeft"
+             Title="پخش کتاب صوتی">
+    <ScrollView>
+        <VerticalStackLayout Padding="34,28" Spacing="20">
+            <Border HorizontalOptions="Center" WidthRequest="270" HeightRequest="360" BackgroundColor="#2C5AA0" StrokeThickness="0" StrokeShape="RoundRectangle 8"><Image x:Name="CoverImage" Aspect="AspectFill" /></Border>
+            <Label x:Name="TitleLabel" FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="End" />
+            <Label x:Name="AuthorLabel" FontSize="17" TextColor="#746F69" HorizontalTextAlignment="End" />
+            <Slider x:Name="ProgressSlider" Minimum="0" Maximum="1" Value="0.08" />
+            <Grid ColumnDefinitions="*,*">
+                <Label Text="۰۴:۲۰" FontSize="14" TextColor="#746F69" HorizontalTextAlignment="End" />
+                <Label Grid.Column="1" Text="۵۸:۳۴" FontSize="14" TextColor="#746F69" HorizontalTextAlignment="Start" />
+            </Grid>
+            <HorizontalStackLayout Spacing="30" HorizontalOptions="Center" FlowDirection="LeftToRight">
+                <Button Text="⏮" FontSize="34" TextColor="#24211E" BackgroundColor="Transparent" />
+                <Button x:Name="PlayButton" Text="▶" FontSize="42" WidthRequest="120" HeightRequest="120" CornerRadius="60" BackgroundColor="#FFB321" TextColor="#24211E" Padding="0" Clicked="PlayClicked" />
+                <Button Text="⏭" FontSize="34" TextColor="#24211E" BackgroundColor="Transparent" />
+            </HorizontalStackLayout>
+            <Label Text="با انتخاب پخش، فایل صوتی در پخش‌کننده پیش‌فرض دستگاه باز می‌شود." FontSize="13" TextColor="#746F69" HorizontalTextAlignment="End" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
