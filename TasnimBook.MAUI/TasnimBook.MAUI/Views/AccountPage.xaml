@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TasnimBook.MAUI.Views.AccountPage" Title="حساب کاربری" FlowDirection="RightToLeft"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels"
+             x:Class="TasnimBook.MAUI.Views.AccountPage" x:DataType="viewModels:AccountViewModel" Title="حساب کاربری" FlowDirection="RightToLeft"
              BackgroundColor="{StaticResource PageWarmBackground}">
     <ScrollView>
         <VerticalStackLayout Padding="20,28" Spacing="16">
             <Label Text="حساب تسنیم‌بوک" FontSize="29" FontAttributes="Bold" HorizontalTextAlignment="Center" />
             <Label Text="ورود اختیاری است؛ با ورود، علاقه‌مندی‌ها و آخرین محل مطالعه روی حساب شما نگهداری می‌شود."
                    Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" />
-            <Border x:Name="LoginPanel" Style="{StaticResource BookDetailCard}">
+            <Border IsVisible="{Binding IsLoggedOut}" Style="{StaticResource BookDetailCard}">
                 <VerticalStackLayout Spacing="12">
                     <Label Text="ورود" Style="{StaticResource SectionHeading}" />
-                    <Entry x:Name="EmailEntry" Placeholder="ایمیل" Keyboard="Email" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
-                    <Entry x:Name="PasswordEntry" Placeholder="رمز عبور" IsPassword="True" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
-                    <Label x:Name="ErrorLabel" TextColor="#B3261E" IsVisible="False" HorizontalTextAlignment="End" />
-                    <Button x:Name="LoginButton" Text="ورود امن" Style="{StaticResource PrimaryActionButton}" Clicked="LoginClicked" />
-                    <Button Text="ساخت حساب جدید" BackgroundColor="Transparent" TextColor="{StaticResource PrimaryDark}" Clicked="RegisterClicked" />
+                    <Entry Text="{Binding Email}" Placeholder="ایمیل" Keyboard="Email" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
+                    <Entry Text="{Binding Password}" Placeholder="رمز عبور" IsPassword="True" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
+                    <Label Text="{Binding ErrorMessage}" TextColor="#B3261E" HorizontalTextAlignment="End" />
+                    <Button Text="{Binding LoginButtonText}" Style="{StaticResource PrimaryActionButton}" Command="{Binding LoginCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+                    <Button Text="ساخت حساب جدید" BackgroundColor="Transparent" TextColor="{StaticResource PrimaryDark}" Command="{Binding RegisterCommand}" />
                     <Label Text="بدون حساب هم می‌توانید کتاب‌ها را بخوانید و پیشرفت روی همین دستگاه ذخیره می‌شود."
                            Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Border>
-            <Border x:Name="ProfilePanel" Style="{StaticResource BookDetailCard}" IsVisible="False">
+            <Border Style="{StaticResource BookDetailCard}" IsVisible="{Binding IsLoggedIn}">
                 <VerticalStackLayout Spacing="14">
-                    <Label x:Name="WelcomeLabel" Style="{StaticResource SectionHeading}" />
-                    <Label x:Name="ProfileEmailLabel" Style="{StaticResource MutedLabel}" />
+                    <Label Text="{Binding WelcomeText}" Style="{StaticResource SectionHeading}" />
+                    <Label Text="{Binding ProfileEmail}" Style="{StaticResource MutedLabel}" />
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                         <Border BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="12" StrokeShape="RoundRectangle 14">
-                            <VerticalStackLayout><Label Text="♥" FontSize="25" HorizontalTextAlignment="Center"/><Label Text="علاقه‌مندی‌های همگام" FontSize="13" HorizontalTextAlignment="Center"/></VerticalStackLayout>
+                            <VerticalStackLayout><Image Source="icon_heart_filled.svg" HeightRequest="25"/><Label Text="علاقه‌مندی‌های همگام" FontSize="13" HorizontalTextAlignment="Center"/></VerticalStackLayout>
                         </Border>
                         <Border Grid.Column="1" BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="12" StrokeShape="RoundRectangle 14">
-                            <VerticalStackLayout><Label Text="↻" FontSize="25" HorizontalTextAlignment="Center"/><Label Text="ادامه مطالعه" FontSize="13" HorizontalTextAlignment="Center"/></VerticalStackLayout>
+                            <VerticalStackLayout><Image Source="icon_sync.svg" HeightRequest="25"/><Label Text="ادامه مطالعه" FontSize="13" HorizontalTextAlignment="Center"/></VerticalStackLayout>
                         </Border>
                     </Grid>
-                    <Button x:Name="FavoritesButton" Text="کتاب‌های مورد علاقه من" Style="{StaticResource PrimaryActionButton}" Clicked="FavoritesClicked" />
-                    <Button Text="خروج از حساب" Style="{StaticResource SecondaryActionButton}" Clicked="LogoutClicked" />
+                    <Button Text="کتاب‌های مورد علاقه من" Style="{StaticResource PrimaryActionButton}" IsVisible="{Binding FavoritesAvailable}" Command="{Binding FavoritesCommand}" />
+                    <Button Text="خروج از حساب" Style="{StaticResource SecondaryActionButton}" Command="{Binding LogoutCommand}" />
                 </VerticalStackLayout>
             </Border>
         </VerticalStackLayout>

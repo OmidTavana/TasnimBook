@@ -35,16 +35,17 @@
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                 <Label Text="کتاب‌های تازه" Style="{StaticResource HomeSectionTitleStyle}" />
                                 <Button Grid.Column="1"
-                                        Text="مشاهده همه  ‹"
+                                        Text="مشاهده همه"
+                                        ImageSource="icon_chevron_left.svg"
                                         Style="{StaticResource HomeSeeAllButtonStyle}"
-                                        Clicked="NewBooksClicked" />
+                                        Command="{Binding NewBooksCommand}" />
                             </Grid>
                             <CollectionView x:Name="NewBooksView"
                                             ItemsSource="{Binding NewBooks}"
                                             ItemTemplate="{StaticResource HomeBookCardTemplate}"
                                             HeightRequest="196"
                                             SelectionMode="Single"
-                                            SelectionChanged="BookSelected">
+                                            SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
                                 <CollectionView.ItemsLayout>
                                     <LinearItemsLayout Orientation="Horizontal"
                                                        ItemSpacing="14"
@@ -60,16 +61,17 @@
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                 <Label Text="کتاب‌های پیشنهادی" Style="{StaticResource HomeSectionTitleStyle}" />
                                 <Button Grid.Column="1"
-                                        Text="مشاهده همه  ‹"
+                                        Text="مشاهده همه"
+                                        ImageSource="icon_chevron_left.svg"
                                         Style="{StaticResource HomeSeeAllButtonStyle}"
-                                        Clicked="SuggestedBooksClicked" />
+                                        Command="{Binding SuggestedBooksCommand}" />
                             </Grid>
                             <CollectionView x:Name="SuggestedBooksView"
                                             ItemsSource="{Binding SuggestedBooks}"
                                             ItemTemplate="{StaticResource HomeBookCardTemplate}"
                                             HeightRequest="196"
                                             SelectionMode="Single"
-                                            SelectionChanged="BookSelected">
+                                            SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
                                 <CollectionView.ItemsLayout>
                                     <LinearItemsLayout Orientation="Horizontal"
                                                        ItemSpacing="14"
@@ -86,16 +88,17 @@
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                 <Label Text="کتاب‌های صوتی" Style="{StaticResource HomeSectionTitleStyle}" />
                                 <Button Grid.Column="1"
-                                        Text="مشاهده همه  ‹"
+                                        Text="مشاهده همه"
+                                        ImageSource="icon_chevron_left.svg"
                                         Style="{StaticResource HomeSeeAllButtonStyle}"
-                                        Clicked="AudioBooksClicked" />
+                                        Command="{Binding AudioBooksCommand}" />
                             </Grid>
                             <CollectionView x:Name="AudioBooksView"
                                             ItemsSource="{Binding AudioBooks}"
                                             ItemTemplate="{StaticResource HomeBookCardTemplate}"
                                             HeightRequest="196"
                                             SelectionMode="Single"
-                                            SelectionChanged="BookSelected">
+                                            SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
                                 <CollectionView.ItemsLayout>
                                     <LinearItemsLayout Orientation="Horizontal"
                                                        ItemSpacing="14"
@@ -113,41 +116,41 @@
             <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="2">
                 <VerticalStackLayout Grid.Column="0" Style="{StaticResource HomeBottomItemStyle}">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="HomeTapped" />
+                        <TapGestureRecognizer Command="{Binding LoadCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="⌂" Style="{StaticResource HomeBottomIconActiveStyle}" />
+                    <Image Source="icon_home.svg" Style="{StaticResource HomeBottomImageStyle}" />
                     <Label Text="خانه" Style="{StaticResource HomeBottomTextActiveStyle}" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="1" Style="{StaticResource HomeBottomItemStyle}">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="CatalogTapped" />
+                        <TapGestureRecognizer Command="{Binding CatalogCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="☰" Style="{StaticResource HomeBottomIconStyle}" />
+                    <Image Source="icon_catalog.svg" Style="{StaticResource HomeBottomImageStyle}" />
                     <Label Text="فهرست" Style="{StaticResource HomeBottomTextStyle}" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="2" Style="{StaticResource HomeBottomItemStyle}">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="SearchTapped" />
+                        <TapGestureRecognizer Command="{Binding SearchCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="⌕" Style="{StaticResource HomeBottomIconStyle}" />
+                    <Image Source="icon_search.svg" Style="{StaticResource HomeBottomImageStyle}" />
                     <Label Text="جست‌وجو" Style="{StaticResource HomeBottomTextStyle}" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="3" Style="{StaticResource HomeBottomItemStyle}">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="LibraryTapped" />
+                        <TapGestureRecognizer Command="{Binding LibraryCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="▥" Style="{StaticResource HomeBottomIconStyle}" />
+                    <Image Source="icon_library.svg" Style="{StaticResource HomeBottomImageStyle}" />
                     <Label Text="کتابخانه" Style="{StaticResource HomeBottomTextStyle}" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="4" Style="{StaticResource HomeBottomItemStyle}">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="SettingsTapped" />
+                        <TapGestureRecognizer Command="{Binding AccountCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="⚙" Style="{StaticResource HomeBottomIconStyle}" />
+                    <Image Source="icon_settings.svg" Style="{StaticResource HomeBottomImageStyle}" />
                     <Label Text="تنظیمات" Style="{StaticResource HomeBottomTextStyle}" />
                 </VerticalStackLayout>
             </Grid>

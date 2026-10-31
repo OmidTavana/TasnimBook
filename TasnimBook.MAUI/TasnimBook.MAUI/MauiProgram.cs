@@ -18,6 +18,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ApiSessionService>();
         builder.Services.AddSingleton<AccountService>();
         builder.Services.AddSingleton<BookAssetService>();
+        builder.Services.AddSingleton<AppNavigationService>();
         builder.Services.AddSingleton<BookCatalogService>();
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddSingleton<MainPage>();

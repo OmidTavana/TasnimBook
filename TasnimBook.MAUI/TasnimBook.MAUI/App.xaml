@@ -14,6 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter" />
             <converters:IntNotZeroConverter x:Key="IntNotZeroConverter" />
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

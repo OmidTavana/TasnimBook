@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TasnimBook.MAUI.Views.BookReaderPage"
-             BackgroundColor="#242424" FlowDirection="RightToLeft">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels" x:Class="TasnimBook.MAUI.Views.BookReaderPage"
+             x:DataType="viewModels:BookReaderViewModel" BackgroundColor="#242424" FlowDirection="RightToLeft">
     <Grid RowDefinitions="Auto,3,*,Auto">
         <Grid Style="{StaticResource BookDetailHeader}" ColumnDefinitions="52,*,52" FlowDirection="LeftToRight">
-            <Button Text="→" FontSize="31" BackgroundColor="Transparent" TextColor="#24211E" Clicked="BackClicked" />
+            <ImageButton Source="icon_back.svg" Style="{StaticResource HeaderIconButton}" Command="{Binding BackCommand}" />
             <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
-                <Label x:Name="ReaderTitle" FontSize="18" FontAttributes="Bold" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center" />
-                <Label x:Name="ReaderProgressText" FontSize="12" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding PageText}" FontSize="12" HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
         </Grid>
-        <ProgressBar x:Name="PageProgress" Grid.Row="1" ProgressColor="{StaticResource PrimaryDark}" />
-        <ScrollView x:Name="PageScroll" Grid.Row="2" Orientation="Both" FlowDirection="LeftToRight">
+        <ProgressBar Grid.Row="1" Progress="{Binding PageProgress}" ProgressColor="{StaticResource PrimaryDark}" />
+        <ScrollView Grid.Row="2" Orientation="Both" FlowDirection="LeftToRight">
             <Grid Padding="8">
-                <Image x:Name="PdfPageImage" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Start" />
-                <ActivityIndicator x:Name="PageLoading" IsRunning="True" Color="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Image Source="{Binding PageImage}" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Start" />
+                <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" />
             </Grid>
         </ScrollView>
         <Grid Grid.Row="3" ColumnDefinitions="*,Auto,*" Padding="12,9" ColumnSpacing="12" BackgroundColor="#F8F5EF" FlowDirection="LeftToRight">
-            <Button x:Name="PreviousButton" Text="صفحه قبل" Style="{StaticResource SecondaryActionButton}" Clicked="PreviousClicked" />
-            <Label x:Name="PageNumberLabel" Grid.Column="1" Text="—" FontAttributes="Bold" FontSize="16" TextColor="#24211E" VerticalOptions="Center" />
-            <Button x:Name="NextButton" Grid.Column="2" Text="صفحه بعد" Style="{StaticResource PrimaryActionButton}" Clicked="NextClicked" />
+            <Button Text="صفحه قبل" ImageSource="icon_chevron_right.svg" Style="{StaticResource SecondaryActionButton}" Command="{Binding PreviousCommand}" />
+            <Label Grid.Column="1" Text="{Binding PageText}" FontAttributes="Bold" FontSize="16" TextColor="#24211E" VerticalOptions="Center" />
+            <Button Grid.Column="2" Text="صفحه بعد" ImageSource="icon_chevron_left.svg" Style="{StaticResource PrimaryActionButton}" Command="{Binding NextCommand}" />
         </Grid>
     </Grid>
 </ContentPage>

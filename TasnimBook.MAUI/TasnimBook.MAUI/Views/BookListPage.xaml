@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels"
              x:Class="TasnimBook.MAUI.Views.BookListPage"
+             x:DataType="viewModels:BookListViewModel"
+             Title="{Binding Title}"
              FlowDirection="RightToLeft"
              BackgroundColor="#FAFAFA">
     <Grid RowDefinitions="Auto,*">
-        <SearchBar x:Name="BookSearchBar" Grid.Row="0" Margin="16,10" Placeholder="نام کتاب یا نویسنده…" SearchButtonPressed="SearchRequested" TextChanged="SearchTextChanged" />
-        <CollectionView x:Name="BooksView" Grid.Row="1" Margin="16,0" SelectionMode="Single" SelectionChanged="BookSelected">
+        <SearchBar Grid.Row="0" Margin="16,10" Placeholder="نام کتاب یا نویسنده…" IsVisible="{Binding IsSearchVisible}"
+                   Text="{Binding SearchText}" SearchCommand="{Binding SearchCommand}" />
+        <CollectionView Grid.Row="1" Margin="16,0" ItemsSource="{Binding Books}" SelectionMode="Single" SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
             <CollectionView.EmptyView>
-                <Label x:Name="EmptyLabel" Text="کتابی برای نمایش نیست." TextColor="#746F69" HorizontalTextAlignment="Center" Margin="0,36" />
+                <Label Text="{Binding EmptyMessage}" TextColor="#746F69" HorizontalTextAlignment="Center" Margin="0,36" />
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -25,5 +29,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        <ActivityIndicator Grid.Row="1" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource PrimaryDark}" />
     </Grid>
 </ContentPage>

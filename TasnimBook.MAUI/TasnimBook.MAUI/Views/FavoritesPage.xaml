@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TasnimBook.MAUI.Views.FavoritesPage" Title="علاقه‌مندی‌ها" FlowDirection="RightToLeft"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels"
+             x:Class="TasnimBook.MAUI.Views.FavoritesPage" x:DataType="viewModels:FavoritesViewModel" Title="علاقه‌مندی‌ها" FlowDirection="RightToLeft"
              BackgroundColor="{StaticResource PageWarmBackground}">
     <Grid>
-        <ActivityIndicator x:Name="Loading" IsRunning="True" Color="{StaticResource PrimaryDark}" VerticalOptions="Center" />
-        <CollectionView x:Name="BooksView" Margin="16,10" SelectionMode="Single" SelectionChanged="BookSelected">
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource PrimaryDark}" VerticalOptions="Center" />
+        <CollectionView ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" Margin="16,10" SelectionMode="Single">
             <CollectionView.EmptyView><Label Text="هنوز کتابی به علاقه‌مندی‌ها اضافه نکرده‌اید." Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" Margin="0,40" /></CollectionView.EmptyView>
             <CollectionView.ItemTemplate><DataTemplate>
                 <Border Style="{StaticResource BookDetailCard}" Padding="10" Margin="0,5">
