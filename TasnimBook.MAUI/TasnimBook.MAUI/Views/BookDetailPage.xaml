@@ -3,16 +3,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TasnimBook.MAUI.Views.BookDetailPage"
              FlowDirection="RightToLeft"
+             BackgroundColor="{StaticResource PageWarmBackground}"
              Title="جزئیات کتاب">
-    <ScrollView>
-        <VerticalStackLayout Padding="28,20" Spacing="18">
-            <Border HorizontalOptions="Center" WidthRequest="230" HeightRequest="320" BackgroundColor="#2C5AA0" StrokeThickness="0" StrokeShape="RoundRectangle 8"><Image x:Name="CoverImage" Aspect="AspectFill" /></Border>
-            <Label x:Name="TitleLabel" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="End" />
-            <Label x:Name="AuthorLabel" FontSize="18" TextColor="#746F69" HorizontalTextAlignment="End" />
-            <Button Text="دانلود کتاب" BackgroundColor="#FFB321" TextColor="#24211E" FontAttributes="Bold" Clicked="DownloadClicked" />
-            <Label x:Name="MetadataLabel" FontSize="14" TextColor="#746F69" HorizontalTextAlignment="End" />
-            <Label Text="درباره کتاب" FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="End" />
-            <Label x:Name="DescriptionLabel" FontSize="17" HorizontalTextAlignment="End" />
-        </VerticalStackLayout>
-    </ScrollView>
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" Style="{StaticResource BookDetailHeader}" ColumnDefinitions="52,*,52" FlowDirection="LeftToRight">
+            <Button Text="→" FontSize="31" BackgroundColor="Transparent" TextColor="#24211E" Clicked="BackClicked" />
+            <Label Grid.Column="1" Text="جزئیات کتاب" FontSize="25" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Button x:Name="FavoriteButton" Grid.Column="2" Text="♡" FontSize="31" BackgroundColor="Transparent" TextColor="#24211E" Clicked="FavoriteClicked" />
+        </Grid>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,18,16,34" Spacing="16" >
+                <Border Style="{StaticResource BookDetailCard}">
+                    <Grid ColumnDefinitions="*,142" ColumnSpacing="18" FlowDirection="RightToLeft">
+                        <VerticalStackLayout Grid.Column="0" Spacing="10" VerticalOptions="Center" FlowDirection="RightToLeft">
+                            <Label x:Name="TitleLabel" FontSize="20" FontAttributes="Bold" LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="#24211E" />
+                            <Label x:Name="AuthorLabel" FontSize="17" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Start" />
+                            <Border BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="10,6" HorizontalOptions="Start" StrokeShape="RoundRectangle 12">
+                                <Label x:Name="ProgressLabel" Text="هنوز شروع نشده" FontSize="13" TextColor="#765A12" />
+                            </Border>
+                        </VerticalStackLayout>
+                        <Border Grid.Column="1" WidthRequest="142" HeightRequest="205" BackgroundColor="#2C5AA0" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                            <Image x:Name="CoverImage" Aspect="AspectFill" />
+                        </Border>
+                    </Grid>
+                </Border>
+                <Button x:Name="ReadButton" Text="شروع مطالعه در برنامه" Style="{StaticResource PrimaryActionButton}" Clicked="ReadClicked" />
+                <Border x:Name="DownloadPanel" IsVisible="False" BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="13,10" StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="7">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label x:Name="DownloadStatusLabel" Text="در حال دریافت PDF…" FontSize="14" TextColor="#5B430B" />
+                            <Label x:Name="DownloadPercentLabel" Grid.Column="1" Text="۰٪" FontAttributes="Bold" TextColor="#5B430B" />
+                        </Grid>
+                        <ProgressBar x:Name="DownloadProgressBar" ProgressColor="{StaticResource PrimaryDark}" BackgroundColor="#EADDBB" />
+                    </VerticalStackLayout>
+                </Border>
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9" FlowDirection="LeftToRight">
+                    <Button Grid.Column="0" Text="اشتراک" Style="{StaticResource SecondaryActionButton}" Clicked="ShareClicked" />
+                    <Button x:Name="DownloadButton" Grid.Column="1" Text="دریافت" Style="{StaticResource SecondaryActionButton}" Clicked="DownloadClicked" />
+                    <Button Grid.Column="2" x:Name="FavoriteActionButton" Text="♡  علاقه‌مندی" Style="{StaticResource SecondaryActionButton}" Clicked="FavoriteClicked" />
+                </Grid>
+                <Border Style="{StaticResource BookDetailCard}" Padding="14">
+                    <Grid ColumnDefinitions="*,*,*" FlowDirection="LeftToRight">
+                        <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="3">
+                            <Label Text="امتیاز" Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" />
+                            <Label x:Name="ScoreLabel"  FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="3">
+                            <Label Text="حجم" Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" />
+                            <Label x:Name="SizeLabel" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" Spacing="3">
+                            <Label Text="تعداد صفحات" Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" />
+                            <Label x:Name="PagesLabel" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource BookDetailCard}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label HorizontalTextAlignment="Start" Text="درباره کتاب" Style="{StaticResource SectionHeading}" />
+                        <Label x:Name="DescriptionLabel" FontSize="17" LineHeight="1.55" TextColor="#3E3A36" HorizontalTextAlignment="Start" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

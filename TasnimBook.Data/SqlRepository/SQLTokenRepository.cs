@@ -20,9 +20,11 @@ namespace TasnimBook.Data.Services
     public class SQLTokenRepository : ITokenRepository
     {
         private readonly DbContextAnti dbContext;
-        public SQLTokenRepository(DbContextAnti _dbContext)
+        private readonly IConfiguration configuration;
+        public SQLTokenRepository(DbContextAnti _dbContext, IConfiguration _configuration)
         {
             dbContext = _dbContext;
+            configuration = _configuration;
         }
 
         public async Task<int> Add(JwtUser JwtUser, bool isNew)
@@ -66,6 +68,8 @@ namespace TasnimBook.Data.Services
 
                 }),
                 Expires = DateTime.UtcNow.AddMilliseconds(exTime),
+                Issuer = configuration["jwtConfig:Issuer"],
+                Audience = configuration["jwtConfig:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             //create token
@@ -92,16 +96,8 @@ namespace TasnimBook.Data.Services
 
         private async Task<AuthResult> VerifyAndGenerateToken(TokenRequest tokenRequest, TokenValidationParameters validationParameters, byte[] key)
         {
-            var jwtValidationParameters2 = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = false,
-                ClockSkew = TimeSpan.Zero,
-                RequireExpirationTime = true
-            };
+            var jwtValidationParameters2 = validationParameters.Clone();
+            jwtValidationParameters2.ValidateLifetime = false;
             //Validation 1 -- Validate JWT Token Format
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             try

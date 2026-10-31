@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Color x:Key="PageWarmBackground">#FAF8F4</Color>
+    <Color x:Key="CardStroke">#E9E1D7</Color>
+    <Color x:Key="BodyMuted">#756F68</Color>
+
+    <Style x:Key="BookDetailHeader" TargetType="Grid">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="Padding" Value="18,18,18,16" />
+        <Setter Property="HeightRequest" Value="78" />
+    </Style>
+    <Style x:Key="BookDetailCard" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="Stroke" Value="{StaticResource CardStroke}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Padding" Value="18" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 22" />
+        <Setter Property="Shadow">
+            <Setter.Value><Shadow Brush="#18000000" Offset="0,4" Radius="12" Opacity="0.35" /></Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="PrimaryActionButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="TextColor" Value="#24211E" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="HeightRequest" Value="54" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="18,10" />
+    </Style>
+    <Style x:Key="SecondaryActionButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="TextColor" Value="#24211E" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="HeightRequest" Value="48" />
+        <Setter Property="CornerRadius" Value="14" />
+    </Style>
+    <Style x:Key="AccountEntry" TargetType="Entry">
+        <Setter Property="BackgroundColor" Value="#F5F1EB" />
+        <Setter Property="TextColor" Value="#24211E" />
+        <Setter Property="PlaceholderColor" Value="#918A82" />
+        <Setter Property="HeightRequest" Value="54" />
+        <Setter Property="Margin" Value="0,4" />
+        <Setter Property="FlowDirection" Value="RightToLeft" />
+    </Style>
+    <Style x:Key="SectionHeading" TargetType="Label">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="#24211E" />
+        <Setter Property="HorizontalTextAlignment" Value="End" />
+    </Style>
+    <Style x:Key="MutedLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource BodyMuted}" />
+        <Setter Property="HorizontalTextAlignment" Value="End" />
+    </Style>
+</ResourceDictionary>

@@ -8,11 +8,15 @@ namespace TasnimBook.MAUI;
 public partial class MainPage : ContentPage
 {
     private readonly BookCatalogService _catalog;
+    private readonly AccountService _account;
+    private readonly BookAssetService _assets;
 
-    public MainPage(BookCatalogService catalog, HomeViewModel viewModel)
+    public MainPage(BookCatalogService catalog, AccountService account, BookAssetService assets, HomeViewModel viewModel)
     {
         InitializeComponent();
         _catalog = catalog;
+        _account = account;
+        _assets = assets;
         BindingContext = viewModel;
         NavigationPage.SetHasNavigationBar(this, false);
     }
@@ -28,12 +32,20 @@ public partial class MainPage : ContentPage
         if (sender is not CollectionView view || e.CurrentSelection.FirstOrDefault() is not BooksDTO dto) return;
         view.SelectedItem = null;
         var book = await _catalog.GetBookAsync(dto.Id);
-        await Navigation.PushAsync(dto.IsAudioBook == true ? new AudioPlayerPage(book, dto) : new BookDetailPage(book, dto));
+        await Navigation.PushAsync(dto.IsAudioBook == true ? new AudioPlayerPage(book, dto) : new BookDetailPage(book, dto, _account, _assets));
     }
 
-    private async void NewBooksClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, "کتاب‌های تازه", BookListMode.New));
-    private async void SuggestedBooksClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, "کتاب‌های پیشنهادی", BookListMode.Suggested));
-    private async void AudioBooksClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, "کتاب‌های صوتی", BookListMode.Audio));
-    private async void SearchClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, "جست‌وجوی کتاب", BookListMode.Search));
-    private async void HomeClicked(object sender, EventArgs e) => await ((HomeViewModel)BindingContext).LoadAsync();
+    private async void NewBooksClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, _account, _assets, "کتاب‌های تازه", BookListMode.New));
+    private async void SuggestedBooksClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, _account, _assets, "کتاب‌های پیشنهادی", BookListMode.Suggested));
+    private async void AudioBooksClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, _account, _assets, "کتاب‌های صوتی", BookListMode.Audio));
+    private async void SearchClicked(object sender, EventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, _account, _assets, "جست‌وجوی کتاب", BookListMode.Search));
+    private async void HomeTapped(object? sender, TappedEventArgs e) => await ((HomeViewModel)BindingContext).LoadAsync();
+    private async void CatalogTapped(object? sender, TappedEventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, _account, _assets, "فهرست کتاب‌ها", BookListMode.New));
+    private async void SearchTapped(object? sender, TappedEventArgs e) => await Navigation.PushAsync(new BookListPage(_catalog, _account, _assets, "جست‌وجوی کتاب", BookListMode.Search));
+    private async void LibraryTapped(object? sender, TappedEventArgs e)
+    {
+        await _account.InitializeAsync();
+        await Navigation.PushAsync(_account.IsLoggedIn ? new FavoritesPage(_account, _catalog, _assets) : new AccountPage(_account, _catalog, _assets));
+    }
+    private async void SettingsTapped(object? sender, TappedEventArgs e) => await Navigation.PushAsync(new AccountPage(_account, _catalog, _assets));
 }

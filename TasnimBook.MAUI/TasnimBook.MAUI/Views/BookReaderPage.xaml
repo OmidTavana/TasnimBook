@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TasnimBook.MAUI.Views.BookReaderPage"
+             BackgroundColor="#242424" FlowDirection="RightToLeft">
+    <Grid RowDefinitions="Auto,3,*,Auto">
+        <Grid Style="{StaticResource BookDetailHeader}" ColumnDefinitions="52,*,52" FlowDirection="LeftToRight">
+            <Button Text="→" FontSize="31" BackgroundColor="Transparent" TextColor="#24211E" Clicked="BackClicked" />
+            <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                <Label x:Name="ReaderTitle" FontSize="18" FontAttributes="Bold" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center" />
+                <Label x:Name="ReaderProgressText" FontSize="12" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Grid>
+        <ProgressBar x:Name="PageProgress" Grid.Row="1" ProgressColor="{StaticResource PrimaryDark}" />
+        <ScrollView x:Name="PageScroll" Grid.Row="2" Orientation="Both" FlowDirection="LeftToRight">
+            <Grid Padding="8">
+                <Image x:Name="PdfPageImage" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Start" />
+                <ActivityIndicator x:Name="PageLoading" IsRunning="True" Color="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Grid>
+        </ScrollView>
+        <Grid Grid.Row="3" ColumnDefinitions="*,Auto,*" Padding="12,9" ColumnSpacing="12" BackgroundColor="#F8F5EF" FlowDirection="LeftToRight">
+            <Button x:Name="PreviousButton" Text="صفحه قبل" Style="{StaticResource SecondaryActionButton}" Clicked="PreviousClicked" />
+            <Label x:Name="PageNumberLabel" Grid.Column="1" Text="—" FontAttributes="Bold" FontSize="16" TextColor="#24211E" VerticalOptions="Center" />
+            <Button x:Name="NextButton" Grid.Column="2" Text="صفحه بعد" Style="{StaticResource PrimaryActionButton}" Clicked="NextClicked" />
+        </Grid>
+    </Grid>
+</ContentPage>

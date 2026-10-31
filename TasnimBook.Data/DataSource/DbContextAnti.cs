@@ -18,6 +18,10 @@ namespace TasnimBook.Data.DataSource
         public DbSet<Book> Books { get; set; }
         public DbSet<ManyToManyBookAndBookCatcs> BookCategoryRelations { get; set; }
         public DbSet<Comments> Comments { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<UserFavorite> UserFavorites { get; set; }
+        public DbSet<ReadingProgress> ReadingProgresses { get; set; }
+        public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +51,45 @@ namespace TasnimBook.Data.DataSource
                 .HasMany(e => e.Comments)
                 .WithOne(e => e.Books)
                 .HasForeignKey(e => e.BookId);
+
+            modelBuilder.Entity<AppUser>()
+                .HasIndex(user => user.NormalizedEmail)
+                .IsUnique();
+
+            modelBuilder.Entity<UserFavorite>()
+                .HasKey(favorite => new { favorite.UserId, favorite.BookId });
+            modelBuilder.Entity<UserFavorite>()
+                .HasOne(favorite => favorite.User)
+                .WithMany(user => user.Favorites)
+                .HasForeignKey(favorite => favorite.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<UserFavorite>()
+                .HasOne(favorite => favorite.Book)
+                .WithMany()
+                .HasForeignKey(favorite => favorite.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReadingProgress>()
+                .HasKey(progress => new { progress.UserId, progress.BookId });
+            modelBuilder.Entity<ReadingProgress>()
+                .HasOne(progress => progress.User)
+                .WithMany(user => user.ReadingProgresses)
+                .HasForeignKey(progress => progress.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ReadingProgress>()
+                .HasOne(progress => progress.Book)
+                .WithMany()
+                .HasForeignKey(progress => progress.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserRefreshToken>()
+                .HasIndex(token => token.TokenHash)
+                .IsUnique();
+            modelBuilder.Entity<UserRefreshToken>()
+                .HasOne(token => token.User)
+                .WithMany(user => user.RefreshTokens)
+                .HasForeignKey(token => token.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //end m*n rel
 

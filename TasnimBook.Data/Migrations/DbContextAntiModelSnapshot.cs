@@ -270,6 +270,62 @@ namespace TasnimBook.Data.Migrations
                     b.ToTable("jwtuser");
                 });
 
+            modelBuilder.Entity("TasnimBook.Data.AppUser", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int").HasColumnName("id");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("CreatedAtUtc").HasColumnType("datetime2").HasColumnName("createdatutc");
+                    b.Property<string>("DisplayName").IsRequired().HasMaxLength(80).HasColumnType("nvarchar(80)").HasColumnName("displayname");
+                    b.Property<string>("Email").IsRequired().HasMaxLength(254).HasColumnType("nvarchar(254)").HasColumnName("email");
+                    b.Property<bool>("IsActive").HasColumnType("bit").HasColumnName("isactive");
+                    b.Property<DateTime?>("LastLoginAtUtc").HasColumnType("datetime2").HasColumnName("lastloginatutc");
+                    b.Property<string>("NormalizedEmail").IsRequired().HasMaxLength(254).HasColumnType("nvarchar(254)").HasColumnName("normalizedemail");
+                    b.Property<string>("PasswordHash").IsRequired().HasColumnType("nvarchar(max)").HasColumnName("passwordhash");
+                    b.HasKey("Id");
+                    b.HasIndex("NormalizedEmail").IsUnique();
+                    b.ToTable("appuser");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.ReadingProgress", b =>
+                {
+                    b.Property<int>("UserId").HasColumnType("int").HasColumnName("userid");
+                    b.Property<int>("BookId").HasColumnType("int").HasColumnName("bookid");
+                    b.Property<int?>("CurrentPage").HasColumnType("int").HasColumnName("currentpage");
+                    b.Property<decimal>("PositionPercent").HasColumnType("decimal(5,2)").HasColumnName("positionpercent");
+                    b.Property<int?>("TotalPages").HasColumnType("int").HasColumnName("totalpages");
+                    b.Property<DateTime>("UpdatedAtUtc").HasColumnType("datetime2").HasColumnName("updatedatutc");
+                    b.HasKey("UserId", "BookId");
+                    b.HasIndex("BookId");
+                    b.ToTable("readingprogress");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.UserFavorite", b =>
+                {
+                    b.Property<int>("UserId").HasColumnType("int").HasColumnName("userid");
+                    b.Property<int>("BookId").HasColumnType("int").HasColumnName("bookid");
+                    b.Property<DateTime>("CreatedAtUtc").HasColumnType("datetime2").HasColumnName("createdatutc");
+                    b.HasKey("UserId", "BookId");
+                    b.HasIndex("BookId");
+                    b.ToTable("userfavorite");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.UserRefreshToken", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int").HasColumnName("id");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("CreatedAtUtc").HasColumnType("datetime2").HasColumnName("createdatutc");
+                    b.Property<string>("DeviceName").HasMaxLength(120).HasColumnType("nvarchar(120)").HasColumnName("devicename");
+                    b.Property<DateTime>("ExpiresAtUtc").HasColumnType("datetime2").HasColumnName("expiresatutc");
+                    b.Property<string>("ReplacedByTokenHash").HasMaxLength(64).HasColumnType("nvarchar(64)").HasColumnName("replacedbytokenhash");
+                    b.Property<DateTime?>("RevokedAtUtc").HasColumnType("datetime2").HasColumnName("revokedatutc");
+                    b.Property<string>("TokenHash").IsRequired().HasMaxLength(64).HasColumnType("nvarchar(64)").HasColumnName("tokenhash");
+                    b.Property<int>("UserId").HasColumnType("int").HasColumnName("userid");
+                    b.HasKey("Id");
+                    b.HasIndex("TokenHash").IsUnique();
+                    b.HasIndex("UserId");
+                    b.ToTable("userrefreshtoken");
+                });
+
             modelBuilder.Entity("TasnimBook.Data.ManyToManyBookAndBookCatcs", b =>
                 {
                     b.Property<int>("BookId")
@@ -381,9 +437,38 @@ namespace TasnimBook.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TasnimBook.Data.ReadingProgress", b =>
+                {
+                    b.HasOne("TasnimBook.Data.Book", "Book").WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.HasOne("TasnimBook.Data.AppUser", "User").WithMany("ReadingProgresses").HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.Navigation("Book");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.UserFavorite", b =>
+                {
+                    b.HasOne("TasnimBook.Data.Book", "Book").WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.HasOne("TasnimBook.Data.AppUser", "User").WithMany("Favorites").HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.Navigation("Book");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.UserRefreshToken", b =>
+                {
+                    b.HasOne("TasnimBook.Data.AppUser", "User").WithMany("RefreshTokens").HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TasnimBook.Data.Author", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.AppUser", b =>
+                {
+                    b.Navigation("Favorites");
+                    b.Navigation("ReadingProgresses");
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("TasnimBook.Data.Book", b =>

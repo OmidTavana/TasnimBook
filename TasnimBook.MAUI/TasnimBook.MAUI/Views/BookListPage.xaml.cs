@@ -8,13 +8,17 @@ public enum BookListMode { New, Suggested, Audio, Search }
 public partial class BookListPage : ContentPage
 {
     private readonly BookCatalogService _catalog;
+    private readonly AccountService _account;
+    private readonly BookAssetService _assets;
     private readonly BookListMode _mode;
     private bool _loaded;
 
-    public BookListPage(BookCatalogService catalog, string title, BookListMode mode)
+    public BookListPage(BookCatalogService catalog, AccountService account, BookAssetService assets, string title, BookListMode mode)
     {
         InitializeComponent();
         _catalog = catalog;
+        _account = account;
+        _assets = assets;
         _mode = mode;
         Title = title;
         BookSearchBar.IsVisible = mode == BookListMode.Search;
@@ -51,6 +55,6 @@ public partial class BookListPage : ContentPage
         if (e.CurrentSelection.FirstOrDefault() is not BooksDTO dto) return;
         BooksView.SelectedItem = null;
         var book = await _catalog.GetBookAsync(dto.Id);
-        await Navigation.PushAsync(dto.IsAudioBook == true ? new AudioPlayerPage(book, dto) : new BookDetailPage(book, dto));
+        await Navigation.PushAsync(dto.IsAudioBook == true ? new AudioPlayerPage(book, dto) : new BookDetailPage(book, dto, _account, _assets));
     }
 }

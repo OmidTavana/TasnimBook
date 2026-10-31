@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,9 @@ using TasnimBook.Data.Services;
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.RateLimiting;
+using TasnimBook.Data;
+using webapicore.Services;
 using webapicore.Fillter;
 
 namespace webapicore
@@ -47,16 +51,20 @@ namespace webapicore
             //    ServerVersion.AutoDetect(Configuration["ConnectionStrings:onlinemysql"]), b => b.MigrationsAssembly("webapicore")));
             services.AddDbContext<DbContextAnti>(options => options.UseSqlServer(Configuration["ConnectionStrings:local"]));
             
-            var key = Encoding.ASCII.GetBytes(Configuration["jwtConfig:Secret"]);
+            var key = Encoding.UTF8.GetBytes(Configuration["jwtConfig:Secret"]);
             var jwtValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidIssuer = Configuration["jwtConfig:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = Configuration["jwtConfig:Audience"],
                 ValidateLifetime = true,
-                ClockSkew=TimeSpan.Zero,
-                RequireExpirationTime = true
+                ClockSkew = TimeSpan.FromMinutes(1),
+                RequireExpirationTime = true,
+                NameClaimType = System.Security.Claims.ClaimTypes.Name,
+                RoleClaimType = System.Security.Claims.ClaimTypes.Role
             };
            
             services.AddSingleton(jwtValidationParameters);
@@ -90,6 +98,24 @@ namespace webapicore
             services.AddScoped<IAuthorRepository, SQLAuthorsRepository>();
             services.AddScoped<IAppVersionReository, SQLAppVersionRepository>();
             services.AddScoped<ITokenRepository, SQLTokenRepository>();
+            services.AddScoped<IUserAccountRepository, SQLUserAccountRepository>();
+            services.AddScoped<IAccountTokenService, AccountTokenService>();
+            services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
+            services.Configure<PasswordHasherOptions>(options => options.IterationCount = 210_000);
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.AddPolicy("auth", httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 10,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 0,
+                            AutoReplenishment = true
+                        }));
+            });
             services.AddControllers();
 
         }
@@ -112,6 +138,7 @@ namespace webapicore
 
             app.UseRouting();
 
+            app.UseRateLimiter();
             app.UseAuthentication();
             app.UseAuthorization();
 

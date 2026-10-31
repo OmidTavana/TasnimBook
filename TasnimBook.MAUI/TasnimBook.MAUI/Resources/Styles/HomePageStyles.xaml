@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:models="clr-namespace:TasnimBook.Data.Models;assembly=TasnimBook.Data">
+
+    <Color x:Key="HomePageBackgroundColor">#F7F5F0</Color>
+    <Color x:Key="HomeSurfaceColor">#FFFFFF</Color>
+    <Color x:Key="HomePrimaryColor">#F6AD21</Color>
+    <Color x:Key="HomePrimaryDarkColor">#D98A00</Color>
+    <Color x:Key="HomeTextColor">#211F1B</Color>
+    <Color x:Key="HomeMutedTextColor">#766F65</Color>
+    <Color x:Key="HomeBorderColor">#EAE4DA</Color>
+    <Color x:Key="HomeImagePlaceholderColor">#EDE7DC</Color>
+
+    <Style x:Key="HomeHeaderStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource HomePrimaryColor}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="16,9" />
+    </Style>
+
+    <Style x:Key="HomeHeaderTitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="32" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource HomeTextColor}" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="HomeSectionStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource HomeSurfaceColor}" />
+        <Setter Property="Stroke" Value="{StaticResource HomeBorderColor}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+        <Setter Property="Padding" Value="14,14,14,12" />
+    </Style>
+
+    <Style x:Key="HomeSectionTitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="21" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource HomeTextColor}" />
+        <Setter Property="HorizontalTextAlignment" Value="End" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="HomeSeeAllButtonStyle" TargetType="Button">
+        <Setter Property="TextColor" Value="{StaticResource HomePrimaryDarkColor}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="MinimumHeightRequest" Value="36" />
+    </Style>
+
+    <Style x:Key="HomeBookCardStyle" TargetType="Border">
+        <Setter Property="WidthRequest" Value="110" />
+        <Setter Property="HeightRequest" Value="194" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+    </Style>
+
+    <Style x:Key="HomeBookCoverStyle" TargetType="Image">
+        <Setter Property="Aspect" Value="AspectFill" />
+        <Setter Property="HeightRequest" Value="156" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions" Value="Fill" />
+    </Style>
+
+    <Style x:Key="HomeBookTitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource HomeMutedTextColor}" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="MaxLines" Value="1" />
+        <Setter Property="LineBreakMode" Value="TailTruncation" />
+        <Setter Property="LineHeight" Value="1.1" />
+    </Style>
+
+    <Style x:Key="HomeBottomBarStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource HomeSurfaceColor}" />
+        <Setter Property="Stroke" Value="{StaticResource HomeBorderColor}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Padding" Value="8,6" />
+    </Style>
+
+    <Style x:Key="HomeBottomItemStyle" TargetType="VerticalStackLayout">
+        <Setter Property="Spacing" Value="0" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="HomeBottomIconStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="TextColor" Value="{StaticResource HomeMutedTextColor}" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="HomeBottomIconActiveStyle"
+           TargetType="Label"
+           BasedOn="{StaticResource HomeBottomIconStyle}">
+        <Setter Property="TextColor" Value="{StaticResource HomePrimaryDarkColor}" />
+    </Style>
+
+    <Style x:Key="HomeBottomTextStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="TextColor" Value="{StaticResource HomeMutedTextColor}" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="HomeBottomTextActiveStyle"
+           TargetType="Label"
+           BasedOn="{StaticResource HomeBottomTextStyle}">
+        <Setter Property="TextColor" Value="{StaticResource HomePrimaryDarkColor}" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <DataTemplate x:Key="HomeBookCardTemplate" x:DataType="models:BooksDTO">
+        <Border Style="{StaticResource HomeBookCardStyle}">
+            <Grid RowDefinitions="156,*">
+                <Border StrokeThickness="0"
+                        StrokeShape="RoundRectangle 2"
+                        BackgroundColor="{StaticResource HomeImagePlaceholderColor}">
+                    <Grid>
+                        <Image Source="book_cover_placeholder.png"
+                               Style="{StaticResource HomeBookCoverStyle}" />
+                        <Image Source="{Binding ImageUrl}"
+                               Style="{StaticResource HomeBookCoverStyle}" />
+                    </Grid>
+                </Border>
+                <VerticalStackLayout Grid.Row="1" Padding="0,8,0,0" Spacing="0">
+                    <Label Text="{Binding Title}" Style="{StaticResource HomeBookTitleStyle}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+</ResourceDictionary>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TasnimBook.MAUI.Views.RegisterPage" Title="ساخت حساب" FlowDirection="RightToLeft"
+             BackgroundColor="{StaticResource PageWarmBackground}">
+    <ScrollView><VerticalStackLayout Padding="20,30" Spacing="14">
+        <Label Text="ساخت حساب جدید" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+        <Border Style="{StaticResource BookDetailCard}"><VerticalStackLayout Spacing="12">
+            <Entry x:Name="NameEntry" Placeholder="نام نمایشی" Style="{StaticResource AccountEntry}" />
+            <Entry x:Name="EmailEntry" Placeholder="ایمیل" Keyboard="Email" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
+            <Entry x:Name="PasswordEntry" Placeholder="رمز عبور" IsPassword="True" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
+            <Entry x:Name="ConfirmEntry" Placeholder="تکرار رمز عبور" IsPassword="True" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
+            <Label Text="حداقل ۱۰ نویسه، شامل حرف و عدد" Style="{StaticResource MutedLabel}" />
+            <Label x:Name="ErrorLabel" TextColor="#B3261E" IsVisible="False" />
+            <Button x:Name="RegisterButton" Text="ثبت‌نام و ورود" Style="{StaticResource PrimaryActionButton}" Clicked="RegisterClicked" />
+        </VerticalStackLayout></Border>
+    </VerticalStackLayout></ScrollView>
+</ContentPage>

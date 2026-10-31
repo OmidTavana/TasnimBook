@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TasnimBook.MAUI.Views.FavoritesPage" Title="علاقه‌مندی‌ها" FlowDirection="RightToLeft"
+             BackgroundColor="{StaticResource PageWarmBackground}">
+    <Grid>
+        <ActivityIndicator x:Name="Loading" IsRunning="True" Color="{StaticResource PrimaryDark}" VerticalOptions="Center" />
+        <CollectionView x:Name="BooksView" Margin="16,10" SelectionMode="Single" SelectionChanged="BookSelected">
+            <CollectionView.EmptyView><Label Text="هنوز کتابی به علاقه‌مندی‌ها اضافه نکرده‌اید." Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" Margin="0,40" /></CollectionView.EmptyView>
+            <CollectionView.ItemTemplate><DataTemplate>
+                <Border Style="{StaticResource BookDetailCard}" Padding="10" Margin="0,5">
+                    <Grid ColumnDefinitions="78,*" ColumnSpacing="14" FlowDirection="LeftToRight">
+                        <Image Source="{Binding ImageUrl}" HeightRequest="108" Aspect="AspectFill" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" FlowDirection="RightToLeft">
+                            <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                            <Label Text="{Binding Description}" MaxLines="2" LineBreakMode="TailTruncation" Style="{StaticResource MutedLabel}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </DataTemplate></CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

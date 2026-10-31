@@ -19,10 +19,8 @@ namespace TasnimBook.Data.SqlRepository
                 throw new ArgumentException("An API base address is required.", nameof(url));
 
             _url = url.TrimEnd('/') + "/";
-            HttpClientHandler clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            // Pass the handler to httpclient(from you are calling api)
-            _client = new HttpClient(clientHandler);
+            // Use the platform certificate validation. Never accept arbitrary TLS certificates.
+            _client = new HttpClient();
             _client.Timeout = TimeSpan.FromSeconds(200);
             if (!string.IsNullOrWhiteSpace(apiKey))
                 _client.DefaultRequestHeaders.Add("APIKey", apiKey);
