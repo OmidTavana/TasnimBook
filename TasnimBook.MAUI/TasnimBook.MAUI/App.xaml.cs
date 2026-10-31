@@ -17,11 +17,13 @@ public partial class App : Application
         // Resolve pages only after App.xaml has loaded its merged dictionaries.
         // MainPage uses application-level StaticResources during InitializeComponent.
         var mainPage = _services.GetRequiredService<MainPage>();
+        var navigationBackground = (Color)Resources["Primary"];
+        var navigationForeground = (Color)Resources["White"];
 
         return new Window(new NavigationPage(mainPage)
         {
-            BarBackgroundColor = Color.FromArgb("#FFB321"),
-            BarTextColor = Color.FromArgb("#24211E")
+            BarBackgroundColor = navigationBackground,
+            BarTextColor = navigationForeground
         });
     }
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels" x:Class="TasnimBook.MAUI.Views.BookReaderPage"
-             x:DataType="viewModels:BookReaderViewModel" BackgroundColor="#242424" FlowDirection="RightToLeft">
+             x:DataType="viewModels:BookReaderViewModel" BackgroundColor="{StaticResource ReaderBackground}" FlowDirection="RightToLeft">
     <Grid RowDefinitions="Auto,3,*,Auto">
         <Grid Style="{StaticResource BookDetailHeader}" ColumnDefinitions="52,*,52" FlowDirection="LeftToRight">
             <ImageButton Source="icon_back.svg" Style="{StaticResource HeaderIconButton}" Command="{Binding BackCommand}" />
             <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
-                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center" />
-                <Label Text="{Binding PageText}" FontSize="12" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource White}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding PageText}" FontSize="12" TextColor="{StaticResource ReaderSubtext}" HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
         </Grid>
         <ProgressBar Grid.Row="1" Progress="{Binding PageProgress}" ProgressColor="{StaticResource PrimaryDark}" />
@@ -17,10 +17,10 @@
                 <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" />
             </Grid>
         </ScrollView>
-        <Grid Grid.Row="3" ColumnDefinitions="*,Auto,*" Padding="12,9" ColumnSpacing="12" BackgroundColor="#F8F5EF" FlowDirection="LeftToRight">
+        <Grid Grid.Row="3" ColumnDefinitions="*,Auto,*" Padding="12,9" ColumnSpacing="12" BackgroundColor="{StaticResource AppBackground}" FlowDirection="LeftToRight">
             <Button Text="صفحه قبل" ImageSource="icon_chevron_right.svg" Style="{StaticResource SecondaryActionButton}" Command="{Binding PreviousCommand}" />
-            <Label Grid.Column="1" Text="{Binding PageText}" FontAttributes="Bold" FontSize="16" TextColor="#24211E" VerticalOptions="Center" />
-            <Button Grid.Column="2" Text="صفحه بعد" ImageSource="icon_chevron_left.svg" Style="{StaticResource PrimaryActionButton}" Command="{Binding NextCommand}" />
+            <Label Grid.Column="1" Text="{Binding PageText}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource PrimaryDarkText}" VerticalOptions="Center" />
+            <Button Grid.Column="2" Text="صفحه بعد" ImageSource="icon_chevron_left_white.svg" Style="{StaticResource PrimaryActionButton}" Command="{Binding NextCommand}" />
         </Grid>
     </Grid>
 </ContentPage>

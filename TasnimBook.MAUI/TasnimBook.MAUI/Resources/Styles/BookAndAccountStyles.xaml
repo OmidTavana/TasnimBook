@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <Color x:Key="PageWarmBackground">#FAF8F4</Color>
-    <Color x:Key="CardStroke">#E9E1D7</Color>
-    <Color x:Key="BodyMuted">#756F68</Color>
-
     <Style x:Key="BookDetailHeader" TargetType="Grid">
         <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
         <Setter Property="Padding" Value="18,18,18,16" />
         <Setter Property="HeightRequest" Value="78" />
     </Style>
+    <Style x:Key="BookDetailHeaderTitle" TargetType="Label">
+        <Setter Property="FontSize" Value="25" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
     <Style x:Key="BookDetailCard" TargetType="Border">
-        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
         <Setter Property="Stroke" Value="{StaticResource CardStroke}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Padding" Value="18" />
         <Setter Property="StrokeShape" Value="RoundRectangle 22" />
         <Setter Property="Shadow">
-            <Setter.Value><Shadow Brush="#18000000" Offset="0,4" Radius="12" Opacity="0.35" /></Setter.Value>
+            <Setter.Value><Shadow Brush="{StaticResource CardShadow}" Offset="0,3" Radius="10" Opacity="0.25" /></Setter.Value>
         </Setter>
     </Style>
     <Style x:Key="PrimaryActionButton" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
-        <Setter Property="TextColor" Value="#24211E" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="FontSize" Value="18" />
         <Setter Property="HeightRequest" Value="54" />
@@ -30,16 +33,16 @@
         <Setter Property="Padding" Value="18,10" />
     </Style>
     <Style x:Key="SecondaryActionButton" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
-        <Setter Property="TextColor" Value="#24211E" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimarySoft}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryDark}" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="HeightRequest" Value="48" />
         <Setter Property="CornerRadius" Value="14" />
     </Style>
     <Style x:Key="AccountEntry" TargetType="Entry">
-        <Setter Property="BackgroundColor" Value="#F5F1EB" />
-        <Setter Property="TextColor" Value="#24211E" />
-        <Setter Property="PlaceholderColor" Value="#918A82" />
+        <Setter Property="BackgroundColor" Value="{StaticResource InputBackground}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryDarkText}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource InputPlaceholder}" />
         <Setter Property="HeightRequest" Value="54" />
         <Setter Property="Margin" Value="0,4" />
         <Setter Property="FlowDirection" Value="RightToLeft" />
@@ -47,7 +50,7 @@
     <Style x:Key="SectionHeading" TargetType="Label">
         <Setter Property="FontSize" Value="22" />
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="TextColor" Value="#24211E" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryDarkText}" />
         <Setter Property="HorizontalTextAlignment" Value="End" />
     </Style>
     <Style x:Key="MutedLabel" TargetType="Label">
@@ -56,7 +59,7 @@
         <Setter Property="HorizontalTextAlignment" Value="End" />
     </Style>
     <Style x:Key="HeaderIconButton" TargetType="ImageButton">
-        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
         <Setter Property="WidthRequest" Value="30" />
         <Setter Property="HeightRequest" Value="30" />
         <Setter Property="Padding" Value="2" />
@@ -64,7 +67,7 @@
     <Style x:Key="AudioSmallIconButton" TargetType="ImageButton">
         <Setter Property="WidthRequest" Value="42" />
         <Setter Property="HeightRequest" Value="42" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
         <Setter Property="Padding" Value="5" />
     </Style>
     <Style x:Key="AudioPlayIconButton" TargetType="ImageButton">

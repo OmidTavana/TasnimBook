@@ -27,8 +27,9 @@ public sealed class BookDetailViewModel : ObservableObject
     public ImageSource CoverImage { get => _coverImage; private set => SetProperty(ref _coverImage, value); }
     public string ProgressText { get => _progressText; private set => SetProperty(ref _progressText, value); }
     public string ReadButtonText { get => _readButtonText; private set => SetProperty(ref _readButtonText, value); }
-    public bool IsFavorite { get => _isFavorite; private set { if (SetProperty(ref _isFavorite, value)) { OnPropertyChanged(nameof(FavoriteIcon)); OnPropertyChanged(nameof(FavoriteText)); } } }
+    public bool IsFavorite { get => _isFavorite; private set { if (SetProperty(ref _isFavorite, value)) { OnPropertyChanged(nameof(FavoriteIcon)); OnPropertyChanged(nameof(HeaderFavoriteIcon)); OnPropertyChanged(nameof(FavoriteText)); } } }
     public string FavoriteIcon => IsFavorite ? "icon_heart_filled.svg" : "icon_heart.svg";
+    public string HeaderFavoriteIcon => IsFavorite ? "icon_heart_header_filled.svg" : "icon_heart_header.svg";
     public string FavoriteText => IsFavorite ? "ذخیره شده" : "علاقه‌مندی";
     public bool IsDownloading { get => _isDownloading; private set => SetProperty(ref _isDownloading, value); }
     public bool IsDownloadPanelVisible { get => _isDownloadPanelVisible; private set => SetProperty(ref _isDownloadPanelVisible, value); }

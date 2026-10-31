@@ -6,33 +6,33 @@
     <Grid RowDefinitions="Auto,*">
         <Grid Style="{StaticResource BookDetailHeader}" ColumnDefinitions="52,*,52" FlowDirection="LeftToRight">
             <ImageButton Source="icon_back.svg" Style="{StaticResource HeaderIconButton}" Command="{Binding BackCommand}" />
-            <Label Grid.Column="1" Text="جزئیات کتاب" FontSize="25" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-            <ImageButton Grid.Column="2" Source="{Binding FavoriteIcon}" Style="{StaticResource HeaderIconButton}" Command="{Binding FavoriteCommand}" />
+            <Label Grid.Column="1" Text="جزئیات کتاب" Style="{StaticResource BookDetailHeaderTitle}" />
+            <ImageButton Grid.Column="2" Source="{Binding HeaderFavoriteIcon}" Style="{StaticResource HeaderIconButton}" Command="{Binding FavoriteCommand}" />
         </Grid>
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="16,18,16,34" Spacing="16">
                 <Border Style="{StaticResource BookDetailCard}">
                     <Grid ColumnDefinitions="*,142" ColumnSpacing="18" FlowDirection="RightToLeft">
                         <VerticalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold" LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="#24211E" />
+                            <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold" LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="{StaticResource PrimaryDarkText}" />
                             <Label Text="{Binding Author}" FontSize="17" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Start" />
-                            <Border BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="10,6" HorizontalOptions="Start" StrokeShape="RoundRectangle 12">
-                                <Label Text="{Binding ProgressText}" FontSize="13" TextColor="#765A12" />
+                            <Border BackgroundColor="{StaticResource AccentSoft}" StrokeThickness="0" Padding="10,6" HorizontalOptions="Start" StrokeShape="RoundRectangle 12">
+                                <Label Text="{Binding ProgressText}" FontSize="13" TextColor="{StaticResource ProgressText}" />
                             </Border>
                         </VerticalStackLayout>
-                        <Border Grid.Column="1" WidthRequest="142" HeightRequest="205" BackgroundColor="#2C5AA0" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                        <Border Grid.Column="1" WidthRequest="142" HeightRequest="205" BackgroundColor="{StaticResource Primary}" StrokeThickness="0" StrokeShape="RoundRectangle 12">
                             <Image Source="{Binding CoverImage}" Aspect="AspectFill" />
                         </Border>
                     </Grid>
                 </Border>
                 <Button Text="{Binding ReadButtonText}" Style="{StaticResource PrimaryActionButton}" Command="{Binding ReadCommand}" />
-                <Border IsVisible="{Binding IsDownloadPanelVisible}" BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="13,10" StrokeShape="RoundRectangle 14">
+                <Border IsVisible="{Binding IsDownloadPanelVisible}" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0" Padding="13,10" StrokeShape="RoundRectangle 14">
                     <VerticalStackLayout Spacing="7">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding DownloadStatus}" FontSize="14" TextColor="#5B430B" />
-                            <Label Grid.Column="1" Text="{Binding DownloadPercentText}" FontAttributes="Bold" TextColor="#5B430B" />
+                            <Label Text="{Binding DownloadStatus}" FontSize="14" TextColor="{StaticResource PrimaryDark}" />
+                            <Label Grid.Column="1" Text="{Binding DownloadPercentText}" FontAttributes="Bold" TextColor="{StaticResource PrimaryDark}" />
                         </Grid>
-                        <ProgressBar Progress="{Binding DownloadProgress}" ProgressColor="{StaticResource PrimaryDark}" BackgroundColor="#EADDBB" />
+                        <ProgressBar Progress="{Binding DownloadProgress}" ProgressColor="{StaticResource Tertiary}" BackgroundColor="{StaticResource ProgressTrack}" />
                     </VerticalStackLayout>
                 </Border>
                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9" FlowDirection="LeftToRight">
@@ -49,7 +49,7 @@
                 </Border>
                 <Border Style="{StaticResource BookDetailCard}"><VerticalStackLayout Spacing="10">
                     <Label HorizontalTextAlignment="Start" Text="درباره کتاب" Style="{StaticResource SectionHeading}" />
-                    <Label Text="{Binding Description}" FontSize="17" LineHeight="1.55" TextColor="#3E3A36" HorizontalTextAlignment="Start" />
+                    <Label Text="{Binding Description}" FontSize="17" LineHeight="1.55" TextColor="{StaticResource BodyText}" HorizontalTextAlignment="Start" />
                 </VerticalStackLayout></Border>
             </VerticalStackLayout>
         </ScrollView>

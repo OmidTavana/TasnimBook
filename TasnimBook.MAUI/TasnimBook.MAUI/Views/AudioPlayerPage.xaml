@@ -3,16 +3,16 @@
              xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels" x:Class="TasnimBook.MAUI.Views.AudioPlayerPage"
              x:DataType="viewModels:AudioPlayerViewModel" FlowDirection="RightToLeft" Title="پخش کتاب صوتی">
     <ScrollView><VerticalStackLayout Padding="34,28" Spacing="20">
-        <Border HorizontalOptions="Center" WidthRequest="270" HeightRequest="360" BackgroundColor="#2C5AA0" StrokeThickness="0" StrokeShape="RoundRectangle 8"><Image Source="{Binding Cover}" Aspect="AspectFill" /></Border>
+        <Border HorizontalOptions="Center" WidthRequest="270" HeightRequest="360" BackgroundColor="{StaticResource Primary}" StrokeThickness="0" StrokeShape="RoundRectangle 16"><Image Source="{Binding Cover}" Aspect="AspectFill" /></Border>
         <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="End" />
-        <Label Text="{Binding Author}" FontSize="17" TextColor="#746F69" HorizontalTextAlignment="End" />
+        <Label Text="{Binding Author}" FontSize="17" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="End" />
         <Slider Minimum="0" Maximum="1" Value="0.08" />
-        <Grid ColumnDefinitions="*,*"><Label Text="۰۴:۲۰" FontSize="14" TextColor="#746F69" HorizontalTextAlignment="End"/><Label Grid.Column="1" Text="۵۸:۳۴" FontSize="14" TextColor="#746F69" HorizontalTextAlignment="Start"/></Grid>
+        <Grid ColumnDefinitions="*,*"><Label Text="۰۴:۲۰" FontSize="14" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="End"/><Label Grid.Column="1" Text="۵۸:۳۴" FontSize="14" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Start"/></Grid>
         <HorizontalStackLayout Spacing="30" HorizontalOptions="Center" FlowDirection="LeftToRight">
             <ImageButton Source="icon_skip_previous.svg" Style="{StaticResource AudioSmallIconButton}" IsEnabled="False" />
             <ImageButton Source="{Binding PlayIcon}" Style="{StaticResource AudioPlayIconButton}" Command="{Binding PlayCommand}" />
             <ImageButton Source="icon_skip_next.svg" Style="{StaticResource AudioSmallIconButton}" IsEnabled="False" />
         </HorizontalStackLayout>
-        <Label Text="با انتخاب پخش، فایل صوتی در پخش‌کننده پیش‌فرض دستگاه باز می‌شود." FontSize="13" TextColor="#746F69" HorizontalTextAlignment="End" />
+        <Label Text="با انتخاب پخش، فایل صوتی در پخش‌کننده پیش‌فرض دستگاه باز می‌شود." FontSize="13" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="End" />
     </VerticalStackLayout></ScrollView>
 </ContentPage>

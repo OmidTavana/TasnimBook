@@ -3,15 +3,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     xmlns:models="clr-namespace:TasnimBook.Data.Models;assembly=TasnimBook.Data">
 
-    <Color x:Key="HomePageBackgroundColor">#F7F5F0</Color>
-    <Color x:Key="HomeSurfaceColor">#FFFFFF</Color>
-    <Color x:Key="HomePrimaryColor">#F6AD21</Color>
-    <Color x:Key="HomePrimaryDarkColor">#D98A00</Color>
-    <Color x:Key="HomeTextColor">#211F1B</Color>
-    <Color x:Key="HomeMutedTextColor">#766F65</Color>
-    <Color x:Key="HomeBorderColor">#EAE4DA</Color>
-    <Color x:Key="HomeImagePlaceholderColor">#EDE7DC</Color>
-
     <Style x:Key="HomeHeaderStyle" TargetType="Border">
         <Setter Property="BackgroundColor" Value="{StaticResource HomePrimaryColor}" />
         <Setter Property="StrokeThickness" Value="0" />
@@ -21,7 +12,7 @@
     <Style x:Key="HomeHeaderTitleStyle" TargetType="Label">
         <Setter Property="FontSize" Value="32" />
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="TextColor" Value="{StaticResource HomeTextColor}" />
+        <Setter Property="TextColor" Value="{StaticResource HeaderText}" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />
         <Setter Property="VerticalTextAlignment" Value="Center" />
     </Style>
@@ -30,8 +21,8 @@
         <Setter Property="BackgroundColor" Value="{StaticResource HomeSurfaceColor}" />
         <Setter Property="Stroke" Value="{StaticResource HomeBorderColor}" />
         <Setter Property="StrokeThickness" Value="1" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 8" />
-        <Setter Property="Padding" Value="14,14,14,12" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 18" />
+        <Setter Property="Padding" Value="16,15,16,13" />
     </Style>
 
     <Style x:Key="HomeSectionTitleStyle" TargetType="Label">
@@ -44,7 +35,7 @@
 
     <Style x:Key="HomeSeeAllButtonStyle" TargetType="Button">
         <Setter Property="TextColor" Value="{StaticResource HomePrimaryDarkColor}" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="Padding" Value="8,4" />
         <Setter Property="MinimumHeightRequest" Value="36" />
@@ -54,7 +45,7 @@
         <Setter Property="WidthRequest" Value="110" />
         <Setter Property="HeightRequest" Value="194" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
         <Setter Property="StrokeThickness" Value="0" />
     </Style>
 

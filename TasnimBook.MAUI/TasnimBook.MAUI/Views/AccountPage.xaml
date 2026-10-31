@@ -12,9 +12,9 @@
                     <Label Text="ورود" Style="{StaticResource SectionHeading}" />
                     <Entry Text="{Binding Email}" Placeholder="ایمیل" Keyboard="Email" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
                     <Entry Text="{Binding Password}" Placeholder="رمز عبور" IsPassword="True" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
-                    <Label Text="{Binding ErrorMessage}" TextColor="#B3261E" HorizontalTextAlignment="End" />
+                    <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" HorizontalTextAlignment="End" />
                     <Button Text="{Binding LoginButtonText}" Style="{StaticResource PrimaryActionButton}" Command="{Binding LoginCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-                    <Button Text="ساخت حساب جدید" BackgroundColor="Transparent" TextColor="{StaticResource PrimaryDark}" Command="{Binding RegisterCommand}" />
+                    <Button Text="ساخت حساب جدید" BackgroundColor="{StaticResource Transparent}" TextColor="{StaticResource PrimaryDark}" Command="{Binding RegisterCommand}" />
                     <Label Text="بدون حساب هم می‌توانید کتاب‌ها را بخوانید و پیشرفت روی همین دستگاه ذخیره می‌شود."
                            Style="{StaticResource MutedLabel}" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
@@ -24,10 +24,10 @@
                     <Label Text="{Binding WelcomeText}" Style="{StaticResource SectionHeading}" />
                     <Label Text="{Binding ProfileEmail}" Style="{StaticResource MutedLabel}" />
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <Border BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="12" StrokeShape="RoundRectangle 14">
+                        <Border BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0" Padding="12" StrokeShape="RoundRectangle 14">
                             <VerticalStackLayout><Image Source="icon_heart_filled.svg" HeightRequest="25"/><Label Text="علاقه‌مندی‌های همگام" FontSize="13" HorizontalTextAlignment="Center"/></VerticalStackLayout>
                         </Border>
-                        <Border Grid.Column="1" BackgroundColor="#FFF4D9" StrokeThickness="0" Padding="12" StrokeShape="RoundRectangle 14">
+                        <Border Grid.Column="1" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0" Padding="12" StrokeShape="RoundRectangle 14">
                             <VerticalStackLayout><Image Source="icon_sync.svg" HeightRequest="25"/><Label Text="ادامه مطالعه" FontSize="13" HorizontalTextAlignment="Center"/></VerticalStackLayout>
                         </Border>
                     </Grid>

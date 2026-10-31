@@ -6,23 +6,23 @@
              x:DataType="viewModels:BookListViewModel"
              Title="{Binding Title}"
              FlowDirection="RightToLeft"
-             BackgroundColor="#FAFAFA">
+             BackgroundColor="{StaticResource PageWarmBackground}">
     <Grid RowDefinitions="Auto,*">
         <SearchBar Grid.Row="0" Margin="16,10" Placeholder="نام کتاب یا نویسنده…" IsVisible="{Binding IsSearchVisible}"
                    Text="{Binding SearchText}" SearchCommand="{Binding SearchCommand}" />
         <CollectionView Grid.Row="1" Margin="16,0" ItemsSource="{Binding Books}" SelectionMode="Single" SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
             <CollectionView.EmptyView>
-                <Label Text="{Binding EmptyMessage}" TextColor="#746F69" HorizontalTextAlignment="Center" Margin="0,36" />
+                <Label Text="{Binding EmptyMessage}" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Center" Margin="0,36" />
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="0,5" Stroke="#ECE8E2" StrokeShape="RoundRectangle 10" Padding="8">
+                    <Border Margin="0,5" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource CardStroke}" StrokeShape="RoundRectangle 14" Padding="10">
                         <Grid ColumnDefinitions="82,*" ColumnSpacing="14">
-                            <Border HeightRequest="116" StrokeThickness="0" StrokeShape="RoundRectangle 8" BackgroundColor="#2C5AA0"><Image Source="{Binding ImageUrl}" Aspect="AspectFill" /></Border>
+                            <Border HeightRequest="116" StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource Primary}"><Image Source="{Binding ImageUrl}" Aspect="AspectFill" /></Border>
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="5">
                                 <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="End" />
-                                <Label Text="{Binding AuthorName}" FontSize="15" TextColor="#746F69" HorizontalTextAlignment="End" />
-                                <Label Text="کتاب صوتی  •  پخش" IsVisible="{Binding IsAudioBook}" FontSize="13" TextColor="#FFB321" HorizontalTextAlignment="End" />
+                                <Label Text="{Binding AuthorName}" FontSize="15" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="End" />
+                                <Label Text="کتاب صوتی  •  پخش" IsVisible="{Binding IsAudioBook}" FontSize="13" TextColor="{StaticResource Tertiary}" HorizontalTextAlignment="End" />
                             </VerticalStackLayout>
                         </Grid>
                     </Border>

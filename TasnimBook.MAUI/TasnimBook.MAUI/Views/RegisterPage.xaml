@@ -10,7 +10,7 @@
             <Entry Text="{Binding Password}" Placeholder="رمز عبور" IsPassword="True" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
             <Entry Text="{Binding ConfirmPassword}" Placeholder="تکرار رمز عبور" IsPassword="True" Style="{StaticResource AccountEntry}" FlowDirection="LeftToRight" />
             <Label Text="حداقل ۱۰ نویسه، شامل حرف و عدد" Style="{StaticResource MutedLabel}" />
-            <Label Text="{Binding ErrorMessage}" TextColor="#B3261E" />
+            <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" />
             <Button Text="{Binding ButtonText}" Style="{StaticResource PrimaryActionButton}" Command="{Binding RegisterCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
         </VerticalStackLayout></Border>
     </VerticalStackLayout></ScrollView>
