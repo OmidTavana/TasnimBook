@@ -24,10 +24,16 @@ public sealed class ApiSessionService
             using var client = new HttpClient { BaseAddress = new Uri(baseAddress), Timeout = TimeSpan.FromSeconds(30) };
             client.DefaultRequestHeaders.Add("APIKey", apiKey);
             var response = await client.PostAsync("JwtUser/Register/" + Uri.EscapeDataString(deviceId), null);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine(responseBody);
             response.EnsureSuccessStatusCode();
             var auth = JsonConvert.DeserializeObject<AuthResult>(await response.Content.ReadAsStringAsync());
             if (string.IsNullOrWhiteSpace(auth?.Token)) throw new InvalidOperationException("پاسخ توکن API معتبر نیست.");
             _repository = new RestRepository(baseAddress, apiKey, auth.Token);
+            return _repository;
+        }
+        catch(Exception ex)
+        {
             return _repository;
         }
         finally { _gate.Release(); }

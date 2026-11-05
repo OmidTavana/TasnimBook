@@ -11,6 +11,10 @@
 *.sln.docstates
 *.env
 
+# Android release signing material (back up securely; never commit)
+TasnimBook.MAUI/signing/
+TasnimBook.MAUI/.secrets/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
