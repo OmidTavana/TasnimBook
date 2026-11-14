@@ -1,2 +1,33 @@
 @model IReadOnlyList<RankedBookDto>
-@if(Model.Count==0){<p class="muted">داده‌ای برای نمایش نیست.</p>}else{<table><thead><tr><th>کتاب</th><th>دانلود</th><th>پسند</th><th>امتیاز</th></tr></thead><tbody>@foreach(var b in Model){<tr><td><strong>@b.Title</strong><br/><span class="muted">@b.Author</span></td><td>@b.DownloadCount</td><td>@b.LikeCount</td><td>@b.AverageRating.ToString("0.0") (@b.RatingCount)</td></tr>}</tbody></table>}
+@if (Model.Count == 0)
+{
+    <p class="muted">داده‌ای برای نمایش نیست.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>کتاب</th>
+                <th>دانلود</th>
+                <th>پسند</th>
+                <th>امتیاز</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>
+                        <strong>@book.Title</strong>
+                        <br />
+                        <span class="muted">@book.Author</span>
+                    </td>
+                    <td>@book.DownloadCount</td>
+                    <td>@book.LikeCount</td>
+                    <td>@book.AverageRating.ToString("0.0") (@book.RatingCount)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

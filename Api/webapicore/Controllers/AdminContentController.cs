@@ -31,7 +31,10 @@ public sealed class AdminContentController(DbContextAnti db) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Book(Book book, int[] categoryIds, CancellationToken cancellationToken)
+    public async Task<IActionResult> Book(
+        [FromBody] Book book,
+        [FromQuery] int[] categoryIds,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(book.Title)) return BadRequest(new { message = "عنوان الزامی است." });
         book.Id = 0;
@@ -41,7 +44,11 @@ public sealed class AdminContentController(DbContextAnti db) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Book(int id, Book input, int[] categoryIds, CancellationToken cancellationToken)
+    public async Task<IActionResult> Book(
+        int id,
+        [FromBody] Book input,
+        [FromQuery] int[] categoryIds,
+        CancellationToken cancellationToken)
     {
         var book = await db.Books.Include(item => item.BookCategories).SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
         if (book is null) return NotFound();

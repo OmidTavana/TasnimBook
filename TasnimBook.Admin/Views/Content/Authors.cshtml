@@ -1,2 +1,45 @@
 @model IReadOnlyList<Author>
-@{ViewData["Title"]="نویسندگان";}<h1>نویسندگان</h1><p><a class="button" asp-action="EditAuthor">نویسنده جدید</a></p><form class="toolbar"><input name="search" value="@ViewBag.Search" placeholder="جست‌وجو"/><button>جست‌وجو</button></form><table><thead><tr><th>نام</th><th>تعداد کتاب</th><th></th></tr></thead><tbody>@foreach(var a in Model){<tr><td>@a.FullName</td><td>@a.Books?.Count</td><td><a class="button secondary" asp-action="EditAuthor" asp-route-id="@a.Id">ویرایش</a> <form asp-action="Delete" method="post"><input type="hidden" name="entity" value="Author"/><input type="hidden" name="id" value="@a.Id"/><button class="danger">حذف</button></form></td></tr>}</tbody></table>
+@{
+    ViewData["Title"] = "نویسندگان";
+}
+
+<h1>نویسندگان</h1>
+
+<p>
+    <a class="button" asp-action="EditAuthor">نویسنده جدید</a>
+</p>
+
+<form class="toolbar">
+    <input name="search" value="@ViewBag.Search" placeholder="جست‌وجو" />
+    <button>جست‌وجو</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>نام</th>
+            <th>تعداد کتاب</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var author in Model)
+        {
+            <tr>
+                <td>@author.FullName</td>
+                <td>@author.Books?.Count</td>
+                <td>
+                    <a class="button secondary"
+                       asp-action="EditAuthor"
+                       asp-route-id="@author.Id">ویرایش</a>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" name="entity" value="Author" />
+                        <input type="hidden" name="id" value="@author.Id" />
+                        <button class="danger">حذف</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

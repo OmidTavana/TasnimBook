@@ -1,3 +1,56 @@
 @model DashboardDto
-@{ViewData["Title"]="داشبورد";}<h1>داشبورد</h1>@if(ViewBag.Error is string e){<div class="notice error">@e</div>}<div class="grid">@foreach(var item in new[]{("کتاب‌ها",Model.TotalBooks),("نویسندگان",Model.TotalAuthors),("دسته‌ها",Model.TotalCategories),("کاربران",Model.TotalRegisteredUsers),("دانلودها",Model.TotalDownloads),("پسندها",Model.TotalLikes),("امتیازها",Model.TotalRatings),("درخواست مدیر",Model.PendingAdministratorRegistrations)}){<article class="card stat"><span>@item.Item1</span><strong>@item.Item2</strong></article>}</div>
-<div class="grid" style="margin-top:20px"><section class="card"><h2>محبوب‌ترین کتاب‌ها</h2><partial name="_RankedBooks" model="Model.PopularBooks"/></section><section class="card"><h2>بیشترین دانلود</h2><partial name="_RankedBooks" model="Model.MostDownloadedBooks"/></section><section class="card"><h2>بیشترین پسند</h2><partial name="_RankedBooks" model="Model.MostLikedBooks"/></section><section class="card"><h2>بالاترین امتیاز</h2><p class="muted">حداقل ۳ رأی</p><partial name="_RankedBooks" model="Model.HighestRatedBooks"/></section></div>
+@{
+    ViewData["Title"] = "داشبورد";
+
+    var statistics = new[]
+    {
+        (Title: "کتاب‌ها", Value: Model.TotalBooks),
+        (Title: "نویسندگان", Value: Model.TotalAuthors),
+        (Title: "دسته‌ها", Value: Model.TotalCategories),
+        (Title: "کاربران", Value: Model.TotalRegisteredUsers),
+        (Title: "دانلودها", Value: Model.TotalDownloads),
+        (Title: "پسندها", Value: Model.TotalLikes),
+        (Title: "امتیازها", Value: Model.TotalRatings),
+        (Title: "درخواست مدیر", Value: Model.PendingAdministratorRegistrations)
+    };
+}
+
+<h1>داشبورد</h1>
+
+@if (ViewBag.Error is string error)
+{
+    <div class="notice error">@error</div>
+}
+
+<div class="grid">
+    @foreach (var statistic in statistics)
+    {
+        <article class="card stat">
+            <span>@statistic.Title</span>
+            <strong>@statistic.Value</strong>
+        </article>
+    }
+</div>
+
+<div class="grid" style="margin-top: 20px">
+    <section class="card">
+        <h2>محبوب‌ترین کتاب‌ها</h2>
+        <partial name="_RankedBooks" model="Model.PopularBooks" />
+    </section>
+
+    <section class="card">
+        <h2>بیشترین دانلود</h2>
+        <partial name="_RankedBooks" model="Model.MostDownloadedBooks" />
+    </section>
+
+    <section class="card">
+        <h2>بیشترین پسند</h2>
+        <partial name="_RankedBooks" model="Model.MostLikedBooks" />
+    </section>
+
+    <section class="card">
+        <h2>بالاترین امتیاز</h2>
+        <p class="muted">حداقل ۳ رأی</p>
+        <partial name="_RankedBooks" model="Model.HighestRatedBooks" />
+    </section>
+</div>

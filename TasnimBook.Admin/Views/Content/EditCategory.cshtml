@@ -1,2 +1,19 @@
 @model BookCat
-@{ViewData["Title"]=Model.Id==0?"دسته جدید":"ویرایش دسته";}<section class="card auth"><h1>@ViewData["Title"]</h1><form method="post"><input asp-for="Id" type="hidden"/><label asp-for="CategoryName">نام دسته</label><input asp-for="CategoryName"/><button>ذخیره</button></form></section>
+@{
+    ViewData["Title"] = Model.Id == 0
+        ? "دسته جدید"
+        : "ویرایش دسته";
+}
+
+<section class="card auth">
+    <h1>@ViewData["Title"]</h1>
+
+    <form method="post">
+        <input asp-for="Id" type="hidden" />
+
+        <label asp-for="CategoryName">نام دسته</label>
+        <input asp-for="CategoryName" />
+
+        <button>ذخیره</button>
+    </form>
+</section>

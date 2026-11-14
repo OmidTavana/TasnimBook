@@ -9,29 +9,130 @@ using TasnimBook.Data.Models.DTO;
 
 namespace TasnimBook.Admin.Controllers;
 
-public sealed class AccountController(AdminApiClient api) : Controller
+public sealed class AccountController : Controller
 {
-    [AllowAnonymous, HttpGet] public IActionResult Login() => View(new LoginAccountRequest());
-    [AllowAnonymous, HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginAccountRequest request, CancellationToken token)
+    private readonly AdminApiClient _apiClient;
+
+    public AccountController(AdminApiClient apiClient)
     {
-        if (!ModelState.IsValid) return View(request);
+        _apiClient = apiClient;
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View(new LoginAccountRequest());
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(
+        LoginAccountRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(request);
+        }
+
         try
         {
-            var result = await api.LoginAsync(request, token);
-            if (result.User.AdminStatus == AdminApprovalStatuses.PendingApproval) return View("Pending");
-            if (result.User.AdminStatus == AdminApprovalStatuses.Rejected) return View("Rejected");
-            if (result.User.Role is not (UserRoles.ContentAdmin or UserRoles.SuperAdmin)) return View("Unauthorized");
-            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, result.User.Id.ToString()), new Claim(ClaimTypes.Name, result.User.DisplayName), new Claim(ClaimTypes.Email, result.User.Email), new Claim(ClaimTypes.Role, result.User.Role), new Claim("access_token", result.AccessToken) };
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)));
+            var result = await _apiClient.LoginAsync(request, cancellationToken);
+
+            if (result.User.AdminStatus == AdminApprovalStatuses.PendingApproval)
+            {
+                return View("Pending");
+            }
+
+            if (result.User.AdminStatus == AdminApprovalStatuses.Rejected)
+            {
+                return View("Rejected");
+            }
+
+            if (result.User.Role is not (UserRoles.ContentAdmin or UserRoles.SuperAdmin))
+            {
+                return View("Unauthorized");
+            }
+
+            var principal = CreatePrincipal(result);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal);
+
             return RedirectToAction("Index", "Home");
         }
-        catch (Exception ex) { ModelState.AddModelError(string.Empty, ex.Message); return View(request); }
+        catch (Exception exception)
+        {
+            ModelState.AddModelError(string.Empty, exception.Message);
+            return View(request);
+        }
     }
-    [AllowAnonymous, HttpGet] public IActionResult Register() => View(new AdminRegisterRequest());
-    [AllowAnonymous, HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(AdminRegisterRequest request, CancellationToken token)
-    { if (!ModelState.IsValid) return View(request); try { await api.RegisterAsync(request, token); return View("Pending"); } catch (Exception ex) { ModelState.AddModelError(string.Empty, ex.Message); return View(request); } }
-    [Authorize, HttpPost, ValidateAntiForgeryToken] public async Task<IActionResult> Logout() { await HttpContext.SignOutAsync(); return RedirectToAction(nameof(Login)); }
-    [AllowAnonymous] public IActionResult AccessDenied() => View("Unauthorized");
+
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View(new AdminRegisterRequest());
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(
+        AdminRegisterRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(request);
+        }
+
+        try
+        {
+            await _apiClient.RegisterAsync(request, cancellationToken);
+            return View("Pending");
+        }
+        catch (Exception exception)
+        {
+            ModelState.AddModelError(string.Empty, exception.Message);
+            return View(request);
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync();
+
+        return RedirectToAction(nameof(Login));
+    }
+
+    [AllowAnonymous]
+    public IActionResult AccessDenied()
+    {
+        return View("Unauthorized");
+    }
+
+    private static ClaimsPrincipal CreatePrincipal(AccountAuthResult result)
+    {
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, result.User.Id.ToString()),
+            new(ClaimTypes.Name, result.User.DisplayName),
+            new(ClaimTypes.Email, result.User.Email),
+            new(ClaimTypes.Role, result.User.Role),
+            new("access_token", result.AccessToken)
+        };
+
+        var identity = new ClaimsIdentity(
+            claims,
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+        return new ClaimsPrincipal(identity);
+    }
 }

@@ -1,2 +1,47 @@
 @model IReadOnlyList<AdminUserDto>
-@{ViewData["Title"]="درخواست‌های مدیریت";}<h1>درخواست‌های مدیریت</h1>@if(Model.Count==0){<div class="card">درخواستی در انتظار نیست.</div>}else{<table><thead><tr><th>متقاضی</th><th>ایمیل</th><th>نقش تأیید</th><th>عملیات</th></tr></thead><tbody>@foreach(var a in Model){<tr><td>@a.DisplayName</td><td>@a.Email</td><td colspan="2"><form asp-action="Review" method="post"><input type="hidden" name="id" value="@a.Id"/><select name="role"><option value="ContentAdmin">ContentAdmin</option><option value="SuperAdmin">SuperAdmin</option></select><input name="note" placeholder="یادداشت بررسی"/><button name="approve" value="true">تأیید</button> <button class="danger" name="approve" value="false">رد</button></form></td></tr>}</tbody></table>}
+@{
+    ViewData["Title"] = "درخواست‌های مدیریت";
+}
+
+<h1>درخواست‌های مدیریت</h1>
+
+@if (Model.Count == 0)
+{
+    <div class="card">درخواستی در انتظار نیست.</div>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>متقاضی</th>
+                <th>ایمیل</th>
+                <th>نقش تأیید</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var administrator in Model)
+            {
+                <tr>
+                    <td>@administrator.DisplayName</td>
+                    <td>@administrator.Email</td>
+                    <td colspan="2">
+                        <form asp-action="Review" method="post">
+                            <input type="hidden" name="id" value="@administrator.Id" />
+
+                            <select name="role">
+                                <option value="ContentAdmin">ContentAdmin</option>
+                                <option value="SuperAdmin">SuperAdmin</option>
+                            </select>
+
+                            <input name="note" placeholder="یادداشت بررسی" />
+                            <button name="approve" value="true">تأیید</button>
+                            <button class="danger" name="approve" value="false">رد</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

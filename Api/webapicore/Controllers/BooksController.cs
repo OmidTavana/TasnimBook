@@ -43,31 +43,31 @@ namespace webapicore.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
-                return await bookRepo.GetBook(id);
-            }
-            [ApiKeyAuth]
-            [HttpGet("{keyword}")]
-            public async Task<ActionResult<IEnumerable<BooksDTO>>> Search(string keyword)
-            {
-                return Ok(await bookRepo.Search(keyword));
-            }
-            // GET: api/Books/5
-            [ApiKeyAuth]
-            [HttpGet("{start}/{count}")]
-            public async Task<ActionResult<IEnumerable<BooksDTO>>> GetNewBooks(int start, int count)
-            {
-                return Ok(await bookRepo.GetNewBooks(start, count));
-            }
-            // GET: api/Books/5
-            [ApiKeyAuth]
-            [HttpGet("{start}/{count}")]
-            public async Task<ActionResult<IEnumerable<BooksDTO>>> GetSuggestedBooks(int start, int count)
-            {
-                return Ok(await bookRepo.GetSuggestedBooks(start, count));
-            }
-            [ApiKeyAuth]
-            [HttpGet("{start}/{count}")]
-            public async Task<ActionResult<IEnumerable<BooksDTO>>> GetRandomBooks(int start, int count)
+            return await bookRepo.GetBook(id);
+        }
+        [ApiKeyAuth]
+        [HttpGet("{keyword}")]
+        public async Task<ActionResult<IEnumerable<BooksDTO>>> Search(string keyword)
+        {
+            return Ok(await bookRepo.Search(keyword));
+        }
+        // GET: api/Books/5
+        [ApiKeyAuth]
+        [HttpGet("{start}/{count}")]
+        public async Task<ActionResult<IEnumerable<BooksDTO>>> GetNewBooks(int start, int count)
+        {
+            return Ok(await bookRepo.GetNewBooks(start, count));
+        }
+        // GET: api/Books/5
+        [ApiKeyAuth]
+        [HttpGet("{start}/{count}")]
+        public async Task<ActionResult<IEnumerable<BooksDTO>>> GetSuggestedBooks(int start, int count)
+        {
+            return Ok(await bookRepo.GetSuggestedBooks(start, count));
+        }
+        [ApiKeyAuth]
+        [HttpGet("{start}/{count}")]
+        public async Task<ActionResult<IEnumerable<BooksDTO>>> GetRandomBooks(int start, int count)
         {
             return Ok(await bookRepo.GetRandomBooks(start, count));
         }
@@ -85,7 +85,7 @@ namespace webapicore.Controllers
             {
                 using (HttpWebResponse respp = (HttpWebResponse)ex.Response)
                 {
-                    
+
                 }
                 return Ok();
             }

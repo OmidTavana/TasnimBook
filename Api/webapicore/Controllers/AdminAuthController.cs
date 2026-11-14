@@ -28,7 +28,11 @@ public sealed class AdminAuthController(
         if (user.AdminStatus is AdminApprovalStatuses.PendingApproval or AdminApprovalStatuses.Rejected)
             return Ok(new AccountAuthResult { User = new AccountProfileDto { Id = user.Id, Email = user.Email, DisplayName = user.DisplayName, Role = user.Role, AdminStatus = user.AdminStatus } });
         if (!user.IsActive || user.Role is not (UserRoles.ContentAdmin or UserRoles.SuperAdmin))
-            return Forbid();
+        {
+            return StatusCode(
+                StatusCodes.Status403Forbidden,
+                new { message = "این حساب دسترسی مدیریتی فعال ندارد." });
+        }
         return Ok(await tokens.CreateSessionAsync(user, request.DeviceName));
     }
 

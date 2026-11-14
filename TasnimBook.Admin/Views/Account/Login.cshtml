@@ -1,2 +1,22 @@
 @model LoginAccountRequest
-@{ViewData["Title"]="ورود مدیر";}<section class="card auth"><h1>ورود مدیر</h1><p class="muted">فقط حساب‌های مدیریتی تأییدشده دسترسی دارند.</p><form method="post"><div asp-validation-summary="All"></div><label asp-for="Email">ایمیل</label><input asp-for="Email" type="email"/><label asp-for="Password">رمز عبور</label><input asp-for="Password" type="password"/><button>ورود</button> <a class="button secondary" asp-action="Register">درخواست حساب مدیر</a></form></section>
+@{
+    ViewData["Title"] = "ورود مدیر";
+}
+
+<section class="card auth">
+    <h1>ورود مدیر</h1>
+    <p class="muted">فقط حساب‌های مدیریتی تأییدشده دسترسی دارند.</p>
+
+    <form method="post">
+        <div asp-validation-summary="All"></div>
+
+        <label asp-for="Email">ایمیل</label>
+        <input asp-for="Email" type="email" />
+
+        <label asp-for="Password">رمز عبور</label>
+        <input asp-for="Password" type="password" />
+
+        <button>ورود</button>
+        <a class="button secondary" asp-action="Register">درخواست حساب مدیر</a>
+    </form>
+</section>

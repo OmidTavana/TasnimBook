@@ -1,26 +1,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using TasnimBook.Data.DataSource;
-using TasnimBook.Data.Interfaces;
-using TasnimBook.Data.Services;
-using System;
-using System.IO;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
 using TasnimBook.Data;
-using webapicore.Services;
+using TasnimBook.Data.DataSource;
+using TasnimBook.Data.Interfaces;
+using TasnimBook.Data.Services;
 using webapicore.Fillter;
-using System.Security.Claims;
+using webapicore.Services;
 
 namespace webapicore
 {
@@ -148,6 +138,7 @@ namespace webapicore
             }
             else
             {
+                app.UseExceptionHandler("/error/500");
                 app.UseHsts();
             }
             app.UseStaticFiles();
@@ -161,8 +152,6 @@ namespace webapicore
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseStatusCodePagesWithReExecute("/error/{0}");
-            app.UseExceptionHandler("/error/500");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
