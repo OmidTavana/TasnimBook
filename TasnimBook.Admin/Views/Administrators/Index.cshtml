@@ -3,28 +3,61 @@
     ViewData["Title"] = "مدیران";
 }
 
-<h1>حساب‌های مدیریتی</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">کنترل دسترسی</span>
+        <h1>حساب‌های مدیریتی</h1>
+        <p>وضعیت و نقش اعضای تیم مدیریت تسنیم‌بوک را مشاهده کنید.</p>
+    </div>
+    <div class="page-actions">
+        <a class="button button-secondary" asp-action="Pending">درخواست‌های در انتظار</a>
+    </div>
+</div>
 
-<table>
-    <thead>
-        <tr>
-            <th>نام</th>
-            <th>ایمیل</th>
-            <th>نقش</th>
-            <th>وضعیت</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var administrator in Model)
-        {
-            var activeStatus = administrator.IsActive ? "فعال" : "غیرفعال";
+<section class="card table-card">
+    <div class="table-toolbar">
+        <span class="badge badge-primary">@Model.Count.ToString("N0") حساب</span>
+    </div>
 
-            <tr>
-                <td>@administrator.DisplayName</td>
-                <td>@administrator.Email</td>
-                <td>@administrator.Role</td>
-                <td>@administrator.AdminStatus / @activeStatus</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>مدیر</th>
+                    <th>نقش</th>
+                    <th>تأیید مدیریت</th>
+                    <th>وضعیت حساب</th>
+                    <th>تاریخ ایجاد</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var administrator in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="table-identity">
+                                <span class="table-avatar">@administrator.DisplayName.Trim().FirstOrDefault()</span>
+                                <div class="identity-copy">
+                                    <strong>@administrator.DisplayName</strong>
+                                    <small dir="ltr">@administrator.Email</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-primary">@administrator.Role</span></td>
+                        <td>
+                            <span class="badge @(administrator.AdminStatus == AdminApprovalStatuses.Approved ? "badge-success" : "badge-warning")">
+                                @administrator.AdminStatus
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(administrator.IsActive ? "badge-success" : "badge-danger")">
+                                @(administrator.IsActive ? "فعال" : "غیرفعال")
+                            </span>
+                        </td>
+                        <td>@administrator.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

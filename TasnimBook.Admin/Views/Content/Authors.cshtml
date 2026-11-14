@@ -3,43 +3,83 @@
     ViewData["Title"] = "نویسندگان";
 }
 
-<h1>نویسندگان</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">مدیریت محتوا</span>
+        <h1>نویسندگان</h1>
+        <p>پروفایل نویسندگان و ارتباط آن‌ها با کتاب‌ها را مدیریت کنید.</p>
+    </div>
 
-<p>
-    <a class="button" asp-action="EditAuthor">نویسنده جدید</a>
-</p>
+    <div class="page-actions">
+        <a class="button" asp-action="EditAuthor">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z" /></svg>
+            نویسنده جدید
+        </a>
+    </div>
+</div>
 
-<form class="toolbar">
-    <input name="search" value="@ViewBag.Search" placeholder="جست‌وجو" />
-    <button>جست‌وجو</button>
-</form>
+<section class="card table-card">
+    <div class="table-toolbar">
+        <form class="search-box" method="get" asp-action="Authors">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20.7 19.3-4.2-4.2a7.5 7.5 0 1 0-1.4 1.4l4.2 4.2 1.4-1.4ZM5 10.5a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z" /></svg>
+            <input name="search" value="@ViewBag.Search" placeholder="جست‌وجوی نام نویسنده..." aria-label="جست‌وجوی نویسنده" />
+        </form>
+        <span class="badge badge-primary">@Model.Count.ToString("N0") نویسنده</span>
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>نام</th>
-            <th>تعداد کتاب</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var author in Model)
-        {
-            <tr>
-                <td>@author.FullName</td>
-                <td>@author.Books?.Count</td>
-                <td>
-                    <a class="button secondary"
-                       asp-action="EditAuthor"
-                       asp-route-id="@author.Id">ویرایش</a>
-
-                    <form asp-action="Delete" method="post">
-                        <input type="hidden" name="entity" value="Author" />
-                        <input type="hidden" name="id" value="@author.Id" />
-                        <button class="danger">حذف</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state">
+            <div>
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 2.5-9 5.5V22h18v-2.5C21 16.5 17 14 12 14Z" /></svg>
+                </div>
+                <h2>نویسنده‌ای پیدا نشد</h2>
+                <p>نویسنده تازه‌ای ثبت کنید یا عبارت جست‌وجو را تغییر دهید.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>نویسنده</th>
+                        <th>تعداد کتاب</th>
+                        <th>شناسه</th>
+                        <th aria-label="عملیات"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var author in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="table-identity">
+                                    <span class="table-avatar">@author.FullName.Trim().FirstOrDefault()</span>
+                                    <div class="identity-copy">
+                                        <strong>@author.FullName</strong>
+                                        <small>نویسنده تسنیم‌بوک</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge">@((author.Books?.Count ?? 0).ToString("N0")) کتاب</span></td>
+                            <td>#@author.Id</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a class="button button-secondary button-sm" asp-action="EditAuthor" asp-route-id="@author.Id">ویرایش</a>
+                                    <form asp-action="Delete" method="post" data-confirm="نویسنده «@author.FullName» حذف شود؟">
+                                        <input type="hidden" name="entity" value="Author" />
+                                        <input type="hidden" name="id" value="@author.Id" />
+                                        <button class="button button-danger button-sm" type="submit">حذف</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

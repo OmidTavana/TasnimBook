@@ -1,22 +1,54 @@
 @model Author
 @{
-    ViewData["Title"] = Model.Id == 0
-        ? "نویسنده جدید"
-        : "ویرایش نویسنده";
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "نویسنده جدید" : "ویرایش نویسنده";
 }
 
-<section class="card auth">
-    <h1>@ViewData["Title"]</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">مدیریت محتوا / نویسندگان</span>
+        <h1>@(isNew ? "ثبت نویسنده تازه" : $"ویرایش {Model.FullName}")</h1>
+        <p>نام نویسنده در صفحات کتاب و نتایج جست‌وجو نمایش داده می‌شود.</p>
+    </div>
 
-    <form method="post">
-        <input asp-for="Id" type="hidden" />
+    <div class="page-actions">
+        <a class="button button-secondary" asp-action="Authors">بازگشت</a>
+    </div>
+</div>
 
-        <label asp-for="Name">نام</label>
-        <input asp-for="Name" />
+<form method="post">
+    <input asp-for="Id" type="hidden" />
 
-        <label asp-for="Family">نام خانوادگی</label>
-        <input asp-for="Family" />
+    <section class="card card-medium">
+        <header class="card-header">
+            <div>
+                <h2>مشخصات نویسنده</h2>
+                <p>نام و نام خانوادگی را دقیق و بدون عنوان وارد کنید.</p>
+            </div>
+        </header>
 
-        <button>ذخیره</button>
-    </form>
-</section>
+        <div class="card-body form-grid">
+            <div class="field">
+                <label asp-for="Name">نام</label>
+                <input asp-for="Name" placeholder="مثلاً ویکتور" autocomplete="off" />
+                <span asp-validation-for="Name"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Family">نام خانوادگی</label>
+                <input asp-for="Family" placeholder="مثلاً فرانکل" autocomplete="off" />
+                <span asp-validation-for="Family"></span>
+            </div>
+
+            <div class="field field-full">
+                <div class="form-actions">
+                    <a class="button button-ghost" asp-action="Authors">انصراف</a>
+                    <button class="button" type="submit">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4Zm-5 16a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm3-10H5V5h10v4Z" /></svg>
+                        ذخیره نویسنده
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

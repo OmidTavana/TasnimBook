@@ -196,6 +196,51 @@ public sealed class AdminApiClient
         await SendAsync<object>(method, path, category, cancellationToken);
     }
 
+    public async Task<AdminAssetUploadDto> UploadAssetAsync(
+        IFormFile file,
+        string kind,
+        CancellationToken cancellationToken)
+    {
+        var path = $"AdminAssets/Upload?kind={Uri.EscapeDataString(kind)}";
+
+        using var fileStream = file.OpenReadStream();
+        using var fileContent = new StreamContent(fileStream);
+        using var formContent = new MultipartFormDataContent();
+
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(file.ContentType);
+        formContent.Add(fileContent, "file", file.FileName);
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, path)
+        {
+            Content = formContent
+        };
+
+        AddApiKey(request);
+        AddAccessToken(request);
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        return ReadResponse<AdminAssetUploadDto>(response, responseContent);
+    }
+
+    public string? ResolveAssetUrl(string? assetUrl)
+    {
+        if (string.IsNullOrWhiteSpace(assetUrl))
+        {
+            return null;
+        }
+
+        if (Uri.TryCreate(assetUrl, UriKind.Absolute, out var absoluteUri))
+        {
+            return absoluteUri.ToString();
+        }
+
+        return _httpClient.BaseAddress is null
+            ? assetUrl
+            : new Uri(_httpClient.BaseAddress, assetUrl).ToString();
+    }
+
     private Task<T> GetAsync<T>(string path, CancellationToken cancellationToken)
     {
         return SendAsync<T>(HttpMethod.Get, path, body: null, cancellationToken);
@@ -225,20 +270,7 @@ public sealed class AdminApiClient
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            var message = ExtractErrorMessage(responseContent);
-            throw new AdminApiException((int)response.StatusCode, message);
-        }
-
-        if (typeof(T) == typeof(object) || string.IsNullOrWhiteSpace(responseContent))
-        {
-            return default!;
-        }
-
-        var result = JsonSerializer.Deserialize<T>(responseContent, JsonOptions);
-
-        return result ?? throw new InvalidOperationException("The API returned an invalid response.");
+        return ReadResponse<T>(response, responseContent);
     }
 
     private void AddApiKey(HttpRequestMessage request)
@@ -273,6 +305,24 @@ public sealed class AdminApiClient
         var json = JsonSerializer.Serialize(body, JsonOptions);
 
         return new StringContent(json, Encoding.UTF8, "application/json");
+    }
+
+    private static T ReadResponse<T>(HttpResponseMessage response, string responseContent)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = ExtractErrorMessage(responseContent);
+            throw new AdminApiException((int)response.StatusCode, message);
+        }
+
+        if (typeof(T) == typeof(object) || string.IsNullOrWhiteSpace(responseContent))
+        {
+            return default!;
+        }
+
+        var result = JsonSerializer.Deserialize<T>(responseContent, JsonOptions);
+
+        return result ?? throw new InvalidOperationException("The API returned an invalid response.");
     }
 
     private static string EncodeSearchTerm(string? search)

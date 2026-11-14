@@ -28,12 +28,23 @@ public sealed class BookEditorModel
 
     public bool IsSuggested { get; set; }
 
-    public string CategoryIds { get; set; } = string.Empty;
+    public int[] CategoryIds { get; set; } = [];
+
+    public IFormFile? CoverImage { get; set; }
+
+    public IFormFile? BookFile { get; set; }
+
+    public string? CoverPreviewUrl { get; set; }
+
+    public IReadOnlyList<Author> AvailableAuthors { get; set; } = [];
+
+    public IReadOnlyList<BookCat> AvailableCategories { get; set; } = [];
 
     public static BookEditorModel FromEntity(Book book)
     {
-        var categoryIds = book.BookCategories
-            .Select(relation => relation.BookCategoryId);
+        var categoryIds = book.BookCategories?
+            .Select(relation => relation.BookCategoryId)
+            .ToArray() ?? [];
 
         return new BookEditorModel
         {
@@ -47,7 +58,7 @@ public sealed class BookEditorModel
             AuthorId = book.AuthorId,
             IsAudioBook = book.IsAudioBook == true,
             IsSuggested = book.IsSuggested == true,
-            CategoryIds = string.Join(',', categoryIds)
+            CategoryIds = categoryIds
         };
     }
 
@@ -68,21 +79,4 @@ public sealed class BookEditorModel
         };
     }
 
-    public int[] ParseCategoryIds()
-    {
-        var categoryIds = new HashSet<int>();
-        var values = CategoryIds.Split(
-            ',',
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-        foreach (var value in values)
-        {
-            if (int.TryParse(value, out var categoryId) && categoryId > 0)
-            {
-                categoryIds.Add(categoryId);
-            }
-        }
-
-        return categoryIds.ToArray();
-    }
 }

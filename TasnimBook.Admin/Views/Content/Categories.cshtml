@@ -1,45 +1,85 @@
 @model IReadOnlyList<BookCat>
 @{
-    ViewData["Title"] = "دسته‌ها";
+    ViewData["Title"] = "دسته‌بندی‌ها";
 }
 
-<h1>دسته‌ها</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">مدیریت محتوا</span>
+        <h1>دسته‌بندی‌ها</h1>
+        <p>ساختار موضوعی کتابخانه را مرتب و قابل جست‌وجو نگه دارید.</p>
+    </div>
 
-<p>
-    <a class="button" asp-action="EditCategory">دسته جدید</a>
-</p>
+    <div class="page-actions">
+        <a class="button" asp-action="EditCategory">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z" /></svg>
+            دسته جدید
+        </a>
+    </div>
+</div>
 
-<form class="toolbar">
-    <input name="search" value="@ViewBag.Search" placeholder="جست‌وجو" />
-    <button>جست‌وجو</button>
-</form>
+<section class="card table-card">
+    <div class="table-toolbar">
+        <form class="search-box" method="get" asp-action="Categories">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20.7 19.3-4.2-4.2a7.5 7.5 0 1 0-1.4 1.4l4.2 4.2 1.4-1.4ZM5 10.5a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z" /></svg>
+            <input name="search" value="@ViewBag.Search" placeholder="جست‌وجوی دسته‌بندی..." aria-label="جست‌وجوی دسته‌بندی" />
+        </form>
+        <span class="badge badge-primary">@Model.Count.ToString("N0") دسته</span>
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>نام</th>
-            <th>تعداد کتاب</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var category in Model)
-        {
-            <tr>
-                <td>@category.CategoryName</td>
-                <td>@category.Books?.Count</td>
-                <td>
-                    <a class="button secondary"
-                       asp-action="EditCategory"
-                       asp-route-id="@category.Id">ویرایش</a>
-
-                    <form asp-action="Delete" method="post">
-                        <input type="hidden" name="entity" value="Category" />
-                        <input type="hidden" name="id" value="@category.Id" />
-                        <button class="danger">حذف</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state">
+            <div>
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.1-8.5-8.5A2 2 0 0 0 11.5 2H4a2 2 0 0 0-2 2v7.5a2 2 0 0 0 .6 1.4l8.5 8.5a2 2 0 0 0 2.8 0l7.5-7.5a2 2 0 0 0 0-2.8Z" /></svg>
+                </div>
+                <h2>دسته‌ای پیدا نشد</h2>
+                <p>برای مرتب‌سازی کتاب‌ها، اولین دسته‌بندی را ایجاد کنید.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>عنوان دسته</th>
+                        <th>تعداد کتاب</th>
+                        <th>شناسه</th>
+                        <th aria-label="عملیات"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="table-identity">
+                                    <span class="table-avatar">#</span>
+                                    <div class="identity-copy">
+                                        <strong>@category.CategoryName</strong>
+                                        <small>دسته‌بندی کتابخانه</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge">@((category.Books?.Count ?? 0).ToString("N0")) کتاب</span></td>
+                            <td>#@category.Id</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a class="button button-secondary button-sm" asp-action="EditCategory" asp-route-id="@category.Id">ویرایش</a>
+                                    <form asp-action="Delete" method="post" data-confirm="دسته «@category.CategoryName» حذف شود؟">
+                                        <input type="hidden" name="entity" value="Category" />
+                                        <input type="hidden" name="id" value="@category.Id" />
+                                        <button class="button button-danger button-sm" type="submit">حذف</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

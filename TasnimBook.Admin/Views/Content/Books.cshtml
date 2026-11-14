@@ -1,51 +1,139 @@
 @model PagedResult<Book>
 @{
     ViewData["Title"] = "کتاب‌ها";
+    var totalPages = Math.Max(1, (int)Math.Ceiling(Model.TotalCount / (double)Math.Max(1, Model.PageSize)));
+    var assetBaseUrl = ViewBag.AssetBaseUrl as string;
 }
 
-<h1>مدیریت کتاب‌ها</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">مدیریت محتوا</span>
+        <h1>کتاب‌ها</h1>
+        <p>@Model.TotalCount.ToString("N0") کتاب در کتابخانه ثبت شده است.</p>
+    </div>
 
-<p>
-    <a class="button" asp-action="CreateBook">کتاب جدید</a>
-</p>
+    <div class="page-actions">
+        <a class="button" asp-action="CreateBook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z" /></svg>
+            افزودن کتاب
+        </a>
+    </div>
+</div>
 
-<form class="toolbar">
-    <input name="search" value="@ViewBag.Search" placeholder="جست‌وجوی عنوان" />
-    <button>جست‌وجو</button>
-</form>
+<section class="card table-card">
+    <div class="table-toolbar">
+        <form class="search-box" method="get" asp-action="Books">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20.7 19.3-4.2-4.2a7.5 7.5 0 1 0-1.4 1.4l4.2 4.2 1.4-1.4ZM5 10.5a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z" /></svg>
+            <input name="search" value="@ViewBag.Search" placeholder="جست‌وجو میان عنوان کتاب‌ها..." aria-label="جست‌وجوی کتاب" />
+        </form>
+        <span class="badge badge-primary">@Model.TotalCount.ToString("N0") رکورد</span>
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>عنوان</th>
-            <th>نویسنده</th>
-            <th>فایل</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var book in Model.Items)
-        {
-            <tr>
-                <td>@book.Title</td>
-                <td>@book.Author?.FullName</td>
-                <td>@book.Url</td>
-                <td>
-                    <a class="button secondary"
-                       asp-action="EditBook"
-                       asp-route-id="@book.Id">ویرایش</a>
+    @if (Model.Items.Count == 0)
+    {
+        <div class="empty-state">
+            <div>
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3h12A2.5 2.5 0 0 1 19 5.5V18h-1.5a3.5 3.5 0 0 0-3.5 3.5V22H4.5A2.5 2.5 0 0 1 2 19.5v-14A2.5 2.5 0 0 1 4.5 3Z" /></svg>
+                </div>
+                <h2>کتابی پیدا نشد</h2>
+                <p>عبارت جست‌وجو را تغییر دهید یا اولین کتاب را به کتابخانه اضافه کنید.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>کتاب</th>
+                        <th>نویسنده</th>
+                        <th>نوع</th>
+                        <th>فایل</th>
+                        <th aria-label="عملیات"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var book in Model.Items)
+                    {
+                        var coverUrl = book.ImageUrl;
 
-                    <form asp-action="Delete"
-                          method="post"
-                          onsubmit="return confirm('کتاب حذف شود؟')">
-                        <input type="hidden" name="entity" value="Book" />
-                        <input type="hidden" name="id" value="@book.Id" />
-                        <button class="danger">حذف</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        if (!string.IsNullOrWhiteSpace(coverUrl) &&
+                            !Uri.IsWellFormedUriString(coverUrl, UriKind.Absolute) &&
+                            !string.IsNullOrWhiteSpace(assetBaseUrl))
+                        {
+                            coverUrl = new Uri(new Uri(assetBaseUrl), coverUrl).ToString();
+                        }
 
-<p>صفحه @Model.Page — @Model.TotalCount رکورد</p>
+                        <tr>
+                            <td>
+                                <div class="table-identity">
+                                    <div class="book-cover">
+                                        @if (!string.IsNullOrWhiteSpace(coverUrl))
+                                        {
+                                            <img src="@coverUrl" alt="جلد @book.Title" loading="lazy" />
+                                        }
+                                        else
+                                        {
+                                            <span class="book-cover-placeholder">@book.Title.FirstOrDefault()</span>
+                                        }
+                                    </div>
+                                    <div class="identity-copy">
+                                        <strong>@book.Title</strong>
+                                        <small>شناسه #@book.Id</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@(book.Author?.FullName ?? "—")</td>
+                            <td>
+                                @if (book.IsAudioBook == true)
+                                {
+                                    <span class="badge badge-primary">صوتی</span>
+                                }
+                                else
+                                {
+                                    <span class="badge">متنی</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(book.Url))
+                                {
+                                    <a class="badge badge-success" href="@book.Url" target="_blank" rel="noopener">آماده</a>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">بدون فایل</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <a class="button button-secondary button-sm" asp-action="EditBook" asp-route-id="@book.Id">ویرایش</a>
+                                    <form asp-action="Delete" method="post" data-confirm="کتاب «@book.Title» حذف شود؟">
+                                        <input type="hidden" name="entity" value="Book" />
+                                        <input type="hidden" name="id" value="@book.Id" />
+                                        <button class="button button-danger button-sm" type="submit" aria-label="حذف @book.Title">حذف</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="pagination-bar">
+            <span>صفحه @Model.Page از @totalPages</span>
+            <div class="page-actions">
+                @if (Model.Page > 1)
+                {
+                    <a class="button button-secondary button-sm" asp-action="Books" asp-route-page="@(Model.Page - 1)" asp-route-search="@ViewBag.Search">صفحه قبل</a>
+                }
+                @if (Model.Page < totalPages)
+                {
+                    <a class="button button-secondary button-sm" asp-action="Books" asp-route-page="@(Model.Page + 1)" asp-route-search="@ViewBag.Search">صفحه بعد</a>
+                }
+            </div>
+        </footer>
+    }
+</section>

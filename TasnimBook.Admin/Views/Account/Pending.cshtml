@@ -2,8 +2,12 @@
     ViewData["Title"] = "در انتظار تأیید";
 }
 
-<section class="card auth">
-    <h1>درخواست ثبت شد</h1>
-    <p>حساب شما در انتظار بررسی SuperAdmin است و تا زمان تأیید به امکانات مدیریت دسترسی ندارد.</p>
-    <a class="button" asp-action="Login">بازگشت به ورود</a>
+<section class="card status-panel">
+    <div class="empty-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm1-13h-2v6l5.2 3 1-1.7-4.2-2.4V7Z" /></svg>
+    </div>
+    <span class="eyebrow">درخواست دریافت شد</span>
+    <h1>در انتظار بررسی مدیر ارشد</h1>
+    <p class="muted">پس از تأیید SuperAdmin می‌توانید وارد پنل مدیریت شوید.</p>
+    <a class="button button-secondary" asp-action="Login">بازگشت به صفحه ورود</a>
 </section>

@@ -1,19 +1,43 @@
 @model BookCat
 @{
-    ViewData["Title"] = Model.Id == 0
-        ? "دسته جدید"
-        : "ویرایش دسته";
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "دسته جدید" : "ویرایش دسته";
 }
 
-<section class="card auth">
-    <h1>@ViewData["Title"]</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">مدیریت محتوا / دسته‌بندی‌ها</span>
+        <h1>@(isNew ? "ساخت دسته‌بندی" : $"ویرایش «{Model.CategoryName}»")</h1>
+        <p>عنوان کوتاه و مشخص، پیدا کردن کتاب‌ها را برای کاربران ساده‌تر می‌کند.</p>
+    </div>
 
-    <form method="post">
-        <input asp-for="Id" type="hidden" />
+    <div class="page-actions">
+        <a class="button button-secondary" asp-action="Categories">بازگشت</a>
+    </div>
+</div>
 
-        <label asp-for="CategoryName">نام دسته</label>
-        <input asp-for="CategoryName" />
+<form method="post">
+    <input asp-for="Id" type="hidden" />
 
-        <button>ذخیره</button>
-    </form>
-</section>
+    <section class="card card-narrow">
+        <header class="card-header">
+            <div>
+                <h2>اطلاعات دسته</h2>
+                <p>نامی واضح و یکتا برای دسته‌بندی انتخاب کنید.</p>
+            </div>
+        </header>
+
+        <div class="card-body">
+            <div class="field">
+                <label asp-for="CategoryName">عنوان دسته‌بندی</label>
+                <input asp-for="CategoryName" placeholder="مثلاً روان‌شناسی" autocomplete="off" />
+                <span asp-validation-for="CategoryName"></span>
+            </div>
+
+            <div class="form-actions">
+                <a class="button button-ghost" asp-action="Categories">انصراف</a>
+                <button class="button" type="submit">ذخیره دسته</button>
+            </div>
+        </div>
+    </section>
+</form>

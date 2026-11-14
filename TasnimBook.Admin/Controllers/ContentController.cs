@@ -22,6 +22,7 @@ public sealed class ContentController : Controller
         CancellationToken cancellationToken = default)
     {
         ViewBag.Search = search;
+        ViewBag.AssetBaseUrl = _apiClient.ResolveAssetUrl("/");
 
         var books = await _apiClient.BooksAsync(search, page, cancellationToken);
 
@@ -51,9 +52,12 @@ public sealed class ContentController : Controller
     }
 
     [HttpGet]
-    public IActionResult CreateBook()
+    public async Task<IActionResult> CreateBook(CancellationToken cancellationToken)
     {
-        return View("EditBook", new BookEditorModel());
+        var model = new BookEditorModel();
+        await PrepareBookEditorAsync(model, cancellationToken);
+
+        return View("EditBook", model);
     }
 
     [HttpGet]
@@ -64,24 +68,59 @@ public sealed class ContentController : Controller
         var book = await _apiClient.BookAsync(id, cancellationToken);
         var model = BookEditorModel.FromEntity(book);
 
+        await PrepareBookEditorAsync(model, cancellationToken);
+
         return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [RequestSizeLimit(110 * 1024 * 1024)]
     public async Task<IActionResult> EditBook(
         BookEditorModel model,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
+            await PrepareBookEditorAsync(model, cancellationToken);
             return View(model);
         }
 
-        var book = model.ToEntity();
-        var categoryIds = model.ParseCategoryIds();
+        try
+        {
+            if (model.CoverImage is not null)
+            {
+                var cover = await _apiClient.UploadAssetAsync(
+                    model.CoverImage,
+                    "cover",
+                    cancellationToken);
 
-        await _apiClient.SaveBookAsync(book, categoryIds, cancellationToken);
+                model.ImageUrl = cover.Url;
+                model.CoverPreviewUrl = cover.Url;
+            }
+
+            if (model.BookFile is not null)
+            {
+                var document = await _apiClient.UploadAssetAsync(
+                    model.BookFile,
+                    "document",
+                    cancellationToken);
+
+                model.Url = document.Url;
+                model.FileSize = FormatFileSize(document.Size);
+            }
+
+            var book = model.ToEntity();
+
+            await _apiClient.SaveBookAsync(book, model.CategoryIds, cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            ModelState.AddModelError(string.Empty, exception.Message);
+            await PrepareBookEditorAsync(model, cancellationToken);
+
+            return View(model);
+        }
 
         TempData["Success"] = "کتاب ذخیره شد.";
         return RedirectToAction(nameof(Books));
@@ -165,5 +204,26 @@ public sealed class ContentController : Controller
             "Category" => nameof(Categories),
             _ => nameof(Books)
         };
+    }
+
+    private async Task PrepareBookEditorAsync(
+        BookEditorModel model,
+        CancellationToken cancellationToken)
+    {
+        var authorsTask = _apiClient.AuthorsAsync(search: null, cancellationToken);
+        var categoriesTask = _apiClient.CategoriesAsync(search: null, cancellationToken);
+
+        await Task.WhenAll(authorsTask, categoriesTask);
+
+        model.AvailableAuthors = await authorsTask;
+        model.AvailableCategories = await categoriesTask;
+        model.CoverPreviewUrl = _apiClient.ResolveAssetUrl(model.ImageUrl);
+    }
+
+    private static string FormatFileSize(long bytes)
+    {
+        const double bytesInMegabyte = 1024d * 1024d;
+
+        return $"{bytes / bytesInMegabyte:0.##} MB";
     }
 }

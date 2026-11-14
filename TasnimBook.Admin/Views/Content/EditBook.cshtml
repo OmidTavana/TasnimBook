@@ -1,53 +1,202 @@
 @model BookEditorModel
 @{
-    ViewData["Title"] = Model.Id == 0
-        ? "کتاب جدید"
-        : "ویرایش کتاب";
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "کتاب جدید" : "ویرایش کتاب";
 }
 
-<section class="card">
-    <h1>@ViewData["Title"]</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">مدیریت محتوا / کتاب‌ها</span>
+        <h1>@(isNew ? "افزودن کتاب تازه" : $"ویرایش «{Model.Title}»")</h1>
+        <p>اطلاعات کتاب، جلد، فایل PDF و وضعیت انتشار را از این بخش مدیریت کنید.</p>
+    </div>
 
-    <form method="post" asp-action="EditBook">
-        <div asp-validation-summary="All"></div>
-        <input asp-for="Id" type="hidden" />
+    <div class="page-actions">
+        <a class="button button-secondary" asp-action="Books">انصراف و بازگشت</a>
+    </div>
+</div>
 
-        <label asp-for="Title">عنوان</label>
-        <input asp-for="Title" />
+<form method="post" asp-action="EditBook" enctype="multipart/form-data">
+    <input asp-for="Id" type="hidden" />
 
-        <label asp-for="AuthorId">شناسه نویسنده</label>
-        <input asp-for="AuthorId" type="number" />
+    <div asp-validation-summary="ModelOnly"></div>
 
-        <label asp-for="CategoryIds">شناسه دسته‌ها (با ویرگول)</label>
-        <input asp-for="CategoryIds" />
+    <div class="form-layout">
+        <div class="form-stack">
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2>اطلاعات اصلی</h2>
+                        <p>مشخصات قابل نمایش کتاب در اپلیکیشن</p>
+                    </div>
+                </header>
 
-        <label asp-for="Description">توضیحات</label>
-        <textarea asp-for="Description"></textarea>
+                <div class="card-body form-grid">
+                    <div class="field field-full">
+                        <label asp-for="Title">عنوان کتاب</label>
+                        <input asp-for="Title" placeholder="مثلاً: انسان در جستجوی معنا" autocomplete="off" />
+                        <span asp-validation-for="Title"></span>
+                    </div>
 
-        <label asp-for="Url">نشانی فایل کتاب</label>
-        <input asp-for="Url" />
+                    <div class="field">
+                        <label asp-for="AuthorId">نویسنده</label>
+                        <select asp-for="AuthorId">
+                            <option value="">بدون نویسنده</option>
+                            @foreach (var author in Model.AvailableAuthors)
+                            {
+                                <option value="@author.Id">@author.FullName</option>
+                            }
+                        </select>
+                        <span class="field-hint">نویسنده مورد نظر را از فهرست انتخاب کنید.</span>
+                    </div>
 
-        <label asp-for="ImageUrl">نشانی تصویر جلد</label>
-        <input asp-for="ImageUrl" />
+                    <div class="field">
+                        <label asp-for="PagesCount">تعداد صفحات</label>
+                        <input asp-for="PagesCount" inputmode="numeric" placeholder="مثلاً ۲۴۸" />
+                    </div>
 
-        <label asp-for="FileSize">حجم</label>
-        <input asp-for="FileSize" />
+                    <div class="field field-full">
+                        <label asp-for="CategoryIds">دسته‌بندی‌ها</label>
+                        <select asp-for="CategoryIds" multiple>
+                            @foreach (var category in Model.AvailableCategories)
+                            {
+                                <option value="@category.Id">@category.CategoryName</option>
+                            }
+                        </select>
+                        <span class="field-hint">برای انتخاب چند مورد، کلید Ctrl را نگه دارید.</span>
+                    </div>
 
-        <label asp-for="PagesCount">تعداد صفحات</label>
-        <input asp-for="PagesCount" />
+                    <div class="field field-full">
+                        <label asp-for="Description">معرفی کتاب</label>
+                        <textarea asp-for="Description" rows="7" placeholder="خلاصه‌ای خواندنی و دقیق درباره کتاب بنویسید..."></textarea>
+                    </div>
+                </div>
+            </section>
 
-        <label>
-            <input asp-for="IsSuggested" type="checkbox" />
-            پیشنهادی
-        </label>
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2>فایل کتاب</h2>
+                        <p>نسخه PDF با حداکثر حجم ۱۰۰ مگابایت</p>
+                    </div>
+                </header>
 
-        <label>
-            <input asp-for="IsAudioBook" type="checkbox" />
-            صوتی
-        </label>
+                <div class="card-body">
+                    <div class="upload-zone" data-upload-zone>
+                        <input asp-for="BookFile" type="file" accept="application/pdf,.pdf" />
+                        <div class="upload-copy">
+                            <span class="upload-icon">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm1 2.5L17.5 7H15V4.5ZM6 20V4h7v5h5v11H6Zm2-3h8v-2H8v2Zm0-4h8v-2H8v2Z" /></svg>
+                            </span>
+                            <strong data-file-name>PDF را اینجا رها کنید یا کلیک کنید</strong>
+                            <span data-file-size>فرمت مجاز: PDF</span>
+                            <small>نام فایل امن و یکتا توسط سرور ساخته می‌شود.</small>
+                        </div>
+                    </div>
 
-        <p>
-            <button>ذخیره</button>
-        </p>
-    </form>
-</section>
+                    @if (!string.IsNullOrWhiteSpace(Model.Url))
+                    {
+                        <a class="current-file" href="@Model.Url" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm1 2.5L17.5 7H15V4.5ZM6 20V4h7v5h5v11H6Z" /></svg>
+                            <span>فایل فعلی: @Model.Url</span>
+                        </a>
+                    }
+
+                    <div class="form-grid mt-1">
+                        <div class="field">
+                            <label asp-for="Url">یا نشانی مستقیم فایل</label>
+                            <input asp-for="Url" type="url" dir="ltr" placeholder="https://.../book.pdf" />
+                            <span asp-validation-for="Url"></span>
+                        </div>
+
+                        <div class="field">
+                            <label asp-for="FileSize">حجم نمایشی</label>
+                            <input asp-for="FileSize" placeholder="مثلاً 12.4 MB" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <a class="button button-ghost" asp-action="Books">انصراف</a>
+                <button class="button" type="submit">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4Zm-5 16a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm3-10H5V5h10v4Z" /></svg>
+                    ذخیره کتاب
+                </button>
+            </div>
+        </div>
+
+        <aside class="form-stack">
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2>تصویر جلد</h2>
+                        <p>JPG، PNG یا WebP تا ۸ مگابایت</p>
+                    </div>
+                </header>
+
+                <div class="card-body">
+                    <div class="upload-zone @(string.IsNullOrWhiteSpace(Model.CoverPreviewUrl) ? string.Empty : "has-preview")" data-upload-zone>
+                        <input asp-for="CoverImage" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" />
+
+                        @if (!string.IsNullOrWhiteSpace(Model.CoverPreviewUrl))
+                        {
+                            <img class="upload-preview" data-image-preview src="@Model.CoverPreviewUrl" alt="پیش‌نمایش جلد @Model.Title" />
+                        }
+                        else
+                        {
+                            <img class="upload-preview" data-image-preview src="" alt="پیش‌نمایش جلد" hidden />
+                        }
+
+                        <div class="upload-copy">
+                            <span class="upload-icon">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2ZM5 5h14v9l-3.5-3.5-4.5 4.5-2.5-2.5L5 16V5Zm2.5 5A1.5 1.5 0 1 0 7.5 7a1.5 1.5 0 0 0 0 3Z" /></svg>
+                            </span>
+                            <strong data-file-name>انتخاب تصویر جلد</strong>
+                            <span data-file-size>برای جایگزینی تصویر کلیک کنید</span>
+                        </div>
+                    </div>
+
+                    <div class="field mt-1">
+                        <label asp-for="ImageUrl">یا نشانی مستقیم تصویر</label>
+                        <input asp-for="ImageUrl" type="url" dir="ltr" placeholder="https://.../cover.webp" />
+                        <span asp-validation-for="ImageUrl"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <header class="card-header">
+                    <div>
+                        <h2>تنظیمات نمایش</h2>
+                        <p>نوع و جایگاه کتاب در اپلیکیشن</p>
+                    </div>
+                </header>
+
+                <div class="card-body">
+                    <div class="switch-row">
+                        <div class="switch-copy">
+                            <strong>کتاب پیشنهادی</strong>
+                            <small>نمایش در بخش پیشنهادهای ویژه</small>
+                        </div>
+                        <label class="switch">
+                            <input asp-for="IsSuggested" type="checkbox" />
+                            <span class="switch-track"></span>
+                        </label>
+                    </div>
+
+                    <div class="switch-row">
+                        <div class="switch-copy">
+                            <strong>کتاب صوتی</strong>
+                            <small>علامت‌گذاری محتوا به‌عنوان نسخه صوتی</small>
+                        </div>
+                        <label class="switch">
+                            <input asp-for="IsAudioBook" type="checkbox" />
+                            <span class="switch-track"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </div>
+</form>

@@ -2,7 +2,12 @@
     ViewData["Title"] = "درخواست رد شده";
 }
 
-<section class="card auth">
+<section class="card status-panel">
+    <div class="empty-icon status-icon-danger">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm3.5 13.5-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1-2.1-2.1 1.4-1.4 2.1 2.1 2.1-2.1 1.4 1.4-2.1 2.1 2.1 2.1Z" /></svg>
+    </div>
+    <span class="eyebrow">عدم تأیید دسترسی</span>
     <h1>درخواست مدیریت رد شده است</h1>
-    <p>این حساب اجازه ورود به برنامه مدیریت را ندارد.</p>
+    <p class="muted">این حساب در حال حاضر اجازه ورود به پنل مدیریت را ندارد.</p>
+    <a class="button button-secondary" asp-action="Login">بازگشت به ورود</a>
 </section>

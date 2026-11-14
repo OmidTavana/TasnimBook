@@ -1,33 +1,35 @@
 @model IReadOnlyList<RankedBookDto>
+
 @if (Model.Count == 0)
 {
-    <p class="muted">داده‌ای برای نمایش نیست.</p>
+    <div class="empty-state">
+        <div>
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16v2H4v-2Zm1-4 4-4 3 3 5-6 2 1.5-6.8 8.16L9 14.5 6.5 17 5 15Z" /></svg>
+            </div>
+            <h2>داده‌ای برای نمایش نیست</h2>
+            <p>پس از ثبت تعامل کاربران، رتبه‌بندی در این قسمت دیده می‌شود.</p>
+        </div>
+    </div>
 }
 else
 {
-    <table>
-        <thead>
-            <tr>
-                <th>کتاب</th>
-                <th>دانلود</th>
-                <th>پسند</th>
-                <th>امتیاز</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var book in Model)
-            {
-                <tr>
-                    <td>
-                        <strong>@book.Title</strong>
-                        <br />
-                        <span class="muted">@book.Author</span>
-                    </td>
-                    <td>@book.DownloadCount</td>
-                    <td>@book.LikeCount</td>
-                    <td>@book.AverageRating.ToString("0.0") (@book.RatingCount)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="ranked-list">
+        @for (var index = 0; index < Model.Count; index++)
+        {
+            var book = Model[index];
+
+            <div class="ranked-item">
+                <span class="rank-number">@(index + 1)</span>
+                <div class="ranked-info">
+                    <strong>@book.Title</strong>
+                    <span>@(string.IsNullOrWhiteSpace(book.Author) ? "نویسنده نامشخص" : book.Author)</span>
+                </div>
+                <div class="ranked-value">
+                    <strong>@book.DownloadCount.ToString("N0")</strong>
+                    <small>@book.AverageRating.ToString("0.0") امتیاز</small>
+                </div>
+            </div>
+        }
+    </div>
 }

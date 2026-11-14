@@ -1,47 +1,82 @@
 @model IReadOnlyList<AdminUserDto>
 @{
-    ViewData["Title"] = "درخواست‌های مدیریت";
+    ViewData["Title"] = "درخواست‌های مدیر";
 }
 
-<h1>درخواست‌های مدیریت</h1>
+<div class="page-header">
+    <div class="page-title">
+        <span class="eyebrow">کنترل دسترسی</span>
+        <h1>درخواست‌های مدیریت</h1>
+        <p>سطح دسترسی متقاضیان را پس از بررسی هویت و نیاز کاری تعیین کنید.</p>
+    </div>
+    <div class="page-actions">
+        <a class="button button-secondary" asp-action="Index">مشاهده همه مدیران</a>
+    </div>
+</div>
 
-@if (Model.Count == 0)
-{
-    <div class="card">درخواستی در انتظار نیست.</div>
-}
-else
-{
-    <table>
-        <thead>
-            <tr>
-                <th>متقاضی</th>
-                <th>ایمیل</th>
-                <th>نقش تأیید</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var administrator in Model)
-            {
-                <tr>
-                    <td>@administrator.DisplayName</td>
-                    <td>@administrator.Email</td>
-                    <td colspan="2">
-                        <form asp-action="Review" method="post">
-                            <input type="hidden" name="id" value="@administrator.Id" />
+<section class="card table-card">
+    <div class="table-toolbar">
+        <span class="badge badge-warning">@Model.Count.ToString("N0") درخواست در انتظار</span>
+    </div>
 
-                            <select name="role">
-                                <option value="ContentAdmin">ContentAdmin</option>
-                                <option value="SuperAdmin">SuperAdmin</option>
-                            </select>
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state">
+            <div>
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 16.2-3.5-3.5L4.1 14.1 9 19 20.3 7.7l-1.4-1.4L9 16.2Z" /></svg>
+                </div>
+                <h2>همه درخواست‌ها بررسی شده‌اند</h2>
+                <p>در حال حاضر درخواست مدیریتی در انتظار تصمیم شما نیست.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>متقاضی</th>
+                        <th>تاریخ درخواست</th>
+                        <th>تصمیم و سطح دسترسی</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var administrator in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="table-identity">
+                                    <span class="table-avatar">@administrator.DisplayName.Trim().FirstOrDefault()</span>
+                                    <div class="identity-copy">
+                                        <strong>@administrator.DisplayName</strong>
+                                        <small dir="ltr">@administrator.Email</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@administrator.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd")</td>
+                            <td>
+                                <form class="review-form" asp-action="Review" method="post">
+                                    <input type="hidden" name="id" value="@administrator.Id" />
 
-                            <input name="note" placeholder="یادداشت بررسی" />
-                            <button name="approve" value="true">تأیید</button>
-                            <button class="danger" name="approve" value="false">رد</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+                                    <select name="role" aria-label="نقش مدیریتی">
+                                        <option value="ContentAdmin">مدیر محتوا</option>
+                                        <option value="SuperAdmin">مدیر ارشد</option>
+                                    </select>
+
+                                    <input name="note" placeholder="یادداشت بررسی (اختیاری)" aria-label="یادداشت بررسی" />
+
+                                    <div class="review-actions">
+                                        <button class="button button-sm" name="approve" value="true" type="submit">تأیید</button>
+                                        <button class="button button-danger button-sm" name="approve" value="false" type="submit">رد</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

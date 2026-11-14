@@ -2,7 +2,12 @@
     ViewData["Title"] = "دسترسی غیرمجاز";
 }
 
-<section class="card auth">
-    <h1>دسترسی غیرمجاز</h1>
-    <p>حساب شما مجوز این بخش را ندارد.</p>
+<section class="card status-panel">
+    <div class="empty-icon status-icon-warning">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2Zm0 4 7.5 13h-15L12 6Zm-1 4v5h2v-5h-2Zm0 6.5v2h2v-2h-2Z" /></svg>
+    </div>
+    <span class="eyebrow">سطح دسترسی ناکافی</span>
+    <h1>اجازه ورود به این بخش را ندارید</h1>
+    <p class="muted">برای دریافت دسترسی با مدیر ارشد سامانه تماس بگیرید.</p>
+    <a class="button button-secondary" asp-action="Login">بازگشت به ورود</a>
 </section>
