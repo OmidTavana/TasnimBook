@@ -278,12 +278,61 @@ namespace TasnimBook.Data.Migrations
                     b.Property<string>("DisplayName").IsRequired().HasMaxLength(80).HasColumnType("nvarchar(80)").HasColumnName("displayname");
                     b.Property<string>("Email").IsRequired().HasMaxLength(254).HasColumnType("nvarchar(254)").HasColumnName("email");
                     b.Property<bool>("IsActive").HasColumnType("bit").HasColumnName("isactive");
+                    b.Property<string>("Role").IsRequired().HasMaxLength(32).HasColumnType("nvarchar(32)").HasColumnName("role");
+                    b.Property<string>("AdminStatus").IsRequired().HasMaxLength(32).HasColumnType("nvarchar(32)").HasColumnName("adminstatus");
+                    b.Property<string>("AdminReviewNote").HasMaxLength(500).HasColumnType("nvarchar(500)").HasColumnName("adminreviewnote");
+                    b.Property<DateTime?>("AdminReviewedAtUtc").HasColumnType("datetime2").HasColumnName("adminreviewedatutc");
+                    b.Property<int?>("AdminReviewedByUserId").HasColumnType("int").HasColumnName("adminreviewedbyuserid");
                     b.Property<DateTime?>("LastLoginAtUtc").HasColumnType("datetime2").HasColumnName("lastloginatutc");
                     b.Property<string>("NormalizedEmail").IsRequired().HasMaxLength(254).HasColumnType("nvarchar(254)").HasColumnName("normalizedemail");
                     b.Property<string>("PasswordHash").IsRequired().HasColumnType("nvarchar(max)").HasColumnName("passwordhash");
                     b.HasKey("Id");
                     b.HasIndex("NormalizedEmail").IsUnique();
                     b.ToTable("appuser");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.BookDownload", b =>
+                {
+                    b.Property<int>("UserId").HasColumnType("int").HasColumnName("userid");
+                    b.Property<int>("BookId").HasColumnType("int").HasColumnName("bookid");
+                    b.Property<DateTime>("DownloadedAtUtc").HasColumnType("datetime2").HasColumnName("downloadedatutc");
+                    b.HasKey("UserId", "BookId");
+                    b.HasIndex("BookId");
+                    b.ToTable("bookdownload");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.BookLike", b =>
+                {
+                    b.Property<int>("UserId").HasColumnType("int").HasColumnName("userid");
+                    b.Property<int>("BookId").HasColumnType("int").HasColumnName("bookid");
+                    b.Property<DateTime>("CreatedAtUtc").HasColumnType("datetime2").HasColumnName("createdatutc");
+                    b.HasKey("UserId", "BookId");
+                    b.HasIndex("BookId");
+                    b.ToTable("booklike");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.BookRating", b =>
+                {
+                    b.Property<int>("UserId").HasColumnType("int").HasColumnName("userid");
+                    b.Property<int>("BookId").HasColumnType("int").HasColumnName("bookid");
+                    b.Property<byte>("Value").HasColumnType("tinyint").HasColumnName("value");
+                    b.Property<DateTime>("CreatedAtUtc").HasColumnType("datetime2").HasColumnName("createdatutc");
+                    b.Property<DateTime>("UpdatedAtUtc").HasColumnType("datetime2").HasColumnName("updatedatutc");
+                    b.HasKey("UserId", "BookId");
+                    b.HasIndex("BookId");
+                    b.ToTable("bookrating");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.UserLibraryBook", b =>
+                {
+                    b.Property<int>("UserId").HasColumnType("int").HasColumnName("userid");
+                    b.Property<int>("BookId").HasColumnType("int").HasColumnName("bookid");
+                    b.Property<DateTime>("AddedAtUtc").HasColumnType("datetime2").HasColumnName("addedatutc");
+                    b.Property<DateTime?>("LastReadAtUtc").HasColumnType("datetime2").HasColumnName("lastreadatutc");
+                    b.Property<DateTime?>("LastDownloadedAtUtc").HasColumnType("datetime2").HasColumnName("lastdownloadedatutc");
+                    b.HasKey("UserId", "BookId");
+                    b.HasIndex("BookId");
+                    b.ToTable("userlibrarybook");
                 });
 
             modelBuilder.Entity("TasnimBook.Data.ReadingProgress", b =>
@@ -297,6 +346,34 @@ namespace TasnimBook.Data.Migrations
                     b.HasKey("UserId", "BookId");
                     b.HasIndex("BookId");
                     b.ToTable("readingprogress");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.BookDownload", b =>
+                {
+                    b.HasOne("TasnimBook.Data.Book", "Book").WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.HasOne("TasnimBook.Data.AppUser", "User").WithMany("Downloads").HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.Navigation("Book"); b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.BookLike", b =>
+                {
+                    b.HasOne("TasnimBook.Data.Book", "Book").WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.HasOne("TasnimBook.Data.AppUser", "User").WithMany("Likes").HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.Navigation("Book"); b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.BookRating", b =>
+                {
+                    b.HasOne("TasnimBook.Data.Book", "Book").WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.HasOne("TasnimBook.Data.AppUser", "User").WithMany("Ratings").HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.Navigation("Book"); b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TasnimBook.Data.UserLibraryBook", b =>
+                {
+                    b.HasOne("TasnimBook.Data.Book", "Book").WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.HasOne("TasnimBook.Data.AppUser", "User").WithMany("LibraryBooks").HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+                    b.Navigation("Book"); b.Navigation("User");
                 });
 
             modelBuilder.Entity("TasnimBook.Data.UserFavorite", b =>
@@ -466,7 +543,11 @@ namespace TasnimBook.Data.Migrations
 
             modelBuilder.Entity("TasnimBook.Data.AppUser", b =>
                 {
+                    b.Navigation("Downloads");
                     b.Navigation("Favorites");
+                    b.Navigation("LibraryBooks");
+                    b.Navigation("Likes");
+                    b.Navigation("Ratings");
                     b.Navigation("ReadingProgresses");
                     b.Navigation("RefreshTokens");
                 });

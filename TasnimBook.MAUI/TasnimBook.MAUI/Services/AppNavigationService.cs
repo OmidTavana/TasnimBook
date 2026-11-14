@@ -40,6 +40,7 @@ public sealed class AppNavigationService
 
     public Task OpenRegisterAsync() => Navigation.PushAsync(new RegisterPage(new RegisterViewModel(_account, this)));
     public Task OpenFavoritesAsync() => Navigation.PushAsync(new FavoritesPage(new FavoritesViewModel(_account, this)));
+    public Task OpenLibraryAsync() => Navigation.PushAsync(new LibraryPage(new LibraryViewModel(_account, this)));
     public Task OpenReaderAsync(Book book, BooksDTO dto, string localPath) =>
         Navigation.PushAsync(new BookReaderPage(new BookReaderViewModel(book, dto, localPath, _account, this)));
     public Task GoBackAsync() => Navigation.PopAsync();

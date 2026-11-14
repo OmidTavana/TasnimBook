@@ -31,6 +31,7 @@ namespace webapicore.Controllers
         }
 
         [AdminApiKeyAuth]
+        [Authorize(Roles = UserRoles.Administrators)]
         [HttpPost("{isNew}")]
         public async Task<ActionResult<BookCat>> Add([FromBody] BookCat Bookcat, bool isNew)
         {

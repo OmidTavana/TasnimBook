@@ -54,6 +54,8 @@ public sealed class AccountController : ControllerBase
             DisplayName = request.DisplayName.Trim(),
             CreatedAtUtc = DateTime.UtcNow,
             IsActive = true
+            ,Role = UserRoles.User
+            ,AdminStatus = AdminApprovalStatuses.NotApplicable
         };
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
         await _accounts.AddUserAsync(user);
@@ -101,7 +103,7 @@ public sealed class AccountController : ControllerBase
     {
         var user = await _accounts.FindByIdAsync(GetUserId());
         if (user is null) return NotFound();
-        return Ok(new AccountProfileDto { Id = user.Id, Email = user.Email, DisplayName = user.DisplayName });
+        return Ok(new AccountProfileDto { Id = user.Id, Email = user.Email, DisplayName = user.DisplayName, Role = user.Role, AdminStatus = user.AdminStatus });
     }
 
     [HttpGet]

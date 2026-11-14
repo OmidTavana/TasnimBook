@@ -20,6 +20,7 @@ using System.Threading.RateLimiting;
 using TasnimBook.Data;
 using webapicore.Services;
 using webapicore.Fillter;
+using System.Security.Claims;
 
 namespace webapicore
 {
@@ -79,6 +80,22 @@ namespace webapicore
                 {
                     jwt.SaveToken = true;
                     jwt.TokenValidationParameters = jwtValidationParameters;
+                    jwt.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = async context =>
+                        {
+                            if (context.Principal?.FindFirstValue("token_kind") != "account") return;
+                            var idValue = context.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                            if (!int.TryParse(idValue, out var userId)) { context.Fail("Invalid account token."); return; }
+                            var db = context.HttpContext.RequestServices.GetRequiredService<DbContextAnti>();
+                            var user = await db.AppUsers.AsNoTracking().SingleOrDefaultAsync(item => item.Id == userId);
+                            if (user is null || !user.IsActive) { context.Fail("Account is inactive."); return; }
+                            var tokenRole = context.Principal.FindFirstValue(ClaimTypes.Role);
+                            if (tokenRole is UserRoles.ContentAdmin or UserRoles.SuperAdmin &&
+                                (user.AdminStatus != AdminApprovalStatuses.Approved || user.Role != tokenRole))
+                                context.Fail("Administrative access has changed.");
+                        }
+                    };
                 });
             //services.AddDefaultIdentity<Users>(option => option.SignIn.RequireConfirmedAccount = true)
             //    .AddEntityFrameworkStores<DbContextAnti>();
@@ -100,6 +117,8 @@ namespace webapicore
             services.AddScoped<ITokenRepository, SQLTokenRepository>();
             services.AddScoped<IUserAccountRepository, SQLUserAccountRepository>();
             services.AddScoped<IAccountTokenService, AccountTokenService>();
+            services.AddScoped<IBookEngagementService, BookEngagementService>();
+            services.AddHostedService<SuperAdminProvisioner>();
             services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
             services.Configure<PasswordHasherOptions>(options => options.IterationCount = 210_000);
             services.AddRateLimiter(options =>

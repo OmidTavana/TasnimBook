@@ -20,7 +20,7 @@ namespace webapicore.Controllers
     [ApiController]
     //[ApiKeyAuth]
     [AdminApiKeyAuth]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Administrators)]
     public class AdminController : Controller
     {
         private static IWebHostEnvironment _env;

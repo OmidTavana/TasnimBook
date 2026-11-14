@@ -1,0 +1,2 @@
+@model AdminRegisterRequest
+@{ViewData["Title"]="ثبت درخواست مدیریت";}<section class="card auth"><h1>ثبت درخواست مدیریت</h1><form method="post"><div asp-validation-summary="All"></div><label asp-for="DisplayName">نام نمایشی</label><input asp-for="DisplayName"/><label asp-for="Email">ایمیل</label><input asp-for="Email" type="email"/><label asp-for="Password">رمز عبور</label><input asp-for="Password" type="password"/><label asp-for="ApplicationNote">توضیح درخواست</label><textarea asp-for="ApplicationNote"></textarea><button>ارسال برای بررسی</button></form></section>

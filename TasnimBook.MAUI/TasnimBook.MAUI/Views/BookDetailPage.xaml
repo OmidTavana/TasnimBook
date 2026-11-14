@@ -47,6 +47,22 @@
                         <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center"><Label Text="تعداد صفحات" Style="{StaticResource MutedLabel}"/><Label Text="{Binding Pages}" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center"/></VerticalStackLayout>
                     </Grid>
                 </Border>
+                <Border Style="{StaticResource BookDetailCard}">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Text="{Binding LikeText}" Style="{StaticResource SecondaryActionButton}" Command="{Binding LikeCommand}" />
+                            <Label Grid.Column="1" Text="{Binding RatingText}" VerticalTextAlignment="Center" HorizontalTextAlignment="End" TextColor="{StaticResource BodyMuted}" />
+                        </Grid>
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="7" FlowDirection="LeftToRight">
+                            <Button Text="★ 1" Command="{Binding RateCommand}" CommandParameter="1" Style="{StaticResource SecondaryActionButton}" />
+                            <Button Text="★ 2" Command="{Binding RateCommand}" CommandParameter="2" Style="{StaticResource SecondaryActionButton}" />
+                            <Button Text="★ 3" Command="{Binding RateCommand}" CommandParameter="3" Style="{StaticResource SecondaryActionButton}" />
+                            <Button Text="★ 4" Command="{Binding RateCommand}" CommandParameter="4" Style="{StaticResource SecondaryActionButton}" />
+                            <Button Text="★ 5" Command="{Binding RateCommand}" CommandParameter="5" Style="{StaticResource SecondaryActionButton}" />
+                        </HorizontalStackLayout>
+                        <Button Text="حذف امتیاز من" Command="{Binding RateCommand}" CommandParameter="remove" Style="{StaticResource SecondaryActionButton}" />
+                    </VerticalStackLayout>
+                </Border>
                 <Border Style="{StaticResource BookDetailCard}"><VerticalStackLayout Spacing="10">
                     <Label HorizontalTextAlignment="Start" Text="درباره کتاب" Style="{StaticResource SectionHeading}" />
                     <Label Text="{Binding Description}" FontSize="17" LineHeight="1.55" TextColor="{StaticResource BodyText}" HorizontalTextAlignment="Start" />

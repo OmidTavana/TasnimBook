@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TasnimBook.Data.Models.DTO;
 
-public sealed class RegisterAccountRequest
+public class RegisterAccountRequest
 {
     [Required, EmailAddress, MaxLength(254)]
     public string Email { get; set; } = string.Empty;
@@ -43,6 +43,43 @@ public sealed class AccountProfileDto
     public int Id { get; set; }
     public string Email { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
+    public string Role { get; set; } = UserRoles.User;
+    public string AdminStatus { get; set; } = AdminApprovalStatuses.NotApplicable;
+}
+
+public sealed class AdminRegisterRequest : RegisterAccountRequest
+{
+    [MaxLength(500)]
+    public string? ApplicationNote { get; set; }
+}
+
+public sealed class AdminReviewRequest
+{
+    public bool Approve { get; set; }
+    public string Role { get; set; } = UserRoles.ContentAdmin;
+    [MaxLength(500)] public string? Note { get; set; }
+}
+
+public sealed class RatingRequest
+{
+    [Range(1, 5)] public byte Value { get; set; }
+}
+
+public sealed class BookEngagementDto
+{
+    public int BookId { get; set; }
+    public double AverageRating { get; set; }
+    public int RatingCount { get; set; }
+    public byte? CurrentUserRating { get; set; }
+    public int LikeCount { get; set; }
+    public bool IsLikedByCurrentUser { get; set; }
+    public bool IsInLibrary { get; set; }
+}
+
+public sealed class LibraryEventRequest
+{
+    [Required, RegularExpression("^(Read|Download)$")]
+    public string EventType { get; set; } = string.Empty;
 }
 
 public sealed class AccountAuthResult

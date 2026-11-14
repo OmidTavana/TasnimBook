@@ -44,6 +44,8 @@ public sealed class AccountTokenService : IAccountTokenService
             new Claim(ClaimTypes.Name, user.DisplayName),
             new Claim(JwtRegisteredClaimNames.Jti, jwtId),
             new Claim("token_kind", "account")
+            ,new Claim(ClaimTypes.Role, user.Role)
+            ,new Claim("admin_status", user.AdminStatus)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Secret));
@@ -105,5 +107,7 @@ public sealed class AccountTokenService : IAccountTokenService
         Id = user.Id,
         Email = user.Email,
         DisplayName = user.DisplayName
+        ,Role = user.Role
+        ,AdminStatus = user.AdminStatus
     };
 }

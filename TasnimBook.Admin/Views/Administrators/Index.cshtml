@@ -1,0 +1,2 @@
+@model IReadOnlyList<AdminUserDto>
+@{ViewData["Title"]="مدیران";}<h1>حساب‌های مدیریتی</h1><table><thead><tr><th>نام</th><th>ایمیل</th><th>نقش</th><th>وضعیت</th></tr></thead><tbody>@foreach(var a in Model){<tr><td>@a.DisplayName</td><td>@a.Email</td><td>@a.Role</td><td>@a.AdminStatus / @(a.IsActive?"فعال":"غیرفعال")</td></tr>}</tbody></table>

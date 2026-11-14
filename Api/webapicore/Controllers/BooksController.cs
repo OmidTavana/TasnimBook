@@ -93,6 +93,7 @@ namespace webapicore.Controllers
 
         // POST: api/Books
         [AdminApiKeyAuth]
+        [Authorize(Roles = UserRoles.Administrators)]
         [HttpPost]
         public async Task<ActionResult<Book>> Add([FromBody] BookAndCategoriesDTO bookAndCategories)
         {
@@ -110,6 +111,7 @@ namespace webapicore.Controllers
 
         // PUT: api/Books/5
         [AdminApiKeyAuth]
+        [Authorize(Roles = UserRoles.Administrators)]
         [HttpPost]
 
         public async Task<ActionResult> Edit([FromBody] BookAndCategoriesDTO book)
@@ -127,6 +129,7 @@ namespace webapicore.Controllers
 
         // DELETE: api/ApiWithActions/5
         [AdminApiKeyAuth]
+        [Authorize(Roles = UserRoles.Administrators)]
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

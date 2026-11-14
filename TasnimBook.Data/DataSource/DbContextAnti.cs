@@ -22,6 +22,10 @@ namespace TasnimBook.Data.DataSource
         public DbSet<UserFavorite> UserFavorites { get; set; }
         public DbSet<ReadingProgress> ReadingProgresses { get; set; }
         public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+        public DbSet<BookRating> BookRatings { get; set; }
+        public DbSet<BookLike> BookLikes { get; set; }
+        public DbSet<UserLibraryBook> UserLibraryBooks { get; set; }
+        public DbSet<BookDownload> BookDownloads { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +95,11 @@ namespace TasnimBook.Data.DataSource
                 .HasForeignKey(token => token.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            ConfigureUserBookRelation<BookRating>(modelBuilder, nameof(AppUser.Ratings));
+            ConfigureUserBookRelation<BookLike>(modelBuilder, nameof(AppUser.Likes));
+            ConfigureUserBookRelation<UserLibraryBook>(modelBuilder, nameof(AppUser.LibraryBooks));
+            ConfigureUserBookRelation<BookDownload>(modelBuilder, nameof(AppUser.Downloads));
+
             //end m*n rel
 
 
@@ -101,6 +110,18 @@ namespace TasnimBook.Data.DataSource
 
 
 
+        }
+
+        private static void ConfigureUserBookRelation<TEntity>(
+            ModelBuilder modelBuilder,
+            string navigation)
+            where TEntity : class
+        {
+            modelBuilder.Entity<TEntity>().HasKey("UserId", "BookId");
+            modelBuilder.Entity<TEntity>().HasOne(typeof(AppUser), "User").WithMany(navigation)
+                .HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TEntity>().HasOne(typeof(Book), "Book").WithMany()
+                .HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

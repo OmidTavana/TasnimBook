@@ -141,6 +141,47 @@ public sealed class AccountService
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task<BookEngagementDto?> GetEngagementAsync(int bookId)
+    {
+        if (!await HasSessionAsync()) return null;
+        using var response = await SendAuthorizedAsync(client => client.GetAsync($"Engagement/Book/{bookId}"));
+        return await ReadAsync<BookEngagementDto>(response);
+    }
+
+    public async Task<BookEngagementDto> SetRatingAsync(int bookId, byte? value)
+    {
+        using var response = await SendAuthorizedAsync(client => value.HasValue
+            ? client.PutAsync($"Engagement/Rating/{bookId}", JsonContent(new RatingRequest { Value = value.Value }))
+            : client.DeleteAsync($"Engagement/Rating/{bookId}"));
+        return await ReadAsync<BookEngagementDto>(response) ?? throw new InvalidOperationException("پاسخ امتیاز معتبر نیست.");
+    }
+
+    public async Task<BookEngagementDto> SetLikeAsync(int bookId, bool liked)
+    {
+        using var response = await SendAuthorizedAsync(client => client.PutAsync($"Engagement/Like/{bookId}/{liked}", null));
+        return await ReadAsync<BookEngagementDto>(response) ?? throw new InvalidOperationException("پاسخ پسند معتبر نیست.");
+    }
+
+    public async Task RecordLibraryEventAsync(int bookId, string eventType)
+    {
+        if (!await HasSessionAsync()) return;
+        using var response = await SendAuthorizedAsync(client => client.PostAsync(
+            $"Engagement/LibraryEvent/{bookId}", JsonContent(new LibraryEventRequest { EventType = eventType })));
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task<IReadOnlyList<BooksDTO>> GetLibraryAsync()
+    {
+        using var response = await SendAuthorizedAsync(client => client.GetAsync("Engagement/Library"));
+        return await ReadAsync<List<BooksDTO>>(response) ?? [];
+    }
+
+    public async Task RemoveFromLibraryAsync(int bookId)
+    {
+        using var response = await SendAuthorizedAsync(client => client.DeleteAsync($"Engagement/Library/{bookId}"));
+        response.EnsureSuccessStatusCode();
+    }
+
     private async Task<bool> HasSessionAsync()
     {
         await InitializeAsync();

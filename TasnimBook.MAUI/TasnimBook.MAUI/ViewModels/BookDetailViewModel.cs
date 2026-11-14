@@ -1,5 +1,6 @@
 using TasnimBook.Data;
 using TasnimBook.Data.Models;
+using TasnimBook.Data.Models.DTO;
 using TasnimBook.MAUI.Services;
 using TasnimBook.MAUI.Views;
 
@@ -17,12 +18,23 @@ public sealed class BookDetailViewModel : ObservableObject
     private string _progressText = "هنوز شروع نشده", _readButtonText = "شروع مطالعه در برنامه";
     private string _downloadStatus = "در حال دریافت PDF…", _downloadPercentText = "۰٪", _downloadButtonText = "دریافت";
     private double _downloadProgress;
+    private int _likeCount, _ratingCount;
+    private double _averageRating;
+    private byte? _currentRating;
+    private bool _isLiked;
 
     public string Title => _dto.Title;
     public string Author => BookUi.Author(_book);
     public string Pages => _dto.PagesCount ?? "—";
     public string Size => _dto.FileSize ?? "—";
-    public string Score => _book.Score is > 0 ? $"{_book.Score}/۵" : "—";
+    public string Score => RatingCount > 0 ? $"{AverageRating:0.0}/۵ ({RatingCount})" : "بدون امتیاز";
+    public int LikeCount { get => _likeCount; private set => SetProperty(ref _likeCount, value); }
+    public int RatingCount { get => _ratingCount; private set { if (SetProperty(ref _ratingCount, value)) OnPropertyChanged(nameof(Score)); } }
+    public double AverageRating { get => _averageRating; private set { if (SetProperty(ref _averageRating, value)) OnPropertyChanged(nameof(Score)); } }
+    public byte? CurrentRating { get => _currentRating; private set { if (SetProperty(ref _currentRating, value)) OnPropertyChanged(nameof(RatingText)); } }
+    public string RatingText => CurrentRating.HasValue ? $"امتیاز شما: {CurrentRating} از ۵" : "امتیاز شما ثبت نشده";
+    public bool IsLiked { get => _isLiked; private set { if (SetProperty(ref _isLiked, value)) OnPropertyChanged(nameof(LikeText)); } }
+    public string LikeText => IsLiked ? $"پسندیده‌اید ({LikeCount})" : $"پسند ({LikeCount})";
     public string Description => string.IsNullOrWhiteSpace(_book.Description) ? _dto.Description ?? "توضیحی برای این کتاب ثبت نشده است." : _book.Description;
     public ImageSource CoverImage { get => _coverImage; private set => SetProperty(ref _coverImage, value); }
     public string ProgressText { get => _progressText; private set => SetProperty(ref _progressText, value); }
@@ -42,6 +54,8 @@ public sealed class BookDetailViewModel : ObservableObject
     public AsyncCommand DownloadCommand { get; }
     public AsyncCommand FavoriteCommand { get; }
     public AsyncCommand ShareCommand { get; }
+    public AsyncCommand LikeCommand { get; }
+    public AsyncCommand<string> RateCommand { get; }
 
     public BookDetailViewModel(Book book, BooksDTO dto, AccountService account, BookAssetService assets, AppNavigationService navigation)
     {
@@ -51,6 +65,8 @@ public sealed class BookDetailViewModel : ObservableObject
         DownloadCommand = new AsyncCommand(DownloadAsync, () => !IsDownloading);
         FavoriteCommand = new AsyncCommand(ToggleFavoriteAsync);
         ShareCommand = new AsyncCommand(() => _navigation.ShareAsync(Title, $"{Title}\n{Author}", BookUrl));
+        LikeCommand = new AsyncCommand(ToggleLikeAsync);
+        RateCommand = new AsyncCommand<string>(RateAsync);
     }
 
     public async Task OnAppearingAsync()
@@ -64,6 +80,7 @@ public sealed class BookDetailViewModel : ObservableObject
             ProgressText = progress > 0 ? $"{progress:0}% مطالعه شده" : "هنوز شروع نشده";
             ReadButtonText = progress > 0 ? "ادامه مطالعه" : "شروع مطالعه در برنامه";
             IsFavorite = await _account.IsFavoriteAsync(_book.Id);
+            ApplyEngagement(await _account.GetEngagementAsync(_book.Id));
         }
         catch { }
     }
@@ -71,7 +88,11 @@ public sealed class BookDetailViewModel : ObservableObject
     private async Task ReadAsync()
     {
         var path = await EnsureDownloadedAsync();
-        if (path is not null) await _navigation.OpenReaderAsync(_book, _dto, path);
+        if (path is not null)
+        {
+            await _account.RecordLibraryEventAsync(_book.Id, "Read");
+            await _navigation.OpenReaderAsync(_book, _dto, path);
+        }
     }
 
     private async Task DownloadAsync()
@@ -92,7 +113,9 @@ public sealed class BookDetailViewModel : ObservableObject
         });
         try
         {
+            var wasDownloaded = File.Exists(_assets.GetPdfPath(_book.Id));
             var path = await _assets.EnsurePdfAsync(_book, _dto, progress);
+            if (!wasDownloaded) await _account.RecordLibraryEventAsync(_book.Id, "Download");
             DownloadStatus = "PDF آماده مطالعه آفلاین است"; DownloadPercentText = "۱۰۰٪"; DownloadButtonText = "دریافت شده";
             return path;
         }
@@ -119,6 +142,41 @@ public sealed class BookDetailViewModel : ObservableObject
         }
         try { IsFavorite = await _account.SetFavoriteAsync(_book.Id, !IsFavorite); }
         catch (Exception ex) { await _navigation.AlertAsync("علاقه‌مندی", ex.Message); }
+    }
+
+    private async Task ToggleLikeAsync()
+    {
+        if (!await RequireAccountAsync()) return;
+        try { ApplyEngagement(await _account.SetLikeAsync(_book.Id, !IsLiked)); }
+        catch (Exception ex) { await _navigation.AlertAsync("پسند کتاب", ex.Message); }
+    }
+
+    private async Task RateAsync(string? value)
+    {
+        if (!await RequireAccountAsync()) return;
+        try
+        {
+            byte? rating = byte.TryParse(value, out var parsed) ? parsed : null;
+            ApplyEngagement(await _account.SetRatingAsync(_book.Id, rating));
+        }
+        catch (Exception ex) { await _navigation.AlertAsync("امتیاز کتاب", ex.Message); }
+    }
+
+    private async Task<bool> RequireAccountAsync()
+    {
+        await _account.InitializeAsync();
+        if (_account.IsLoggedIn) return true;
+        if (await _navigation.ConfirmAsync("حساب کاربری", "برای این قابلیت وارد حساب شوید.", "ورود / ثبت‌نام", "فعلاً نه"))
+            await _navigation.OpenAccountAsync(false);
+        return false;
+    }
+
+    private void ApplyEngagement(BookEngagementDto? state)
+    {
+        if (state is null) return;
+        LikeCount = state.LikeCount; IsLiked = state.IsLikedByCurrentUser;
+        RatingCount = state.RatingCount; AverageRating = state.AverageRating; CurrentRating = state.CurrentUserRating;
+        OnPropertyChanged(nameof(LikeText));
     }
 
     private string BookUrl => string.IsNullOrWhiteSpace(_book.Url) ? _dto.Url ?? string.Empty : _book.Url;

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Api/webapicore/webapicore.csproj" />
+  <Project Path="TasnimBook.Admin/TasnimBook.Admin.csproj" />
+  <Project Path="TasnimBook.Core/TasnimBook.Core.csproj" />
+  <Project Path="TasnimBook.Data/TasnimBook.Data.csproj" />
+  <Project Path="TasnimBook.MAUI/TasnimBook.MAUI/TasnimBook.MAUI.csproj" />
+</Solution>

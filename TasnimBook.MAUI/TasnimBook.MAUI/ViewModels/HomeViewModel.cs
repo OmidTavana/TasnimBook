@@ -56,7 +56,7 @@ public sealed class HomeViewModel : ObservableObject
     private async Task OpenLibraryAsync()
     {
         await _account.InitializeAsync();
-        if (_account.IsLoggedIn) await _navigation.OpenFavoritesAsync();
+        if (_account.IsLoggedIn) await _navigation.OpenLibraryAsync();
         else await _navigation.OpenAccountAsync();
     }
 
