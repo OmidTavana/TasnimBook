@@ -104,6 +104,10 @@ namespace TasnimBook.Data
 
             return await GetMany($"books/GetRandomBooks/{start}/{count}");
         }
+        public async Task<IEnumerable<BooksDTO>> GetAudioBooks(int start, int count)
+        {
+            return await GetMany($"books/GetAudioBooks/{start}/{count}");
+        }
 
         public async Task<IEnumerable<BooksDTO>> List() => await GetMany("books/Liist");
 

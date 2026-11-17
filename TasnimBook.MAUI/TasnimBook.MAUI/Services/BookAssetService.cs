@@ -24,7 +24,7 @@ public sealed class BookAssetService
 
     public async Task<string?> GetCoverPathAsync(int bookId, string? imageUrl, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(imageUrl) || !Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri)) return null;
+        if (!ApiConfiguration.TryResolveResourceUri(imageUrl, out var uri)) return null;
         var path = Path.Combine(_coversDirectory, $"book-{bookId}.jpg");
         if (File.Exists(path) && new FileInfo(path).Length > 0) return path;
 
@@ -66,7 +66,7 @@ public sealed class BookAssetService
         }
 
         var url = string.IsNullOrWhiteSpace(book.Url) ? dto.Url : book.Url;
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        if (!ApiConfiguration.TryResolveResourceUri(url, out var uri))
             throw new InvalidOperationException("لینک PDF این کتاب معتبر نیست.");
 
         var temporaryPath = finalPath + ".part";

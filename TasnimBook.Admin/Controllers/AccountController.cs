@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Globalization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -126,7 +127,9 @@ public sealed class AccountController : Controller
             new(ClaimTypes.Name, result.User.DisplayName),
             new(ClaimTypes.Email, result.User.Email),
             new(ClaimTypes.Role, result.User.Role),
-            new("access_token", result.AccessToken)
+            new("access_token", result.AccessToken),
+            new("refresh_token", result.RefreshToken),
+            new("access_token_expires", result.ExpiresAtUtc.ToString("O", CultureInfo.InvariantCulture))
         };
 
         var identity = new ClaimsIdentity(

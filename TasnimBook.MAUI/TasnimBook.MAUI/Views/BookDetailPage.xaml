@@ -25,7 +25,37 @@
                         </Border>
                     </Grid>
                 </Border>
-                <Button Text="{Binding ReadButtonText}" Style="{StaticResource PrimaryActionButton}" Command="{Binding ReadCommand}" />
+
+                <Border IsVisible="{Binding IsAudioBook}" Style="{StaticResource BookDetailCard}">
+                    <VerticalStackLayout BindingContext="{Binding AudioPlayer}" x:DataType="{x:Null}" Spacing="14">
+                        <Label Text="پخش کتاب صوتی" Style="{StaticResource SectionHeading}" HorizontalTextAlignment="Center" />
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" />
+                        <Slider x:Name="AudioProgressSlider"
+                                Minimum="0"
+                                Maximum="{Binding DurationSeconds}"
+                                Value="{Binding PositionSeconds, Mode=TwoWay}"
+                                IsEnabled="{Binding IsReady}"
+                                DragStarted="OnAudioSeekStarted"
+                                DragCompleted="OnAudioSeekCompleted" />
+                        <Grid ColumnDefinitions="*,*" FlowDirection="LeftToRight">
+                            <Label Text="{Binding PositionText}" FontSize="14" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Start" />
+                            <Label Grid.Column="1" Text="{Binding DurationText}" FontSize="14" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="End" />
+                        </Grid>
+                        <HorizontalStackLayout Spacing="28" HorizontalOptions="Center" FlowDirection="LeftToRight">
+                            <ImageButton Source="icon_skip_previous.svg" Style="{StaticResource AudioSmallIconButton}"
+                                         Command="{Binding SeekBackwardCommand}" IsEnabled="{Binding IsReady}" />
+                            <ImageButton Source="{Binding PlayIcon}" Style="{StaticResource AudioPlayIconButton}"
+                                         Command="{Binding PlayCommand}" IsEnabled="{Binding IsReady}" />
+                            <ImageButton Source="icon_skip_next.svg" Style="{StaticResource AudioSmallIconButton}"
+                                         Command="{Binding SeekForwardCommand}" IsEnabled="{Binding IsReady}" />
+                        </HorizontalStackLayout>
+                        <Label Text="{Binding StatusMessage}" FontSize="13" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Center" />
+                        <Label Text="موقعیت پخش خودکار ذخیره می‌شود."
+                               FontSize="12" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button IsVisible="{Binding IsPdfBook}" Text="{Binding ReadButtonText}" Style="{StaticResource PrimaryActionButton}" Command="{Binding ReadCommand}" />
                 <Border IsVisible="{Binding IsDownloadPanelVisible}" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0" Padding="13,10" StrokeShape="RoundRectangle 14">
                     <VerticalStackLayout Spacing="7">
                         <Grid ColumnDefinitions="*,Auto">
@@ -35,16 +65,20 @@
                         <ProgressBar Progress="{Binding DownloadProgress}" ProgressColor="{StaticResource Tertiary}" BackgroundColor="{StaticResource ProgressTrack}" />
                     </VerticalStackLayout>
                 </Border>
-                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9" FlowDirection="LeftToRight">
+                <Grid IsVisible="{Binding IsPdfBook}" ColumnDefinitions="*,*,*" ColumnSpacing="9" FlowDirection="LeftToRight">
                     <Button Text="اشتراک" ImageSource="icon_share.svg" Style="{StaticResource SecondaryActionButton}" Command="{Binding ShareCommand}" />
                     <Button Grid.Column="1" Text="{Binding DownloadButtonText}" ImageSource="icon_download.svg" Style="{StaticResource SecondaryActionButton}" Command="{Binding DownloadCommand}" />
                     <Button Grid.Column="2" Text="{Binding FavoriteText}" ImageSource="{Binding FavoriteIcon}" Style="{StaticResource SecondaryActionButton}" Command="{Binding FavoriteCommand}" />
+                </Grid>
+                <Grid IsVisible="{Binding IsAudioBook}" ColumnDefinitions="*,*" ColumnSpacing="9" FlowDirection="LeftToRight">
+                    <Button Text="اشتراک" ImageSource="icon_share.svg" Style="{StaticResource SecondaryActionButton}" Command="{Binding ShareCommand}" />
+                    <Button Grid.Column="1" Text="{Binding FavoriteText}" ImageSource="{Binding FavoriteIcon}" Style="{StaticResource SecondaryActionButton}" Command="{Binding FavoriteCommand}" />
                 </Grid>
                 <Border Style="{StaticResource BookDetailCard}" Padding="14">
                     <Grid ColumnDefinitions="*,*,*" FlowDirection="LeftToRight">
                         <VerticalStackLayout HorizontalOptions="Center"><Label Text="امتیاز" Style="{StaticResource MutedLabel}"/><Label Text="{Binding Score}" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center"/></VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center"><Label Text="حجم" Style="{StaticResource MutedLabel}"/><Label Text="{Binding Size}" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center"/></VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center"><Label Text="تعداد صفحات" Style="{StaticResource MutedLabel}"/><Label Text="{Binding Pages}" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center"/></VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center"><Label Text="{Binding PagesLabel}" Style="{StaticResource MutedLabel}"/><Label Text="{Binding Pages}" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="Center"/></VerticalStackLayout>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource BookDetailCard}">

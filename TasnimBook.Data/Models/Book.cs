@@ -10,6 +10,8 @@ namespace TasnimBook.Data
     {
         public Book()
         {
+            Comments = new List<Comments>();
+            BookCategories = new List<ManyToManyBookAndBookCatcs>();
         }
 
         [Column("id")]
@@ -62,7 +64,7 @@ namespace TasnimBook.Data
         [Column("IsAudioBook")]
         public bool? IsAudioBook { get; set; }
 
-        public Author Author { get; set; }
+        public Author? Author { get; set; }
 
         public ICollection<Comments> Comments { get; set; }
 

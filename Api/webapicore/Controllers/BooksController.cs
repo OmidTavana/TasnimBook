@@ -71,6 +71,12 @@ namespace webapicore.Controllers
         {
             return Ok(await bookRepo.GetRandomBooks(start, count));
         }
+        [ApiKeyAuth]
+        [HttpGet("{start}/{count}")]
+        public async Task<ActionResult<IEnumerable<BooksDTO>>> GetAudioBooks(int start, int count)
+        {
+            return Ok(await bookRepo.GetAudioBooks(start, count));
+        }
         [HttpGet("{catID}")]
         public async Task<ActionResult<IEnumerable<BooksDTO>>> GetByCategory(int catID)
         {

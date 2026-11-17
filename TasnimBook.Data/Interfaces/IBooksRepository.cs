@@ -17,6 +17,7 @@ namespace TasnimBook.Data.Interfaces
         Task<IEnumerable<BooksDTO>> GetLast10Books();
         Task<IEnumerable<BooksDTO>> GetSuggestedBooks(int start, int count);
         Task<IEnumerable<BooksDTO>> GetRandomBooks(int start, int count);
+        Task<IEnumerable<BooksDTO>> GetAudioBooks(int start, int count);
         Task<IEnumerable<BooksDTO>> Search(string keyword);
         Task<IEnumerable<BooksDTO>> GetNewBooks(int start, int count);
         Task<IEnumerable<BooksDTO>> ListByCatergory(int catID);

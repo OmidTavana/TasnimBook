@@ -33,5 +33,6 @@ namespace TasnimBook.Data.SqlRepository
 
         public ICategoryRepository ICategory => new RestCategoryRepository(_url, _client);
         public IAdminRepository IAdmin => new RestAdminRepository(_url, _client);
+        public IAppVersionReository IAppVersions => new RestAppVersionRepository(_url, _client);
     }
 }

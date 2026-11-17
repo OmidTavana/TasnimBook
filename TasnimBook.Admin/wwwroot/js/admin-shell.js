@@ -112,6 +112,33 @@
         });
     });
 
+    const audioBookToggle = document.querySelector("[data-audio-book-toggle]");
+    const bookFileInput = document.querySelector("[data-book-file-input]");
+    const bookFileCard = document.querySelector("[data-book-file-card]");
+    const bookUrl = document.querySelector("[data-book-url]");
+
+    if (audioBookToggle instanceof HTMLInputElement && bookFileInput instanceof HTMLInputElement) {
+        const updateBookFileType = () => {
+            const isAudio = audioBookToggle.checked;
+            const fileName = bookFileCard?.querySelector("[data-file-name]");
+            const fileSize = bookFileCard?.querySelector("[data-file-size]");
+            const help = bookFileCard?.querySelector("[data-book-file-help]");
+
+            bookFileInput.accept = isAudio ? "audio/mpeg,audio/mp3,.mp3" : "application/pdf,.pdf";
+            bookFileInput.value = "";
+            if (fileName) fileName.textContent = `${isAudio ? "MP3" : "PDF"} را اینجا رها کنید یا کلیک کنید`;
+            if (fileSize) fileSize.textContent = `فرمت مجاز: ${isAudio ? "MP3" : "PDF"}`;
+            if (help) help.textContent = isAudio
+                ? "نسخه MP3 با حداکثر حجم ۳۰۰ مگابایت"
+                : "نسخه PDF با حداکثر حجم ۱۰۰ مگابایت";
+            if (bookUrl instanceof HTMLInputElement) {
+                bookUrl.placeholder = isAudio ? "https://.../book.mp3" : "https://.../book.pdf";
+            }
+        };
+
+        audioBookToggle.addEventListener("change", updateBookFileType);
+    }
+
     function formatFileSize(bytes) {
         if (bytes < 1024 * 1024) {
             return `${Math.max(1, Math.round(bytes / 1024))} کیلوبایت`;

@@ -1,6 +1,10 @@
 using System.Net.Http.Headers;
+using System.Globalization;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using TasnimBook.Data;
 using TasnimBook.Data.Models.DTO;
 
@@ -9,6 +13,9 @@ namespace TasnimBook.Admin.Services;
 public sealed class AdminApiClient
 {
     private const string AccessTokenClaim = "access_token";
+    private const string RefreshTokenClaim = "refresh_token";
+    private const string AccessTokenExpiresClaim = "access_token_expires";
+    private readonly SemaphoreSlim _refreshGate = new(1, 1);
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -207,7 +214,8 @@ public sealed class AdminApiClient
         using var fileContent = new StreamContent(fileStream);
         using var formContent = new MultipartFormDataContent();
 
-        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(file.ContentType);
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(
+            string.IsNullOrWhiteSpace(file.ContentType) ? "application/octet-stream" : file.ContentType);
         formContent.Add(fileContent, "file", file.FileName);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, path)
@@ -216,7 +224,7 @@ public sealed class AdminApiClient
         };
 
         AddApiKey(request);
-        AddAccessToken(request);
+        await AddAccessTokenAsync(request, cancellationToken);
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -259,7 +267,7 @@ public sealed class AdminApiClient
 
         if (requiresAuthorization)
         {
-            AddAccessToken(request);
+            await AddAccessTokenAsync(request, cancellationToken);
         }
 
         if (body is not null)
@@ -285,19 +293,76 @@ public sealed class AdminApiClient
         request.Headers.Add("APIKey", apiKey);
     }
 
-    private void AddAccessToken(HttpRequestMessage request)
+    private async Task AddAccessTokenAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var accessToken = _httpContextAccessor.HttpContext?
-            .User
-            .FindFirst(AccessTokenClaim)?
-            .Value;
+        var context = _httpContextAccessor.HttpContext;
+        var accessToken = context?.User.FindFirst(AccessTokenClaim)?.Value;
 
         if (string.IsNullOrWhiteSpace(accessToken))
         {
-            throw new UnauthorizedAccessException("The administrator is not signed in.");
+            throw new UnauthorizedAccessException("نشست مدیریت معتبر نیست؛ لطفاً دوباره وارد شوید.");
+        }
+
+        var expiresValue = context?.User.FindFirst(AccessTokenExpiresClaim)?.Value;
+        if (DateTime.TryParse(expiresValue, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var expiresAt) &&
+            expiresAt <= DateTime.UtcNow.AddMinutes(1))
+        {
+            accessToken = await RefreshAccessTokenAsync(context!, cancellationToken);
         }
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+    }
+
+    private async Task<string> RefreshAccessTokenAsync(HttpContext context, CancellationToken cancellationToken)
+    {
+        await _refreshGate.WaitAsync(cancellationToken);
+        try
+        {
+            var currentExpires = context.User.FindFirst(AccessTokenExpiresClaim)?.Value;
+            if (DateTime.TryParse(currentExpires, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var currentExpiry) &&
+                currentExpiry > DateTime.UtcNow.AddMinutes(1))
+                return context.User.FindFirst(AccessTokenClaim)!.Value;
+
+            var refreshToken = context.User.FindFirst(RefreshTokenClaim)?.Value;
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                throw new UnauthorizedAccessException("نشست مدیریت منقضی شده است؛ لطفاً خارج شوید و دوباره وارد شوید.");
+
+            using var refreshRequest = new HttpRequestMessage(HttpMethod.Post, "Account/Refresh")
+            {
+                Content = CreateJsonContent(new RefreshAccountRequest { RefreshToken = refreshToken, DeviceName = "TasnimBook.Admin" })
+            };
+            AddApiKey(refreshRequest);
+            using var response = await _httpClient.SendAsync(refreshRequest, cancellationToken);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            var result = ReadResponse<AccountAuthResult>(response, content);
+
+            if (result.User.Role is not (UserRoles.ContentAdmin or UserRoles.SuperAdmin))
+                throw new UnauthorizedAccessException("دسترسی مدیریت این حساب غیرفعال شده است.");
+
+            var principal = CreatePrincipal(result);
+            context.User = principal;
+            await context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            return result.AccessToken;
+        }
+        finally
+        {
+            _refreshGate.Release();
+        }
+    }
+
+    private static ClaimsPrincipal CreatePrincipal(AccountAuthResult result)
+    {
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, result.User.Id.ToString()),
+            new Claim(ClaimTypes.Name, result.User.DisplayName),
+            new Claim(ClaimTypes.Email, result.User.Email),
+            new Claim(ClaimTypes.Role, result.User.Role),
+            new Claim(AccessTokenClaim, result.AccessToken),
+            new Claim(RefreshTokenClaim, result.RefreshToken),
+            new Claim(AccessTokenExpiresClaim, result.ExpiresAtUtc.ToString("O", CultureInfo.InvariantCulture))
+        };
+        return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
     }
 
     private static StringContent CreateJsonContent(object body)
@@ -311,7 +376,7 @@ public sealed class AdminApiClient
     {
         if (!response.IsSuccessStatusCode)
         {
-            var message = ExtractErrorMessage(responseContent);
+            var message = ExtractErrorMessage(response, responseContent);
             throw new AdminApiException((int)response.StatusCode, message);
         }
 
@@ -330,23 +395,51 @@ public sealed class AdminApiClient
         return Uri.EscapeDataString(search ?? string.Empty);
     }
 
-    private static string ExtractErrorMessage(string responseContent)
+    private static string ExtractErrorMessage(HttpResponseMessage response, string responseContent)
     {
         try
         {
             using var document = JsonDocument.Parse(responseContent);
 
+            if (document.RootElement.TryGetProperty("errors", out var errorsElement) &&
+                errorsElement.ValueKind == JsonValueKind.Object)
+            {
+                var validationMessages = errorsElement
+                    .EnumerateObject()
+                    .SelectMany(property => property.Value.ValueKind == JsonValueKind.Array
+                        ? property.Value.EnumerateArray().Select(item => item.GetString())
+                        : [property.Value.GetString()])
+                    .Where(message => !string.IsNullOrWhiteSpace(message))
+                    .Distinct()
+                    .ToArray();
+
+                if (validationMessages.Length > 0)
+                    return string.Join(" | ", validationMessages);
+            }
+
             if (document.RootElement.TryGetProperty("message", out var messageElement))
             {
                 return messageElement.GetString() ?? "درخواست انجام نشد.";
             }
+            if (document.RootElement.TryGetProperty("detail", out var detailElement))
+                return detailElement.GetString() ?? "درخواست انجام نشد.";
+            if (document.RootElement.TryGetProperty("title", out var titleElement))
+                return titleElement.GetString() ?? "درخواست انجام نشد.";
         }
         catch (JsonException)
         {
             // The API did not return a JSON error body.
         }
 
-        return "درخواست انجام نشد.";
+        return (int)response.StatusCode switch
+        {
+            401 => "نشست مدیریت منقضی شده است؛ لطفاً دوباره وارد شوید.",
+            403 => "شما اجازه انجام این عملیات را ندارید.",
+            413 => "حجم فایل از سقف مجاز سرور بیشتر است.",
+            415 => "فرمت فایل توسط سرور پشتیبانی نمی‌شود.",
+            >= 500 => $"ذخیره در سرور انجام نشد (خطای {(int)response.StatusCode}).",
+            _ => $"درخواست انجام نشد (خطای {(int)response.StatusCode})."
+        };
     }
 }
 

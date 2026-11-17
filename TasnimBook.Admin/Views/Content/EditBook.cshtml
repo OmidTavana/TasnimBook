@@ -8,7 +8,7 @@
     <div class="page-title">
         <span class="eyebrow">مدیریت محتوا / کتاب‌ها</span>
         <h1>@(isNew ? "افزودن کتاب تازه" : $"ویرایش «{Model.Title}»")</h1>
-        <p>اطلاعات کتاب، جلد، فایل PDF و وضعیت انتشار را از این بخش مدیریت کنید.</p>
+        <p>اطلاعات کتاب، جلد، فایل PDF یا MP3 و وضعیت انتشار را از این بخش مدیریت کنید.</p>
     </div>
 
     <div class="page-actions">
@@ -73,23 +73,23 @@
                 </div>
             </section>
 
-            <section class="card">
+            <section class="card" data-book-file-card>
                 <header class="card-header">
                     <div>
                         <h2>فایل کتاب</h2>
-                        <p>نسخه PDF با حداکثر حجم ۱۰۰ مگابایت</p>
+                        <p data-book-file-help>@(Model.IsAudioBook ? "نسخه MP3 با حداکثر حجم ۳۰۰ مگابایت" : "نسخه PDF با حداکثر حجم ۱۰۰ مگابایت")</p>
                     </div>
                 </header>
 
                 <div class="card-body">
                     <div class="upload-zone" data-upload-zone>
-                        <input asp-for="BookFile" type="file" accept="application/pdf,.pdf" />
+                        <input asp-for="BookFile" type="file" accept="@(Model.IsAudioBook ? "audio/mpeg,audio/mp3,.mp3" : "application/pdf,.pdf")" data-book-file-input />
                         <div class="upload-copy">
                             <span class="upload-icon">
                                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm1 2.5L17.5 7H15V4.5ZM6 20V4h7v5h5v11H6Zm2-3h8v-2H8v2Zm0-4h8v-2H8v2Z" /></svg>
                             </span>
-                            <strong data-file-name>PDF را اینجا رها کنید یا کلیک کنید</strong>
-                            <span data-file-size>فرمت مجاز: PDF</span>
+                            <strong data-file-name>@(Model.IsAudioBook ? "MP3 را اینجا رها کنید یا کلیک کنید" : "PDF را اینجا رها کنید یا کلیک کنید")</strong>
+                            <span data-file-size>فرمت مجاز: @(Model.IsAudioBook ? "MP3" : "PDF")</span>
                             <small>نام فایل امن و یکتا توسط سرور ساخته می‌شود.</small>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                     <div class="form-grid mt-1">
                         <div class="field">
                             <label asp-for="Url">یا نشانی مستقیم فایل</label>
-                            <input asp-for="Url" type="url" dir="ltr" placeholder="https://.../book.pdf" />
+                            <input asp-for="Url" type="url" dir="ltr" placeholder="@(Model.IsAudioBook ? "https://.../book.mp3" : "https://.../book.pdf")" data-book-url />
                             <span asp-validation-for="Url"></span>
                         </div>
 
@@ -191,7 +191,7 @@
                             <small>علامت‌گذاری محتوا به‌عنوان نسخه صوتی</small>
                         </div>
                         <label class="switch">
-                            <input asp-for="IsAudioBook" type="checkbox" />
+                            <input asp-for="IsAudioBook" type="checkbox" data-audio-book-toggle />
                             <span class="switch-track"></span>
                         </label>
                     </div>

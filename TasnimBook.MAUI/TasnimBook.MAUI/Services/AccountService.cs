@@ -85,7 +85,9 @@ public sealed class AccountService
     public async Task<IReadOnlyList<BooksDTO>> GetFavoritesAsync()
     {
         using var response = await SendAuthorizedAsync(client => client.GetAsync("Account/Favorites"));
-        return await ReadAsync<List<BooksDTO>>(response) ?? [];
+        return (await ReadAsync<List<BooksDTO>>(response) ?? [])
+            .Select(BookCatalogService.NormalizeAssetUrls)
+            .ToList();
     }
 
     public async Task<bool> IsFavoriteAsync(int bookId)
@@ -173,7 +175,9 @@ public sealed class AccountService
     public async Task<IReadOnlyList<BooksDTO>> GetLibraryAsync()
     {
         using var response = await SendAuthorizedAsync(client => client.GetAsync("Engagement/Library"));
-        return await ReadAsync<List<BooksDTO>>(response) ?? [];
+        return (await ReadAsync<List<BooksDTO>>(response) ?? [])
+            .Select(BookCatalogService.NormalizeAssetUrls)
+            .ToList();
     }
 
     public async Task RemoveFromLibraryAsync(int bookId)

@@ -10,5 +10,6 @@ namespace TasnimBook.Data.Interfaces
         IAuthorRepository IAuthors { get; }
         ICategoryRepository ICategory { get; }
         IAdminRepository IAdmin { get; }
+        IAppVersionReository IAppVersions { get; }
     }
 }

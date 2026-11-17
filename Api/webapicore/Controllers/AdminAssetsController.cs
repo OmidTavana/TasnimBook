@@ -14,6 +14,7 @@ public sealed class AdminAssetsController : ControllerBase
 {
     private const long MaximumCoverSize = 8 * 1024 * 1024;
     private const long MaximumDocumentSize = 100 * 1024 * 1024;
+    private const long MaximumAudioSize = 300 * 1024 * 1024;
 
     private static readonly IReadOnlyDictionary<string, UploadPolicy> Policies =
         new Dictionary<string, UploadPolicy>(StringComparer.OrdinalIgnoreCase)
@@ -34,6 +35,13 @@ public sealed class AdminAssetsController : ControllerBase
                 new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                 {
                     [".pdf"] = "application/pdf"
+                }),
+            ["audio"] = new(
+                "audio",
+                MaximumAudioSize,
+                new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    [".mp3"] = "audio/mpeg"
                 })
         };
 
@@ -45,7 +53,8 @@ public sealed class AdminAssetsController : ControllerBase
     }
 
     [HttpPost("Upload")]
-    [RequestSizeLimit(MaximumDocumentSize + 1024 * 1024)]
+    [RequestSizeLimit(MaximumAudioSize + 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = MaximumAudioSize + 1024 * 1024)]
     public async Task<ActionResult<AdminAssetUploadDto>> Upload(
         [FromForm] IFormFile file,
         [FromQuery] string kind,
@@ -70,7 +79,7 @@ public sealed class AdminAssetsController : ControllerBase
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
         if (!policy.AllowedContentTypes.TryGetValue(extension, out var expectedContentType) ||
-            !string.Equals(file.ContentType, expectedContentType, StringComparison.OrdinalIgnoreCase))
+            !HasExpectedContentType(file.ContentType, expectedContentType))
         {
             return BadRequest(new { message = "فرمت فایل انتخاب‌شده پشتیبانی نمی‌شود." });
         }
@@ -105,7 +114,9 @@ public sealed class AdminAssetsController : ControllerBase
 
         return Created(publicUrl, new AdminAssetUploadDto
         {
-            Url = publicUrl,
+            // Persist a host-independent path. Request.Host is often localhost when
+            // the admin and API run on the same development computer.
+            Url = relativeUrl,
             FileName = file.FileName,
             ContentType = expectedContentType,
             Size = file.Length
@@ -132,9 +143,20 @@ public sealed class AdminAssetsController : ControllerBase
             ".webp" => bytesRead >= 12 &&
                 header.AsSpan(0, 4).SequenceEqual("RIFF"u8) &&
                 header.AsSpan(8, 4).SequenceEqual("WEBP"u8),
+            ".mp3" => bytesRead >= 3 &&
+                (header.AsSpan(0, 3).SequenceEqual("ID3"u8) ||
+                 (header[0] == 0xFF && (header[1] & 0xE0) == 0xE0)),
             _ => false
         };
     }
+
+    private static bool HasExpectedContentType(string actual, string expected) =>
+        string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase) ||
+        expected == "audio/mpeg" && actual.ToLowerInvariant() is
+            "audio/mp3" or
+            "audio/mpeg3" or
+            "audio/x-mpeg-3" or
+            "application/octet-stream";
 
     private sealed record UploadPolicy(
         string DirectoryName,

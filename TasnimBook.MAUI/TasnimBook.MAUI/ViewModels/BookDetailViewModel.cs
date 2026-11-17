@@ -23,9 +23,13 @@ public sealed class BookDetailViewModel : ObservableObject
     private byte? _currentRating;
     private bool _isLiked;
 
+    public bool IsAudioBook => _dto.IsAudioBook == true || _book.IsAudioBook == true;
+    public bool IsPdfBook => !IsAudioBook;
+    public AudioPlayerViewModel? AudioPlayer { get; }
     public string Title => _dto.Title;
     public string Author => BookUi.Author(_book);
-    public string Pages => _dto.PagesCount ?? "—";
+    public string Pages => IsAudioBook ? "صوتی" : _dto.PagesCount ?? "—";
+    public string PagesLabel => IsAudioBook ? "نوع محتوا" : "تعداد صفحات";
     public string Size => _dto.FileSize ?? "—";
     public string Score => RatingCount > 0 ? $"{AverageRating:0.0}/۵ ({RatingCount})" : "بدون امتیاز";
     public int LikeCount { get => _likeCount; private set => SetProperty(ref _likeCount, value); }
@@ -60,6 +64,7 @@ public sealed class BookDetailViewModel : ObservableObject
     public BookDetailViewModel(Book book, BooksDTO dto, AccountService account, BookAssetService assets, AppNavigationService navigation)
     {
         _book = book; _dto = dto; _account = account; _assets = assets; _navigation = navigation;
+        if (IsAudioBook) AudioPlayer = new AudioPlayerViewModel(book, dto, navigation);
         BackCommand = new AsyncCommand(_navigation.GoBackAsync);
         ReadCommand = new AsyncCommand(ReadAsync, () => !IsDownloading);
         DownloadCommand = new AsyncCommand(DownloadAsync, () => !IsDownloading);
@@ -77,13 +82,16 @@ public sealed class BookDetailViewModel : ObservableObject
         try
         {
             var progress = await _account.GetProgressAsync(_book.Id);
-            ProgressText = progress > 0 ? $"{progress:0}% مطالعه شده" : "هنوز شروع نشده";
+            ProgressText = IsAudioBook ? "کتاب صوتی" : progress > 0 ? $"{progress:0}% مطالعه شده" : "هنوز شروع نشده";
             ReadButtonText = progress > 0 ? "ادامه مطالعه" : "شروع مطالعه در برنامه";
             IsFavorite = await _account.IsFavoriteAsync(_book.Id);
             ApplyEngagement(await _account.GetEngagementAsync(_book.Id));
         }
         catch { }
+        if (AudioPlayer is not null) await AudioPlayer.InitializeAsync();
     }
+
+    public Task OnDisappearingAsync() => AudioPlayer?.PauseAndSaveAsync() ?? Task.CompletedTask;
 
     private async Task ReadAsync()
     {

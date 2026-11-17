@@ -9,7 +9,7 @@ using TasnimBook.Data.Interfaces;
 
 namespace TasnimBook.Data.RestRepository
 {
-    class RestAppVersionRepository : IAppVersionReository
+    public class RestAppVersionRepository : IAppVersionReository
     {
         HttpClient _client;
         private readonly string baseUrl;
@@ -30,7 +30,7 @@ namespace TasnimBook.Data.RestRepository
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    AppVersion = JsonConvert.DeserializeObject<AppVersion>(content);
+                    AppVersion = JsonConvert.DeserializeObject<AppVersion>(content) ?? new AppVersion();
                 }
             }
             catch (Exception ex)

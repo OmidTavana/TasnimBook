@@ -26,10 +26,7 @@ public sealed class AppNavigationService
     public async Task OpenBookAsync(BooksDTO dto)
     {
         var book = await _catalog.GetBookAsync(dto.Id);
-        if (dto.IsAudioBook == true)
-            await Navigation.PushAsync(new AudioPlayerPage(new AudioPlayerViewModel(book, dto, this)));
-        else
-            await Navigation.PushAsync(new BookDetailPage(new BookDetailViewModel(book, dto, _account, _assets, this)));
+        await Navigation.PushAsync(new BookDetailPage(new BookDetailViewModel(book, dto, _account, _assets, this)));
     }
 
     public Task OpenBookListAsync(string title, BookListMode mode) =>

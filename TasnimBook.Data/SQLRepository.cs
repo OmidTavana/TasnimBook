@@ -21,5 +21,6 @@ namespace TasnimBook.Data.Services
         public ICategoryRepository ICategory => new SQLCatRepository(new DbContextAnti(_dbOptions));
 
         IAdminRepository IRepository.IAdmin => throw new NotImplementedException();
+        IAppVersionReository IRepository.IAppVersions => new SQLAppVersionRepository(new DbContextAnti(_dbOptions));
     }
 }

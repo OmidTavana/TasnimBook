@@ -9,7 +9,7 @@ using webapicore.Fillter;
 namespace webapicore.Controllers;
 
 [ApiController, ApiKeyAuth, Authorize(Roles = UserRoles.Administrators), Route("api/[controller]/[action]")]
-public sealed class AdminContentController(DbContextAnti db) : ControllerBase
+public sealed class AdminContentController(DbContextAnti db, ILogger<AdminContentController> logger) : ControllerBase
 {
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetBook(int id, CancellationToken cancellationToken)
@@ -39,8 +39,17 @@ public sealed class AdminContentController(DbContextAnti db) : ControllerBase
         if (string.IsNullOrWhiteSpace(book.Title)) return BadRequest(new { message = "عنوان الزامی است." });
         book.Id = 0;
         book.BookCategories = categoryIds.Distinct().Select(id => new ManyToManyBookAndBookCatcs { BookCategoryId = id }).ToList();
-        db.Books.Add(book); await db.SaveChangesAsync(cancellationToken);
-        return CreatedAtAction(nameof(Books), new { search = book.Title }, new { book.Id });
+        try
+        {
+            db.Books.Add(book);
+            await db.SaveChangesAsync(cancellationToken);
+            return CreatedAtAction(nameof(Books), new { search = book.Title }, new { book.Id });
+        }
+        catch (DbUpdateException exception)
+        {
+            logger.LogError(exception, "Creating book {BookTitle} failed", book.Title);
+            return Conflict(new { message = "ذخیره کتاب در پایگاه داده انجام نشد؛ نویسنده و دسته‌بندی‌های انتخاب‌شده را بررسی کنید." });
+        }
     }
 
     [HttpPut("{id:int}")]
@@ -57,7 +66,16 @@ public sealed class AdminContentController(DbContextAnti db) : ControllerBase
         book.IsAudioBook = input.IsAudioBook; book.IsSuggested = input.IsSuggested;
         db.BookCategoryRelations.RemoveRange(book.BookCategories);
         book.BookCategories = categoryIds.Distinct().Select(categoryId => new ManyToManyBookAndBookCatcs { BookId = id, BookCategoryId = categoryId }).ToList();
-        await db.SaveChangesAsync(cancellationToken); return NoContent();
+        try
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+        catch (DbUpdateException exception)
+        {
+            logger.LogError(exception, "Updating book {BookId} failed", id);
+            return Conflict(new { message = "ویرایش کتاب در پایگاه داده انجام نشد؛ نویسنده و دسته‌بندی‌های انتخاب‌شده را بررسی کنید." });
+        }
     }
 
     [HttpDelete("{id:int}")]

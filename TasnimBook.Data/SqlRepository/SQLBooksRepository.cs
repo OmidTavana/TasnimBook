@@ -169,6 +169,36 @@ namespace TasnimBook.Data.Services
             return await Task.FromResult(data.ToList());
 
         }
+        public async Task<IEnumerable<BooksDTO>> GetAudioBooks(int page, int size)
+        {
+            int offset = (page - 1) * size;
+            return await dbContext.Books
+                .AsNoTracking()
+                .Where(book => book.IsAudioBook == true)
+                .OrderByDescending(book => book.Date)
+                .Skip(offset)
+                .Take(size)
+                .Select(book => new BooksDTO
+                {
+                    AuthorId = book.AuthorId,
+                    AuthorName = book.Author == null ? "" : book.Author.Name + " " + book.Author.Family,
+                    CategoryName = book.BookCategories.Select(item => item.BookCategories.CategoryName).FirstOrDefault() ?? "",
+                    CategoryId = book.BookCategories.Select(item => item.BookCategories.Id).FirstOrDefault(),
+                    Date = book.Date,
+                    Description = book.Description,
+                    FileSize = book.FileSize,
+                    Id = book.Id,
+                    ImageUrl = book.ImageUrl,
+                    LikesCount = book.LikesCount,
+                    PagesCount = book.PagesCount,
+                    Score = book.Score,
+                    Title = book.Title,
+                    Url = book.Url,
+                    IsSuggested = book.IsSuggested,
+                    IsAudioBook = book.IsAudioBook
+                })
+                .ToListAsync();
+        }
         public async Task<IEnumerable<BooksDTO>> GetLast10Books()
         {
             var data = (from book in dbContext.Books

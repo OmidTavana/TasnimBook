@@ -12,7 +12,7 @@ builder.Services.AddHttpClient<AdminApiClient>(client =>
         ?? "https://localhost:44396/api/";
 
     client.BaseAddress = new Uri(baseAddress);
-    client.Timeout = TimeSpan.FromSeconds(30);
+    client.Timeout = TimeSpan.FromMinutes(10);
 });
 
 builder.Services

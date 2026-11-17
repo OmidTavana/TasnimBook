@@ -9,6 +9,7 @@ namespace TasnimBook.Admin.Controllers;
 [Authorize(Roles = UserRoles.Administrators)]
 public sealed class ContentController : Controller
 {
+    private const long MaximumBookUploadSize = 310L * 1024 * 1024;
     private readonly AdminApiClient _apiClient;
 
     public ContentController(AdminApiClient apiClient)
@@ -75,7 +76,8 @@ public sealed class ContentController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [RequestSizeLimit(110 * 1024 * 1024)]
+    [RequestSizeLimit(MaximumBookUploadSize)]
+    [RequestFormLimits(MultipartBodyLengthLimit = MaximumBookUploadSize)]
     public async Task<IActionResult> EditBook(
         BookEditorModel model,
         CancellationToken cancellationToken)
@@ -103,7 +105,7 @@ public sealed class ContentController : Controller
             {
                 var document = await _apiClient.UploadAssetAsync(
                     model.BookFile,
-                    "document",
+                    model.IsAudioBook ? "audio" : "document",
                     cancellationToken);
 
                 model.Url = document.Url;
