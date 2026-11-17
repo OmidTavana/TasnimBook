@@ -4,7 +4,7 @@
              x:DataType="viewModels:BookReaderViewModel" BackgroundColor="{StaticResource ReaderBackground}" FlowDirection="RightToLeft">
     <Grid RowDefinitions="Auto,3,*,Auto">
         <Grid Style="{StaticResource BookDetailHeader}" ColumnDefinitions="52,*,52" FlowDirection="LeftToRight">
-            <ImageButton Source="icon_back.svg" Style="{StaticResource HeaderIconButton}" Command="{Binding BackCommand}" />
+            <ImageButton Source="icon_back.png" Style="{StaticResource HeaderIconButton}" Command="{Binding BackCommand}" />
             <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                 <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource White}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center" />
                 <Label Text="{Binding PageText}" FontSize="12" TextColor="{StaticResource ReaderSubtext}" HorizontalTextAlignment="Center" />
@@ -18,9 +18,9 @@
             </Grid>
         </ScrollView>
         <Grid Grid.Row="3" ColumnDefinitions="*,Auto,*" Padding="12,9" ColumnSpacing="12" BackgroundColor="{StaticResource AppBackground}" FlowDirection="LeftToRight">
-            <Button Text="صفحه قبل" ImageSource="icon_chevron_right.svg" Style="{StaticResource SecondaryActionButton}" Command="{Binding PreviousCommand}" />
+            <Button Text="صفحه قبل" ImageSource="icon_chevron_right.png" Style="{StaticResource SecondaryActionButton}" Command="{Binding PreviousCommand}" />
             <Label Grid.Column="1" Text="{Binding PageText}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource PrimaryDarkText}" VerticalOptions="Center" />
-            <Button Grid.Column="2" Text="صفحه بعد" ImageSource="icon_chevron_left_white.svg" Style="{StaticResource PrimaryActionButton}" Command="{Binding NextCommand}" />
+            <Button Grid.Column="2" Text="صفحه بعد" ImageSource="icon_chevron_left_white.png" Style="{StaticResource PrimaryActionButton}" Command="{Binding NextCommand}" />
         </Grid>
     </Grid>
 </ContentPage>

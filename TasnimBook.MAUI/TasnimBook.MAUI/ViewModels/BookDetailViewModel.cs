@@ -13,7 +13,7 @@ public sealed class BookDetailViewModel : ObservableObject
     private readonly AccountService _account;
     private readonly BookAssetService _assets;
     private readonly AppNavigationService _navigation;
-    private ImageSource _coverImage = ImageSource.FromFile("book_cover_placeholder.svg");
+    private ImageSource _coverImage = ImageSource.FromFile("book_cover_placeholder.png");
     private bool _isFavorite, _isDownloading, _isDownloadPanelVisible;
     private string _progressText = "هنوز شروع نشده", _readButtonText = "شروع مطالعه در برنامه";
     private string _downloadStatus = "در حال دریافت PDF…", _downloadPercentText = "۰٪", _downloadButtonText = "دریافت";
@@ -44,8 +44,8 @@ public sealed class BookDetailViewModel : ObservableObject
     public string ProgressText { get => _progressText; private set => SetProperty(ref _progressText, value); }
     public string ReadButtonText { get => _readButtonText; private set => SetProperty(ref _readButtonText, value); }
     public bool IsFavorite { get => _isFavorite; private set { if (SetProperty(ref _isFavorite, value)) { OnPropertyChanged(nameof(FavoriteIcon)); OnPropertyChanged(nameof(HeaderFavoriteIcon)); OnPropertyChanged(nameof(FavoriteText)); } } }
-    public string FavoriteIcon => IsFavorite ? "icon_heart_filled.svg" : "icon_heart.svg";
-    public string HeaderFavoriteIcon => IsFavorite ? "icon_heart_header_filled.svg" : "icon_heart_header.svg";
+    public string FavoriteIcon => IsFavorite ? "icon_heart_filled.png" : "icon_heart.png";
+    public string HeaderFavoriteIcon => IsFavorite ? "icon_heart_header_filled.png" : "icon_heart_header.png";
     public string FavoriteText => IsFavorite ? "ذخیره شده" : "علاقه‌مندی";
     public bool IsDownloading { get => _isDownloading; private set => SetProperty(ref _isDownloading, value); }
     public bool IsDownloadPanelVisible { get => _isDownloadPanelVisible; private set => SetProperty(ref _isDownloadPanelVisible, value); }
@@ -78,7 +78,7 @@ public sealed class BookDetailViewModel : ObservableObject
     {
         var imageUrl = string.IsNullOrWhiteSpace(_dto.ImageUrl) ? _book.ImageUrl : _dto.ImageUrl;
         var coverPath = await _assets.GetCoverPathAsync(_book.Id, imageUrl);
-        CoverImage = string.IsNullOrWhiteSpace(coverPath) ? ImageSource.FromFile("book_cover_placeholder.svg") : ImageSource.FromFile(coverPath);
+        CoverImage = string.IsNullOrWhiteSpace(coverPath) ? ImageSource.FromFile("book_cover_placeholder.png") : ImageSource.FromFile(coverPath);
         try
         {
             var progress = await _account.GetProgressAsync(_book.Id);

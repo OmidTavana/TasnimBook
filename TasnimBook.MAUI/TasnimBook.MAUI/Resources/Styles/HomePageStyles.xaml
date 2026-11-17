@@ -103,6 +103,20 @@
         <Setter Property="HorizontalOptions" Value="Center" />
     </Style>
 
+    <Style x:Key="HomeBottomPathStyle" TargetType="Path">
+        <Setter Property="HeightRequest" Value="24" />
+        <Setter Property="WidthRequest" Value="24" />
+        <Setter Property="Aspect" Value="Uniform" />
+        <Setter Property="Fill" Value="{StaticResource HomeMutedTextColor}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="HomeBottomPathActiveStyle"
+           TargetType="Path"
+           BasedOn="{StaticResource HomeBottomPathStyle}">
+        <Setter Property="Fill" Value="{StaticResource HomePrimaryDarkColor}" />
+    </Style>
+
     <Style x:Key="HomeBottomTextActiveStyle"
            TargetType="Label"
            BasedOn="{StaticResource HomeBottomTextStyle}">
@@ -117,7 +131,7 @@
                         StrokeShape="RoundRectangle 2"
                         BackgroundColor="{StaticResource HomeImagePlaceholderColor}">
                     <Grid>
-                        <Image Source="book_cover_placeholder.svg"
+                        <Image Source="book_cover_placeholder.png"
                                Style="{StaticResource HomeBookCoverStyle}" />
                         <Image Source="{Binding ImageUrl}"
                                Style="{StaticResource HomeBookCoverStyle}" />

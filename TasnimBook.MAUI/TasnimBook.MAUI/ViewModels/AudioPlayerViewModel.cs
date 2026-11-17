@@ -23,8 +23,8 @@ public sealed class AudioPlayerViewModel : ObservableObject
 
     public string Title => _dto.Title;
     public string Author => BookUi.Author(_book);
-    public string Cover => ApiConfiguration.ResolveResourceUrl(_dto.ImageUrl) ?? "book_cover_placeholder.svg";
-    public string PlayIcon => _isPlaying ? "icon_pause.svg" : "icon_play.svg";
+    public string Cover => ApiConfiguration.ResolveResourceUrl(_dto.ImageUrl) ?? "book_cover_placeholder.png";
+    public string PlayIcon => _isPlaying ? "icon_pause.png" : "icon_play.png";
     public bool IsBusy { get => _isBusy; private set => SetProperty(ref _isBusy, value); }
     public bool IsReady => _isInitialized && !IsBusy;
     public double PositionSeconds { get => _positionSeconds; set => SetProperty(ref _positionSeconds, value); }
