@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels" x:Class="TasnimBook.MAUI.Views.BookDetailPage"
              x:DataType="viewModels:BookDetailViewModel" FlowDirection="RightToLeft"
-             BackgroundColor="{StaticResource PageWarmBackground}" Title="جزئیات کتاب">
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageWarmBackground}, Dark={StaticResource DarkAppBackground}}" Title="جزئیات کتاب">
     <Grid RowDefinitions="Auto,*">
         <Grid Style="{StaticResource BookDetailHeader}" ColumnDefinitions="52,*,52" FlowDirection="LeftToRight">
             <ImageButton Source="icon_back.png" Style="{StaticResource HeaderIconButton}" Command="{Binding BackCommand}" />
@@ -14,8 +14,8 @@
                 <Border Style="{StaticResource BookDetailCard}">
                     <Grid ColumnDefinitions="*,142" ColumnSpacing="18" FlowDirection="RightToLeft">
                         <VerticalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold" LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="{StaticResource PrimaryDarkText}" />
-                            <Label Text="{Binding Author}" FontSize="17" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Start" />
+                            <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold" LineBreakMode="WordWrap" HorizontalTextAlignment="Start" TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
+                            <Label Text="{Binding Author}" FontSize="17" TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" HorizontalTextAlignment="Start" />
                             <Border BackgroundColor="{StaticResource AccentSoft}" StrokeThickness="0" Padding="10,6" HorizontalOptions="Start" StrokeShape="RoundRectangle 12">
                                 <Label Text="{Binding ProgressText}" FontSize="13" TextColor="{StaticResource ProgressText}" />
                             </Border>
@@ -38,8 +38,8 @@
                                 DragStarted="OnAudioSeekStarted"
                                 DragCompleted="OnAudioSeekCompleted" />
                         <Grid ColumnDefinitions="*,*" FlowDirection="LeftToRight">
-                            <Label Text="{Binding PositionText}" FontSize="14" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Start" />
-                            <Label Grid.Column="1" Text="{Binding DurationText}" FontSize="14" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="End" />
+                            <Label Text="{Binding PositionText}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" HorizontalTextAlignment="Start" />
+                            <Label Grid.Column="1" Text="{Binding DurationText}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" HorizontalTextAlignment="End" />
                         </Grid>
                         <HorizontalStackLayout Spacing="28" HorizontalOptions="Center" FlowDirection="LeftToRight">
                             <ImageButton Source="icon_skip_previous.png" Style="{StaticResource AudioSmallIconButton}"
@@ -49,14 +49,14 @@
                             <ImageButton Source="icon_skip_next.png" Style="{StaticResource AudioSmallIconButton}"
                                          Command="{Binding SeekForwardCommand}" IsEnabled="{Binding IsReady}" />
                         </HorizontalStackLayout>
-                        <Label Text="{Binding StatusMessage}" FontSize="13" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Center" />
+                        <Label Text="{Binding StatusMessage}" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" HorizontalTextAlignment="Center" />
                         <Label Text="موقعیت پخش خودکار ذخیره می‌شود."
-                               FontSize="12" TextColor="{StaticResource BodyMuted}" HorizontalTextAlignment="Center" />
+                               FontSize="12" TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Border>
 
                 <Button IsVisible="{Binding IsPdfBook}" Text="{Binding ReadButtonText}" Style="{StaticResource PrimaryActionButton}" Command="{Binding ReadCommand}" />
-                <Border IsVisible="{Binding IsDownloadPanelVisible}" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0" Padding="13,10" StrokeShape="RoundRectangle 14">
+                <Border IsVisible="{Binding IsDownloadPanelVisible}" BackgroundColor="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource DarkPrimarySoft}}" StrokeThickness="0" Padding="13,10" StrokeShape="RoundRectangle 14">
                     <VerticalStackLayout Spacing="7">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="{Binding DownloadStatus}" FontSize="14" TextColor="{StaticResource PrimaryDark}" />
@@ -85,7 +85,7 @@
                     <VerticalStackLayout Spacing="10">
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                             <Button Text="{Binding LikeText}" Style="{StaticResource SecondaryActionButton}" Command="{Binding LikeCommand}" />
-                            <Label Grid.Column="1" Text="{Binding RatingText}" VerticalTextAlignment="Center" HorizontalTextAlignment="End" TextColor="{StaticResource BodyMuted}" />
+                            <Label Grid.Column="1" Text="{Binding RatingText}" VerticalTextAlignment="Center" HorizontalTextAlignment="End" TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" />
                         </Grid>
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="7" FlowDirection="LeftToRight">
                             <Button Text="★ 1" Command="{Binding RateCommand}" CommandParameter="1" Style="{StaticResource SecondaryActionButton}" />
@@ -99,7 +99,7 @@
                 </Border>
                 <Border Style="{StaticResource BookDetailCard}"><VerticalStackLayout Spacing="10">
                     <Label HorizontalTextAlignment="Start" Text="درباره کتاب" Style="{StaticResource SectionHeading}" />
-                    <Label Text="{Binding Description}" FontSize="17" LineHeight="1.55" TextColor="{StaticResource BodyText}" HorizontalTextAlignment="Start" />
+                    <Label Text="{Binding Description}" FontSize="17" LineHeight="1.55" TextColor="{AppThemeBinding Light={StaticResource BodyText}, Dark={StaticResource DarkBodyText}}" HorizontalTextAlignment="Start" />
                 </VerticalStackLayout></Border>
             </VerticalStackLayout>
         </ScrollView>

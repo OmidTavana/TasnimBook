@@ -3,7 +3,7 @@
              xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels" x:Class="TasnimBook.MAUI.Views.LibraryPage"
              xmlns:models="clr-namespace:TasnimBook.Data.Models;assembly=TasnimBook.Data"
              x:Name="Root" x:DataType="viewModels:LibraryViewModel" Title="کتابخانه من" FlowDirection="RightToLeft"
-             BackgroundColor="{StaticResource PageWarmBackground}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageWarmBackground}, Dark={StaticResource DarkAppBackground}}">
     <Grid RowDefinitions="Auto,*">
         <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
         <CollectionView Grid.Row="1" ItemsSource="{Binding Books}" EmptyView="با شروع مطالعه یا دانلود، کتاب‌ها اینجا اضافه می‌شوند.">

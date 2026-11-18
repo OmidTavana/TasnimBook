@@ -80,3 +80,14 @@ public sealed class BookEditorModel
     }
 
 }
+
+public sealed class NotificationPageModel
+{
+    public AppNotification Draft { get; set; } = new()
+    {
+        PublishAtUtc = DateTime.UtcNow,
+        IsActive = true
+    };
+
+    public IReadOnlyList<AppNotification> Items { get; set; } = [];
+}

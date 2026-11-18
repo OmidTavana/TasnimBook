@@ -19,7 +19,7 @@
         </ScrollView>
         <Grid Grid.Row="3" ColumnDefinitions="*,Auto,*" Padding="12,9" ColumnSpacing="12" BackgroundColor="{StaticResource AppBackground}" FlowDirection="LeftToRight">
             <Button Text="صفحه قبل" ImageSource="icon_chevron_right.png" Style="{StaticResource SecondaryActionButton}" Command="{Binding PreviousCommand}" />
-            <Label Grid.Column="1" Text="{Binding PageText}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource PrimaryDarkText}" VerticalOptions="Center" />
+            <Label Grid.Column="1" Text="{Binding PageText}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" VerticalOptions="Center" />
             <Button Grid.Column="2" Text="صفحه بعد" ImageSource="icon_chevron_left_white.png" Style="{StaticResource PrimaryActionButton}" Command="{Binding NextCommand}" />
         </Grid>
     </Grid>

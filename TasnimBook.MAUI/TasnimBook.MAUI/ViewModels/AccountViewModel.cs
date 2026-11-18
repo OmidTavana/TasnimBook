@@ -11,12 +11,15 @@ public sealed class AccountViewModel : ObservableObject
     private string? _errorMessage;
     private bool _isBusy;
     private bool _isLoggedIn;
+    private bool _isPasswordHidden = true;
     private string _welcomeText = string.Empty;
     private string _profileEmail = string.Empty;
 
     public bool FavoritesAvailable { get; }
     public string Email { get => _email; set => SetProperty(ref _email, value); }
     public string Password { get => _password; set => SetProperty(ref _password, value); }
+    public bool IsPasswordHidden { get => _isPasswordHidden; private set { if (SetProperty(ref _isPasswordHidden, value)) OnPropertyChanged(nameof(PasswordToggleText)); } }
+    public string PasswordToggleText => IsPasswordHidden ? "نمایش" : "پنهان";
     public string? ErrorMessage { get => _errorMessage; private set => SetProperty(ref _errorMessage, value); }
     public bool IsBusy { get => _isBusy; private set { if (SetProperty(ref _isBusy, value)) OnPropertyChanged(nameof(LoginButtonText)); } }
     public bool IsLoggedIn { get => _isLoggedIn; private set { if (SetProperty(ref _isLoggedIn, value)) OnPropertyChanged(nameof(IsLoggedOut)); } }
@@ -28,6 +31,7 @@ public sealed class AccountViewModel : ObservableObject
     public AsyncCommand RegisterCommand { get; }
     public AsyncCommand FavoritesCommand { get; }
     public AsyncCommand LogoutCommand { get; }
+    public AsyncCommand TogglePasswordCommand { get; }
 
     public AccountViewModel(AccountService account, AppNavigationService navigation, bool favoritesAvailable)
     {
@@ -38,19 +42,46 @@ public sealed class AccountViewModel : ObservableObject
         RegisterCommand = new AsyncCommand(_navigation.OpenRegisterAsync);
         FavoritesCommand = new AsyncCommand(_navigation.OpenFavoritesAsync);
         LogoutCommand = new AsyncCommand(LogoutAsync);
+        TogglePasswordCommand = new AsyncCommand(() =>
+        {
+            IsPasswordHidden = !IsPasswordHidden;
+            return Task.CompletedTask;
+        });
     }
 
     public async Task OnAppearingAsync() { await _account.InitializeAsync(); RefreshState(); }
 
     private async Task LoginAsync()
     {
-        IsBusy = true; ErrorMessage = null;
-        try { await _account.LoginAsync(Email, Password); Password = string.Empty; RefreshState(); }
+        ErrorMessage = ValidateLogin();
+        if (ErrorMessage is not null) return;
+
+        IsBusy = true;
+        try
+        {
+            await _account.LoginAsync(Email, Password);
+            Password = string.Empty;
+            RefreshState();
+            await _navigation.ToastAsync("ورود با موفقیت انجام شد.", AppMessageType.Success);
+        }
         catch (Exception ex) { ErrorMessage = ex.Message; }
         finally { IsBusy = false; }
     }
 
-    private async Task LogoutAsync() { await _account.LogoutAsync(); RefreshState(); }
+    private async Task LogoutAsync()
+    {
+        await _account.LogoutAsync();
+        RefreshState();
+        await _navigation.ToastAsync("از حساب کاربری خارج شدید.", AppMessageType.Information);
+    }
+
+    private string? ValidateLogin()
+    {
+        if (string.IsNullOrWhiteSpace(Email)) return "نشانی ایمیل را وارد کنید.";
+        if (!Email.Contains('@') || !Email.Contains('.')) return "نشانی ایمیل معتبر نیست.";
+        if (string.IsNullOrWhiteSpace(Password)) return "رمز عبور را وارد کنید.";
+        return null;
+    }
     private void RefreshState()
     {
         IsLoggedIn = _account.IsLoggedIn;

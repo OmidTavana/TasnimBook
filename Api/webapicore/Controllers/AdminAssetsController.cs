@@ -58,6 +58,7 @@ public sealed class AdminAssetsController : ControllerBase
     public async Task<ActionResult<AdminAssetUploadDto>> Upload(
         [FromForm] IFormFile file,
         [FromQuery] string kind,
+        [FromQuery] string? bookTitle,
         CancellationToken cancellationToken)
     {
         if (!Policies.TryGetValue(kind, out var policy))
@@ -95,7 +96,7 @@ public sealed class AdminAssetsController : ControllerBase
 
         Directory.CreateDirectory(uploadDirectory);
 
-        var storedFileName = $"{Guid.NewGuid():N}{extension}";
+        var storedFileName = $"{ToSafeFileName(bookTitle)}-{Guid.NewGuid():N}{extension}";
         var destinationPath = Path.Combine(uploadDirectory, storedFileName);
 
         await using (var destination = new FileStream(
@@ -157,6 +158,20 @@ public sealed class AdminAssetsController : ControllerBase
             "audio/mpeg3" or
             "audio/x-mpeg-3" or
             "application/octet-stream";
+
+    private static string ToSafeFileName(string? title)
+    {
+        if (string.IsNullOrWhiteSpace(title)) return "book";
+
+        var invalidCharacters = Path.GetInvalidFileNameChars();
+        var cleaned = new string(title.Trim()
+            .Where(character => !invalidCharacters.Contains(character) &&
+                                (char.IsLetterOrDigit(character) || char.IsWhiteSpace(character) || character is '-' or '_'))
+            .ToArray());
+        cleaned = string.Join('-', cleaned.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        if (cleaned.Length > 80) cleaned = cleaned[..80].TrimEnd('-', '_');
+        return string.IsNullOrWhiteSpace(cleaned) ? "book" : cleaned;
+    }
 
     private sealed record UploadPolicy(
         string DirectoryName,

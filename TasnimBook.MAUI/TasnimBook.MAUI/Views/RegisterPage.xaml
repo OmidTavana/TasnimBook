@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels"
              x:Class="TasnimBook.MAUI.Views.RegisterPage" x:DataType="viewModels:RegisterViewModel" Title="ساخت حساب" FlowDirection="RightToLeft"
-             BackgroundColor="{StaticResource PageWarmBackground}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageWarmBackground}, Dark={StaticResource DarkAppBackground}}">
     <ScrollView><VerticalStackLayout Padding="20,30" Spacing="14">
         <Label Text="ساخت حساب جدید" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" />
         <Border Style="{StaticResource BookDetailCard}"><VerticalStackLayout Spacing="12">

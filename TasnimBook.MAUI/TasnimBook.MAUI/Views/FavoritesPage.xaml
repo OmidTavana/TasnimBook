@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels" xmlns:models="clr-namespace:TasnimBook.Data.Models;assembly=TasnimBook.Data"
              x:Class="TasnimBook.MAUI.Views.FavoritesPage" x:DataType="viewModels:FavoritesViewModel" Title="علاقه‌مندی‌ها" FlowDirection="RightToLeft"
-             BackgroundColor="{StaticResource PageWarmBackground}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageWarmBackground}, Dark={StaticResource DarkAppBackground}}">
     <Grid>
         <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource PrimaryDark}" VerticalOptions="Center" />
         <CollectionView ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" Margin="16,10" SelectionMode="Single">

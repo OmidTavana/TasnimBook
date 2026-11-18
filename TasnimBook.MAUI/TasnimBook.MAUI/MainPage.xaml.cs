@@ -7,11 +7,16 @@ public partial class MainPage : ContentPage
 {
     private readonly HomeViewModel _viewModel;
     private readonly AppUpdateService _appUpdate;
-    public MainPage(HomeViewModel viewModel, AppUpdateService appUpdate)
+    private readonly AppNotificationService _notifications;
+    public MainPage(
+        HomeViewModel viewModel,
+        AppUpdateService appUpdate,
+        AppNotificationService notifications)
     {
         InitializeComponent();
         _viewModel = viewModel;
         _appUpdate = appUpdate;
+        _notifications = notifications;
         BindingContext = viewModel;
         NavigationPage.SetHasNavigationBar(this, false);
     }
@@ -19,7 +24,9 @@ public partial class MainPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await _viewModel.RefreshAccountStateAsync();
         if (_viewModel.NewBooks.Count == 0) await _viewModel.LoadAsync();
+        await _notifications.CheckAsync();
         await _appUpdate.CheckForUpdateAsync();
     }
 }

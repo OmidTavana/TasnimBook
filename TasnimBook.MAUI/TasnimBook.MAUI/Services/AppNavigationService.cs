@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using TasnimBook.Data;
 using TasnimBook.Data.Models;
 using TasnimBook.MAUI.ViewModels;
@@ -10,12 +11,21 @@ public sealed class AppNavigationService
     private readonly BookCatalogService _catalog;
     private readonly AccountService _account;
     private readonly BookAssetService _assets;
+    private readonly InAppMessageService _messages;
+    private readonly IServiceProvider _services;
 
-    public AppNavigationService(BookCatalogService catalog, AccountService account, BookAssetService assets)
+    public AppNavigationService(
+        BookCatalogService catalog,
+        AccountService account,
+        BookAssetService assets,
+        InAppMessageService messages,
+        IServiceProvider services)
     {
         _catalog = catalog;
         _account = account;
         _assets = assets;
+        _messages = messages;
+        _services = services;
     }
 
     private INavigation Navigation => Application.Current?.Windows.FirstOrDefault()?.Page?.Navigation
@@ -35,6 +45,9 @@ public sealed class AppNavigationService
     public Task OpenAccountAsync(bool favoritesAvailable = true) =>
         Navigation.PushAsync(new AccountPage(new AccountViewModel(_account, this, favoritesAvailable)));
 
+    public Task OpenSettingsAsync() =>
+        Navigation.PushAsync(_services.GetRequiredService<SettingsPage>());
+
     public Task OpenRegisterAsync() => Navigation.PushAsync(new RegisterPage(new RegisterViewModel(_account, this)));
     public Task OpenFavoritesAsync() => Navigation.PushAsync(new FavoritesPage(new FavoritesViewModel(_account, this)));
     public Task OpenLibraryAsync() => Navigation.PushAsync(new LibraryPage(new LibraryViewModel(_account, this)));
@@ -42,10 +55,33 @@ public sealed class AppNavigationService
         Navigation.PushAsync(new BookReaderPage(new BookReaderViewModel(book, dto, localPath, _account, this)));
     public Task GoBackAsync() => Navigation.PopAsync();
 
-    public Task AlertAsync(string title, string message, string cancel = "باشه") =>
-        CurrentPage.DisplayAlertAsync(title, message, cancel);
-    public Task<bool> ConfirmAsync(string title, string message, string accept, string cancel) =>
-        CurrentPage.DisplayAlertAsync(title, message, accept, cancel);
+    public Task AlertAsync(
+        string title,
+        string message,
+        string cancel = "باشه",
+        AppMessageType type = AppMessageType.Information) =>
+        _messages.ShowDialogAsync(title, message, cancel, type);
+
+    public Task<bool> ConfirmAsync(
+        string title,
+        string message,
+        string accept,
+        string cancel,
+        AppMessageType type = AppMessageType.Warning) =>
+        _messages.ConfirmAsync(title, message, accept, cancel, type);
+
+    public Task<bool> AcknowledgeAsync(
+        string title,
+        string message,
+        string accept = "باشه",
+        AppMessageType type = AppMessageType.Information) =>
+        _messages.ShowAcknowledgementAsync(title, message, accept, type);
+
+    public Task ToastAsync(
+        string message,
+        AppMessageType type = AppMessageType.Information,
+        TimeSpan? duration = null) =>
+        _messages.ShowToastAsync(message, type, duration);
     public Task ShareAsync(string title, string text, string uri) => Share.Default.RequestAsync(new ShareTextRequest { Title = title, Text = text, Uri = uri });
     public Task OpenExternalAsync(Uri uri) => Launcher.Default.OpenAsync(uri);
 }

@@ -95,6 +95,7 @@ public sealed class ContentController : Controller
                 var cover = await _apiClient.UploadAssetAsync(
                     model.CoverImage,
                     "cover",
+                    model.Title,
                     cancellationToken);
 
                 model.ImageUrl = cover.Url;
@@ -106,6 +107,7 @@ public sealed class ContentController : Controller
                 var document = await _apiClient.UploadAssetAsync(
                     model.BookFile,
                     model.IsAudioBook ? "audio" : "document",
+                    model.Title,
                     cancellationToken);
 
                 model.Url = document.Url;

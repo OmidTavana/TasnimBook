@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using TasnimBook.MAUI.Services;
 
 namespace TasnimBook.MAUI;
 
@@ -6,10 +7,11 @@ public partial class App : Application
 {
     private readonly IServiceProvider _services;
 
-    public App(IServiceProvider services)
+    public App(IServiceProvider services, ThemeService themeService)
     {
         InitializeComponent();
         _services = services;
+        themeService.ApplySavedTheme();
     }
 
     protected override Window CreateWindow(IActivationState? activationState)

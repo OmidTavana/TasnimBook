@@ -14,8 +14,8 @@
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
     <Style x:Key="BookDetailCard" TargetType="Border">
-        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
-        <Setter Property="Stroke" Value="{StaticResource CardStroke}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource CardStroke}, Dark={StaticResource DarkBorder}}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Padding" Value="18" />
         <Setter Property="StrokeShape" Value="RoundRectangle 22" />
@@ -33,16 +33,16 @@
         <Setter Property="Padding" Value="18,10" />
     </Style>
     <Style x:Key="SecondaryActionButton" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource PrimarySoft}" />
-        <Setter Property="TextColor" Value="{StaticResource PrimaryDark}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource DarkPrimarySoft}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource DarkPrimaryText}}" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="HeightRequest" Value="48" />
         <Setter Property="CornerRadius" Value="14" />
     </Style>
     <Style x:Key="AccountEntry" TargetType="Entry">
-        <Setter Property="BackgroundColor" Value="{StaticResource InputBackground}" />
-        <Setter Property="TextColor" Value="{StaticResource PrimaryDarkText}" />
-        <Setter Property="PlaceholderColor" Value="{StaticResource InputPlaceholder}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource InputBackground}, Dark={StaticResource DarkInputBackground}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource InputPlaceholder}, Dark={StaticResource DarkMutedText}}" />
         <Setter Property="HeightRequest" Value="54" />
         <Setter Property="Margin" Value="0,4" />
         <Setter Property="FlowDirection" Value="RightToLeft" />
@@ -50,12 +50,12 @@
     <Style x:Key="SectionHeading" TargetType="Label">
         <Setter Property="FontSize" Value="22" />
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="TextColor" Value="{StaticResource PrimaryDarkText}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
         <Setter Property="HorizontalTextAlignment" Value="End" />
     </Style>
     <Style x:Key="MutedLabel" TargetType="Label">
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="TextColor" Value="{StaticResource BodyMuted}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" />
         <Setter Property="HorizontalTextAlignment" Value="End" />
     </Style>
     <Style x:Key="HeaderIconButton" TargetType="ImageButton">

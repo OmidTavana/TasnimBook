@@ -99,6 +99,75 @@ namespace TasnimBook.Data.Migrations
                     b.ToTable("appuser");
                 });
 
+            modelBuilder.Entity("TasnimBook.Data.AppNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActionUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("actionurl");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("createdatutc");
+
+                    b.Property<DateTime?>("ExpiresAtUtc")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("expiresatutc");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("isactive");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("NotificationType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)")
+                        .HasColumnName("notificationtype");
+
+                    b.Property<int?>("PlatformId")
+                        .HasColumnType("int")
+                        .HasColumnName("platformid");
+
+                    b.Property<DateTime>("PublishAtUtc")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("publishatutc");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)")
+                        .HasColumnName("title");
+
+                    b.Property<string>("VersionName")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)")
+                        .HasColumnName("versionname");
+
+                    b.Property<int?>("VersionNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("versionnumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive", "PublishAtUtc")
+                        .HasDatabaseName("IX_appnotification_active_publish");
+
+                    b.ToTable("appnotification");
+                });
+
             modelBuilder.Entity("TasnimBook.Data.AppVersion", b =>
                 {
                     b.Property<int>("Id")

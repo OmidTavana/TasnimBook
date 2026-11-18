@@ -18,6 +18,7 @@ public sealed class AccountService
     private string? _accessToken;
     private string? _refreshToken;
 
+    public event EventHandler? SessionChanged;
     public AccountProfileDto? CurrentUser { get; private set; }
     public bool IsLoggedIn => CurrentUser is not null && !string.IsNullOrWhiteSpace(_accessToken);
 
@@ -266,6 +267,7 @@ public sealed class AccountService
         await SecureStorage.Default.SetAsync(AccessTokenKey, result.AccessToken);
         await SecureStorage.Default.SetAsync(RefreshTokenKey, result.RefreshToken);
         await SecureStorage.Default.SetAsync(ProfileKey, JsonConvert.SerializeObject(result.User));
+        SessionChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void ClearLocalSession()
@@ -276,5 +278,6 @@ public sealed class AccountService
         _accessToken = null;
         _refreshToken = null;
         CurrentUser = null;
+        SessionChanged?.Invoke(this, EventArgs.Empty);
     }
 }

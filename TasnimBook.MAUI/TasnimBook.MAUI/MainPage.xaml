@@ -5,12 +5,40 @@
              x:Class="TasnimBook.MAUI.MainPage"
              x:DataType="viewModels:HomeViewModel"
              FlowDirection="RightToLeft"
-             BackgroundColor="{StaticResource HomePageBackgroundColor}">
+             SafeAreaEdges="Container"
+             BackgroundColor="{AppThemeBinding Light={StaticResource HomePageBackgroundColor}, Dark={StaticResource DarkAppBackground}}">
     <Grid RowDefinitions="Auto,*,Auto">
         <Border Grid.Row="0" Style="{StaticResource HomeHeaderStyle}">
-            <Grid>
-                <Label Text="تسنیم‌بوک"
+            <Grid FlowDirection="LeftToRight" ColumnDefinitions="52,*,52">
+                <Border Grid.Column="0"
+                        WidthRequest="46" HeightRequest="46"
+                        BackgroundColor="#20FFFFFF"
+                        Stroke="#55FFFFFF"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 23"
+                        HorizontalOptions="Start">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AccountCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid>
+                        <Path Data="M12,3 A4,4 0 1 1 12,11 A4,4 0 0 1 12,3 M4,21 C4.4,15.8 7.2,13 12,13 C16.8,13 19.6,15.8 20,21 Z"
+                              Fill="{StaticResource HeaderText}"
+                              WidthRequest="25" HeightRequest="25"
+                              Aspect="Uniform"
+                              HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Border WidthRequest="10" HeightRequest="10"
+                                IsVisible="{Binding IsLoggedOut}"
+                                BackgroundColor="#E44B4B"
+                                Stroke="{StaticResource HeaderText}"
+                                StrokeThickness="1.5"
+                                StrokeShape="RoundRectangle 5"
+                                HorizontalOptions="End" VerticalOptions="Start"
+                                Margin="0,3,3,0" />
+                    </Grid>
+                </Border>
+                <Label Grid.Column="1" Text="تسنیم‌بوک"
                        Style="{StaticResource HomeHeaderTitleStyle}" />
+                <Grid Grid.Column="2" BackgroundColor="Transparent" />
             </Grid>
         </Border>
 
@@ -19,7 +47,10 @@
                      IsRefreshing="{Binding IsBusy}"
                      RefreshColor="{StaticResource HomePrimaryDarkColor}">
             <ScrollView>
-                <VerticalStackLayout Padding="8,12,8,20" Spacing="10">
+                <VerticalStackLayout Padding="8,12,8,20"
+                                     Spacing="10"
+                                     MaximumWidthRequest="1100"
+                                     HorizontalOptions="Center">
                     <ActivityIndicator Color="{StaticResource HomePrimaryDarkColor}"
                                        IsVisible="{Binding IsBusy}"
                                        IsRunning="{Binding IsBusy}"
@@ -27,7 +58,7 @@
                                        HeightRequest="36" />
                     <Label Text="{Binding ErrorMessage}"
                            IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}"
-                           TextColor="{StaticResource HomeMutedTextColor}"
+                           TextColor="{AppThemeBinding Light={StaticResource HomeMutedTextColor}, Dark={StaticResource DarkMutedText}}"
                            HorizontalTextAlignment="Center" />
 
                     <Border Style="{StaticResource HomeSectionStyle}">
@@ -108,7 +139,7 @@
                             </CollectionView>
                             <Label Text="هنوز کتاب صوتی ثبت نشده است."
                                    IsVisible="{Binding AudioBooks.Count, Converter={StaticResource IntZeroConverter}}"
-                                   TextColor="{StaticResource HomeMutedTextColor}"
+                                   TextColor="{AppThemeBinding Light={StaticResource HomeMutedTextColor}, Dark={StaticResource DarkMutedText}}"
                                    HorizontalTextAlignment="Center"
                                    Padding="0,18" />
                         </VerticalStackLayout>
@@ -157,7 +188,7 @@
 
                 <VerticalStackLayout Grid.Column="4" Style="{StaticResource HomeBottomItemStyle}">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding AccountCommand}" />
+                        <TapGestureRecognizer Command="{Binding SettingsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
                     <Path Data="M19.4,13 L19.5,12 L19.4,11 L21.4,9.4 L19.4,6 L17,7 A8,8 0 0 0 15.3,6 L15,3.5 L11,3.5 L10.7,6 A8,8 0 0 0 9,7 L6.6,6 L4.6,9.4 L6.6,11 L6.5,12 L6.6,13 L4.6,14.6 L6.6,18 L9,17 A8,8 0 0 0 10.7,18 L11,20.5 L15,20.5 L15.3,18 A8,8 0 0 0 17,17 L19.4,18 L21.4,14.6 Z M13,16 A4,4 0 1 1 13,8 A4,4 0 0 1 13,16 Z"
                           Style="{StaticResource HomeBottomPathStyle}" />

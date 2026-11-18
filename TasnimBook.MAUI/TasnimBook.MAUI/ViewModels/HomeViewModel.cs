@@ -12,11 +12,14 @@ public sealed class HomeViewModel : ObservableObject
     private bool _isBusy;
     private string? _errorMessage;
     private BooksDTO? _selectedBook;
+    private bool _isLoggedIn;
     public ObservableCollection<BooksDTO> NewBooks { get; } = [];
     public ObservableCollection<BooksDTO> SuggestedBooks { get; } = [];
     public ObservableCollection<BooksDTO> AudioBooks { get; } = [];
     public bool IsBusy { get => _isBusy; private set => SetProperty(ref _isBusy, value); }
     public string? ErrorMessage { get => _errorMessage; private set => SetProperty(ref _errorMessage, value); }
+    public bool IsLoggedIn { get => _isLoggedIn; private set => SetProperty(ref _isLoggedIn, value); }
+    public bool IsLoggedOut => !IsLoggedIn;
     public BooksDTO? SelectedBook
     {
         get => _selectedBook;
@@ -36,12 +39,14 @@ public sealed class HomeViewModel : ObservableObject
     public AsyncCommand SearchCommand { get; }
     public AsyncCommand LibraryCommand { get; }
     public AsyncCommand AccountCommand { get; }
+    public AsyncCommand SettingsCommand { get; }
 
     public HomeViewModel(BookCatalogService catalog, AccountService account, AppNavigationService navigation)
     {
         _catalog = catalog;
         _account = account;
         _navigation = navigation;
+        _account.SessionChanged += (_, _) => RefreshAccountState();
         LoadCommand = new AsyncCommand(LoadAsync);
         OpenBookCommand = new AsyncCommand<BooksDTO>(dto => dto is null ? Task.CompletedTask : _navigation.OpenBookAsync(dto));
         NewBooksCommand = new AsyncCommand(() => _navigation.OpenBookListAsync("کتاب‌های تازه", Views.BookListMode.New));
@@ -51,6 +56,19 @@ public sealed class HomeViewModel : ObservableObject
         SearchCommand = new AsyncCommand(() => _navigation.OpenBookListAsync("جست‌وجوی کتاب", Views.BookListMode.Search));
         LibraryCommand = new AsyncCommand(OpenLibraryAsync);
         AccountCommand = new AsyncCommand(() => _navigation.OpenAccountAsync());
+        SettingsCommand = new AsyncCommand(_navigation.OpenSettingsAsync);
+    }
+
+    public async Task RefreshAccountStateAsync()
+    {
+        await _account.InitializeAsync();
+        RefreshAccountState();
+    }
+
+    private void RefreshAccountState()
+    {
+        IsLoggedIn = _account.IsLoggedIn;
+        OnPropertyChanged(nameof(IsLoggedOut));
     }
 
     private async Task OpenLibraryAsync()

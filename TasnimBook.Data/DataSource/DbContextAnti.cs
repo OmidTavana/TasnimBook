@@ -15,6 +15,7 @@ namespace TasnimBook.Data.DataSource
         public DbSet<BookCat> BookCategories { get; set; }
         public DbSet<JwtUser> JwtUser { get; set; }
         public DbSet<AppVersion> AppVersions { get; set; }
+        public DbSet<AppNotification> AppNotifications { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<ManyToManyBookAndBookCatcs> BookCategoryRelations { get; set; }
         public DbSet<Comments> Comments { get; set; }
@@ -59,6 +60,10 @@ namespace TasnimBook.Data.DataSource
             modelBuilder.Entity<AppUser>()
                 .HasIndex(user => user.NormalizedEmail)
                 .IsUnique();
+
+            modelBuilder.Entity<AppNotification>()
+                .HasIndex(notification => new { notification.IsActive, notification.PublishAtUtc })
+                .HasDatabaseName("IX_appnotification_active_publish");
 
             modelBuilder.Entity<UserFavorite>()
                 .HasKey(favorite => new { favorite.UserId, favorite.BookId });

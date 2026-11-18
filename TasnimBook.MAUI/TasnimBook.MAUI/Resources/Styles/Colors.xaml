@@ -30,6 +30,18 @@
     <Color x:Key="ReaderSubtext">#D7E5E0</Color>
     <Color x:Key="Transparent">Transparent</Color>
 
+    <!-- Semantic dark palette. Keep brand green while lowering glare and
+         preserving readable contrast across Android and Windows. -->
+    <Color x:Key="DarkAppBackground">#101714</Color>
+    <Color x:Key="DarkSurface">#19231F</Color>
+    <Color x:Key="DarkSurfaceElevated">#202D28</Color>
+    <Color x:Key="DarkBorder">#354740</Color>
+    <Color x:Key="DarkPrimaryText">#F1F7F4</Color>
+    <Color x:Key="DarkBodyText">#C7D4CF</Color>
+    <Color x:Key="DarkMutedText">#97AAA3</Color>
+    <Color x:Key="DarkPrimarySoft">#253A33</Color>
+    <Color x:Key="DarkInputBackground">#24312D</Color>
+
     <Color x:Key="HomePageBackgroundColor">#F5F4F0</Color>
     <Color x:Key="HomeSurfaceColor">#FFFFFF</Color>
     <Color x:Key="HomePrimaryColor">#1F5A4C</Color>
@@ -63,6 +75,7 @@
     <SolidColorBrush x:Key="TransparentBrush" Color="{StaticResource Transparent}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+    <SolidColorBrush x:Key="DarkSurfaceBrush" Color="{StaticResource DarkSurface}"/>
 
     <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
     <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>

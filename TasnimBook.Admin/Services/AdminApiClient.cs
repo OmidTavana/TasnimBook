@@ -85,6 +85,15 @@ public sealed class AdminApiClient
         return GetAsync<IReadOnlyList<AdminUserDto>>(path, cancellationToken);
     }
 
+    public Task<IReadOnlyList<AppNotification>> NotificationsAsync(CancellationToken cancellationToken) =>
+        GetAsync<IReadOnlyList<AppNotification>>("AdminNotifications", cancellationToken);
+
+    public async Task CreateNotificationAsync(AppNotification notification, CancellationToken cancellationToken) =>
+        await SendAsync<object>(HttpMethod.Post, "AdminNotifications", notification, cancellationToken);
+
+    public async Task DeleteNotificationAsync(int id, CancellationToken cancellationToken) =>
+        await SendAsync<object>(HttpMethod.Delete, $"AdminNotifications/{id}", body: null, cancellationToken);
+
     public async Task ReviewAsync(
         int administratorId,
         AdminReviewRequest reviewRequest,
@@ -206,9 +215,10 @@ public sealed class AdminApiClient
     public async Task<AdminAssetUploadDto> UploadAssetAsync(
         IFormFile file,
         string kind,
+        string bookTitle,
         CancellationToken cancellationToken)
     {
-        var path = $"AdminAssets/Upload?kind={Uri.EscapeDataString(kind)}";
+        var path = $"AdminAssets/Upload?kind={Uri.EscapeDataString(kind)}&bookTitle={Uri.EscapeDataString(bookTitle)}";
 
         using var fileStream = file.OpenReadStream();
         using var fileContent = new StreamContent(fileStream);

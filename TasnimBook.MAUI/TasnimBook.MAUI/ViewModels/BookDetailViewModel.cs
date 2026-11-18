@@ -106,7 +106,7 @@ public sealed class BookDetailViewModel : ObservableObject
     private async Task DownloadAsync()
     {
         var path = await EnsureDownloadedAsync();
-        if (path is not null) await _navigation.AlertAsync("دریافت کامل شد", $"PDF برای مطالعه آفلاین در پوشه Downloads برنامه ذخیره شد.\n{path}");
+        if (path is not null) await _navigation.ToastAsync("PDF برای مطالعه آفلاین ذخیره شد.", AppMessageType.Success);
     }
 
     private async Task<string?> EnsureDownloadedAsync()

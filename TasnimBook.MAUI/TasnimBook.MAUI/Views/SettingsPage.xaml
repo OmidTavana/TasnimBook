@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels"
+             x:Class="TasnimBook.MAUI.Views.SettingsPage"
+             x:DataType="viewModels:SettingsViewModel"
+             Title="تنظیمات"
+             FlowDirection="RightToLeft"
+             SafeAreaEdges="Container"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageWarmBackground}, Dark={StaticResource DarkAppBackground}}">
+    <ScrollView>
+        <VerticalStackLayout Padding="{OnIdiom Phone='16,20,16,32', Desktop='28,28,28,40'}"
+                             MaximumWidthRequest="760"
+                             HorizontalOptions="Center"
+                             Spacing="18">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="تنظیمات برنامه"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}"
+                       HorizontalTextAlignment="End" />
+                <Label Text="ظاهر برنامه و نسخه نصب‌شده را از اینجا مدیریت کنید."
+                       Style="{StaticResource MutedLabel}" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource BookDetailCard}">
+                <VerticalStackLayout Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Border WidthRequest="44" HeightRequest="44"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource DarkPrimarySoft}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 14">
+                            <Label Text="◐" FontSize="24"
+                                   TextColor="{StaticResource Primary}"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="ظاهر برنامه" Style="{StaticResource SectionHeading}" />
+                            <Label Text="حالت روشن یا تیره را انتخاب کنید." Style="{StaticResource MutedLabel}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border Stroke="{StaticResource Primary}"
+                                BackgroundColor="{AppThemeBinding Light=#F8FBFA, Dark=#24312D}"
+                                StrokeThickness="1" StrokeShape="RoundRectangle 16" Padding="12">
+                            <RadioButton Content="حالت روشن"
+                                         GroupName="ApplicationTheme"
+                                         IsChecked="{Binding IsLightMode, Mode=TwoWay}"
+                                         TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
+                        </Border>
+                        <Border Grid.Column="1" Stroke="{StaticResource Primary}"
+                                BackgroundColor="{AppThemeBinding Light=#F8FBFA, Dark=#24312D}"
+                                StrokeThickness="1" StrokeShape="RoundRectangle 16" Padding="12">
+                            <RadioButton Content="حالت تیره"
+                                         GroupName="ApplicationTheme"
+                                         IsChecked="{Binding IsDarkMode, Mode=TwoWay}"
+                                         TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource BookDetailCard}">
+                <VerticalStackLayout Spacing="15">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Border WidthRequest="44" HeightRequest="44"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoft}, Dark=#40351E}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 14">
+                            <Label Text="↻" FontSize="26"
+                                   TextColor="{StaticResource Tertiary}"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="به‌روزرسانی برنامه" Style="{StaticResource SectionHeading}" />
+                            <Label Text="نسخه فعلی" Style="{StaticResource MutedLabel}" />
+                            <Label Text="{Binding CurrentVersion}"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#83C7B7}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Border BackgroundColor="{AppThemeBinding Light=#F1F5F3, Dark=#24302C}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 14" Padding="14">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <Label Text="{Binding UpdateStatus}"
+                                   FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource BodyText}, Dark={StaticResource DarkBodyText}}"
+                                   LineBreakMode="WordWrap"
+                                   VerticalTextAlignment="Center" />
+                            <ActivityIndicator Grid.Column="1"
+                                               IsVisible="{Binding IsUpdateBusy}"
+                                               IsRunning="{Binding IsUpdateBusy}"
+                                               Color="{StaticResource Primary}"
+                                               WidthRequest="28" />
+                        </Grid>
+                    </Border>
+
+                    <VerticalStackLayout IsVisible="{Binding HasAvailableVersion}" Spacing="6">
+                        <Label Text="نسخه جدید" Style="{StaticResource MutedLabel}" />
+                        <Label Text="{Binding AvailableVersion}"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
+                        <Label Text="{Binding ReleaseNotes}"
+                               Style="{StaticResource MutedLabel}"
+                               LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout IsVisible="{Binding IsProgressVisible}" Spacing="6">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="پیشرفت دانلود" Style="{StaticResource MutedLabel}" />
+                            <Label Grid.Column="1" Text="{Binding DownloadPercent}"
+                                   FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                        </Grid>
+                        <ProgressBar Progress="{Binding DownloadProgress}"
+                                     ProgressColor="{StaticResource Primary}"
+                                     BackgroundColor="{AppThemeBinding Light={StaticResource ProgressTrack}, Dark=#33453F}"
+                                     HeightRequest="8" />
+                    </VerticalStackLayout>
+
+                    <Button Text="بررسی نسخه جدید"
+                            Style="{StaticResource PrimaryActionButton}"
+                            Command="{Binding CheckCommand}"
+                            IsEnabled="{Binding IsUpdateBusy, Converter={StaticResource InvertedBoolConverter}}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="دانلود"
+                                Style="{StaticResource SecondaryActionButton}"
+                                Command="{Binding DownloadCommand}"
+                                IsEnabled="{Binding CanDownload}" />
+                        <Button Grid.Column="1" Text="نصب نسخه جدید"
+                                Style="{StaticResource PrimaryActionButton}"
+                                Command="{Binding InstallCommand}"
+                                IsEnabled="{Binding CanInstall}" />
+                    </Grid>
+
+                    <Label Text="در Android فایل APK با اجازه سیستم نصب می‌شود. در Windows، چون خروجی فعلی unpackaged است، فایل نصب‌کننده ثبت‌شده در API دانلود و توسط Windows باز می‌شود."
+                           Style="{StaticResource MutedLabel}"
+                           FontSize="12" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

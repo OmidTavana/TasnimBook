@@ -18,11 +18,16 @@ public static class MauiProgram
         builder.Services.AddSingleton<ApiSessionService>();
         builder.Services.AddSingleton<AccountService>();
         builder.Services.AddSingleton<BookAssetService>();
+        builder.Services.AddSingleton<ThemeService>();
+        builder.Services.AddSingleton<InAppMessageService>();
         builder.Services.AddSingleton<AppNavigationService>();
         builder.Services.AddSingleton<BookCatalogService>();
         builder.Services.AddSingleton<AppUpdateService>();
+        builder.Services.AddSingleton<AppNotificationService>();
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<Views.SettingsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
