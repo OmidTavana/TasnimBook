@@ -8,8 +8,14 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient<AdminApiClient>(client =>
 {
-    var baseAddress = builder.Configuration["Api:BaseAddress"]
+    var baseAddress="";
+#if DEBUG
+    baseAddress = builder.Configuration["Api:LocalBaseAddress"]
         ?? "https://localhost:44396/api/";
+#else
+    baseAddress = builder.Configuration["Api:OnlineBaseAddress"]
+        ?? "https://localhost:44396/api/";
+#endif
 
     client.BaseAddress = new Uri(baseAddress);
     client.Timeout = TimeSpan.FromMinutes(10);

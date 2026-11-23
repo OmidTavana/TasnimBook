@@ -68,6 +68,11 @@
                     <span>دسته‌بندی‌ها</span>
                 </a>
 
+                <a class="@NavClass("Releases")" asp-controller="Releases" asp-action="Index">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v2H5v-2Zm7-18 5.5 5.5-1.42 1.42L13 5.84V16h-2V5.84L7.92 8.92 6.5 7.5 12 2Z" /></svg>
+                    <span>انتشار نسخه‌ها</span>
+                </a>
+
                 @if (User.IsInRole(UserRoles.SuperAdmin))
                 {
                     <span class="nav-caption">دسترسی‌ها</span>

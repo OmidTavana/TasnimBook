@@ -242,6 +242,36 @@ public sealed class AdminApiClient
         return ReadResponse<AdminAssetUploadDto>(response, responseContent);
     }
 
+    public Task<AdminAppReleaseListDto> AppReleasesAsync(CancellationToken cancellationToken) =>
+        GetAsync<AdminAppReleaseListDto>("admin-app-releases", cancellationToken);
+
+    public async Task CreateAppReleaseAsync(Models.ReleaseFormModel release, CancellationToken cancellationToken)
+    {
+        using var stream = release.File!.OpenReadStream();
+        using var fileContent = new StreamContent(stream);
+        using var form = new MultipartFormDataContent();
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(string.IsNullOrWhiteSpace(release.File.ContentType) ? "application/octet-stream" : release.File.ContentType);
+        form.Add(fileContent, "file", release.File.FileName);
+        form.Add(new StringContent(release.PlatformId.ToString(CultureInfo.InvariantCulture)), "platformId");
+        form.Add(new StringContent(release.Version), "version");
+        form.Add(new StringContent(release.Build.ToString(CultureInfo.InvariantCulture)), "build");
+        form.Add(new StringContent(release.ReleaseNotes), "releaseNotes");
+        form.Add(new StringContent(release.Publish.ToString()), "publish");
+        form.Add(new StringContent(release.IsMandatory.ToString()), "isMandatory");
+        using var request = new HttpRequestMessage(HttpMethod.Post, "admin-app-releases") { Content = form };
+        AddApiKey(request);
+        await AddAccessTokenAsync(request, cancellationToken);
+        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        ReadResponse<object>(response, content);
+    }
+
+    public async Task PublishAppReleaseAsync(int id, CancellationToken cancellationToken) =>
+        await SendAsync<object>(HttpMethod.Post, $"admin-app-releases/{id}/publish", null, cancellationToken);
+
+    public async Task SetAppReleaseActiveAsync(int id, bool value, CancellationToken cancellationToken) =>
+        await SendAsync<object>(HttpMethod.Post, $"admin-app-releases/{id}/active?value={value.ToString().ToLowerInvariant()}", null, cancellationToken);
+
     public string? ResolveAssetUrl(string? assetUrl)
     {
         if (string.IsNullOrWhiteSpace(assetUrl))

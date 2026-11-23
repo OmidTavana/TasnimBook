@@ -40,8 +40,11 @@ namespace webapicore
 
             //services.AddDbContext<DbContextAnti>(options => options.UseMySql(configuration["ConnectionStrings:onlinemysql"],
             //    ServerVersion.AutoDetect(Configuration["ConnectionStrings:onlinemysql"]), b => b.MigrationsAssembly("webapicore")));
+#if DEBUG
             services.AddDbContext<DbContextAnti>(options => options.UseSqlServer(Configuration["ConnectionStrings:local"]));
-            
+#else
+            services.AddDbContext<DbContextAnti>(options => options.UseSqlServer(Configuration["ConnectionStrings:online"]));
+#endif
             var key = Encoding.UTF8.GetBytes(Configuration["jwtConfig:Secret"]);
             var jwtValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
             {

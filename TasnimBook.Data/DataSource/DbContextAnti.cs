@@ -65,6 +65,10 @@ namespace TasnimBook.Data.DataSource
                 .HasIndex(notification => new { notification.IsActive, notification.PublishAtUtc })
                 .HasDatabaseName("IX_appnotification_active_publish");
 
+            modelBuilder.Entity<AppVersion>()
+                .HasIndex(version => new { version.PlatformId, version.IsPublished, version.IsActive })
+                .HasDatabaseName("IX_appversion_platform_release");
+
             modelBuilder.Entity<UserFavorite>()
                 .HasKey(favorite => new { favorite.UserId, favorite.BookId });
             modelBuilder.Entity<UserFavorite>()

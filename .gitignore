@@ -34,6 +34,10 @@ mono_crash.*
 [Rr]elease/
 [Rr]eleases/
 
+# MVC source view; not a build output directory.
+!TasnimBook.Admin/Views/Releases/
+!TasnimBook.Admin/Views/Releases/**
+
 [Dd]ebug/x64/
 [Dd]ebugPublic/x64/
 [Rr]elease/x64/

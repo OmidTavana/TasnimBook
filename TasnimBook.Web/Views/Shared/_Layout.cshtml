@@ -1,0 +1,23 @@
+@{
+    var description = "تسنیم بوک، کتابخانه دیجیتال فارسی برای جست‌وجو، دانلود و مطالعه کتاب در Android و Windows.";
+    var canonical = ViewData["Canonical"] as string;
+}
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#1F5A4C" />
+    <title>@ViewData["Title"]</title>
+    <meta name="description" content="@description" />
+    <meta property="og:locale" content="fa_IR" /><meta property="og:type" content="website" /><meta property="og:title" content="تسنیم بوک؛ دنیایی از کتاب‌ها، همیشه همراه شما" /><meta property="og:description" content="@description" /><meta property="og:image" content="/images/appicon.png" />
+    @if (!string.IsNullOrWhiteSpace(canonical)) { <link rel="canonical" href="@canonical" /><meta property="og:url" content="@canonical" /> }
+    <link rel="icon" type="image/png" href="~/images/appicon.png" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">رفتن به محتوای اصلی</a>
+    @RenderBody()
+</body>
+</html>

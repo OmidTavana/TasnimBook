@@ -8,10 +8,10 @@ using TasnimBook.Data.RestRepository;
 
 namespace TasnimBook.Data.SqlRepository
 {
-    public class RestRepository :  IRepository
+    public class RestRepository : IRepository, IDisposable
     {
         private readonly string _url;
-        HttpClient _client;
+        private readonly HttpClient _client;
 
         public RestRepository(string url, string? apiKey = null, string? accessToken = null)
         {
@@ -34,5 +34,7 @@ namespace TasnimBook.Data.SqlRepository
         public ICategoryRepository ICategory => new RestCategoryRepository(_url, _client);
         public IAdminRepository IAdmin => new RestAdminRepository(_url, _client);
         public IAppVersionReository IAppVersions => new RestAppVersionRepository(_url, _client);
+
+        public void Dispose() => _client.Dispose();
     }
 }

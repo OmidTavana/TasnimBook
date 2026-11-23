@@ -67,7 +67,7 @@ public sealed class AppUpdateService
             var currentBuild = CurrentBuildNumber();
             _automaticCheckCompleted = true;
 
-            if (release is null || release.VersionNumber <= currentBuild ||
+            if (release is null || !AppVersionOrdering.IsNewer(release, AppInfo.Current.VersionString, currentBuild) ||
                 !TryResolveDownloadUri(release.Url, out _))
             {
                 _release = null;
@@ -80,7 +80,7 @@ public sealed class AppUpdateService
             _release = release;
             _downloadProgress = 0;
             _downloadedPath = BuildPackagePath(release);
-            if (await IsPackageValidAsync(_downloadedPath))
+            if (await IsPackageValidAsync(_downloadedPath, release.Sha256))
             {
                 _downloadProgress = 1;
                 SetState(AppUpdateState.Downloaded, $"نسخه {release.VersionName} قبلاً دریافت شده و آماده نصب است.");
@@ -119,7 +119,7 @@ public sealed class AppUpdateService
         try
         {
             var finalPath = BuildPackagePath(_release);
-            if (await IsPackageValidAsync(finalPath))
+            if (await IsPackageValidAsync(finalPath, _release.Sha256))
             {
                 _downloadedPath = finalPath;
                 _downloadProgress = 1;
@@ -147,7 +147,7 @@ public sealed class AppUpdateService
 
     public async Task InstallUpdateAsync()
     {
-        if (string.IsNullOrWhiteSpace(_downloadedPath) || !await IsPackageValidAsync(_downloadedPath))
+        if (string.IsNullOrWhiteSpace(_downloadedPath) || !await IsPackageValidAsync(_downloadedPath, _release?.Sha256))
         {
             _downloadedPath = null;
             SetState(AppUpdateState.Failed, "فایل دانلودشده معتبر نیست؛ دوباره آن را دریافت کنید.");
@@ -268,7 +268,7 @@ public sealed class AppUpdateService
         }
         await destination.FlushAsync();
 
-        if (!await IsPackageValidAsync(temporaryPath))
+        if (!await IsPackageValidAsync(temporaryPath, _release?.Sha256))
         {
             File.Delete(temporaryPath);
             throw new InvalidDataException("ساختار فایل دریافت‌شده معتبر نیست.");
@@ -293,7 +293,7 @@ public sealed class AppUpdateService
         return Path.Combine(FileSystem.CacheDirectory, $"tasnimbook-{release.VersionNumber}{extension}");
     }
 
-    private static async Task<bool> IsPackageValidAsync(string? path)
+    private static async Task<bool> IsPackageValidAsync(string? path, string? expectedSha256 = null)
     {
         if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return false;
         var info = new FileInfo(path);
@@ -305,6 +305,13 @@ public sealed class AppUpdateService
         var isZip = header[0] == 0x50 && header[1] == 0x4B &&
                     header[2] is 0x03 or 0x05 or 0x07 &&
                     header[3] is 0x04 or 0x06 or 0x08;
+
+        if (!string.IsNullOrWhiteSpace(expectedSha256))
+        {
+            stream.Position = 0;
+            var actualHash = Convert.ToHexString(await System.Security.Cryptography.SHA256.HashDataAsync(stream)).ToLowerInvariant();
+            if (!string.Equals(actualHash, expectedSha256.Trim(), StringComparison.OrdinalIgnoreCase)) return false;
+        }
 
 #if ANDROID
         return isZip;

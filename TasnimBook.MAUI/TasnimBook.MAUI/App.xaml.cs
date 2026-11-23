@@ -22,10 +22,15 @@ public partial class App : Application
         var navigationBackground = (Color)Resources["Primary"];
         var navigationForeground = (Color)Resources["White"];
 
-        return new Window(new NavigationPage(mainPage)
+        var window = new Window(new NavigationPage(mainPage)
         {
             BarBackgroundColor = navigationBackground,
             BarTextColor = navigationForeground
         });
+
+        // Android may preserve stale sockets or an expired guest token while the app is stopped.
+        // Recreate the API session lazily on the first request after returning to the foreground.
+        window.Resumed += (_, _) => _services.GetRequiredService<ApiSessionService>().Reset();
+        return window;
     }
 }

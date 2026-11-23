@@ -74,7 +74,7 @@
                             <CollectionView x:Name="NewBooksView"
                                             ItemsSource="{Binding NewBooks}"
                                             ItemTemplate="{StaticResource HomeBookCardTemplate}"
-                                            HeightRequest="196"
+                                            HeightRequest="282"
                                             SelectionMode="Single"
                                             SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
                                 <CollectionView.ItemsLayout>
@@ -100,7 +100,7 @@
                             <CollectionView x:Name="SuggestedBooksView"
                                             ItemsSource="{Binding SuggestedBooks}"
                                             ItemTemplate="{StaticResource HomeBookCardTemplate}"
-                                            HeightRequest="196"
+                                            HeightRequest="282"
                                             SelectionMode="Single"
                                             SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
                                 <CollectionView.ItemsLayout>
@@ -126,7 +126,7 @@
                             <CollectionView x:Name="AudioBooksView"
                                             ItemsSource="{Binding AudioBooks}"
                                             ItemTemplate="{StaticResource HomeBookCardTemplate}"
-                                            HeightRequest="196"
+                                            HeightRequest="282"
                                             IsVisible="{Binding AudioBooks.Count, Converter={StaticResource IntNotZeroConverter}}"
                                             SelectionMode="Single"
                                             SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
@@ -163,9 +163,9 @@
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding CatalogCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Path Data="M4,5 L20,5 L20,7 L4,7 Z M4,11 L20,11 L20,13 L4,13 Z M4,17 L20,17 L20,19 L4,19 Z"
+                    <Path Data="M4,4 L10,4 L10,10 L4,10 Z M14,4 L20,4 L20,10 L14,10 Z M4,14 L10,14 L10,20 L4,20 Z M14,14 L20,14 L20,20 L14,20 Z"
                           Style="{StaticResource HomeBottomPathStyle}" />
-                    <Label Text="فهرست" Style="{StaticResource HomeBottomTextStyle}" />
+                    <Label Text="دسته‌ها" Style="{StaticResource HomeBottomTextStyle}" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="2" Style="{StaticResource HomeBottomItemStyle}">

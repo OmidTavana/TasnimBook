@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TasnimBook.Data.Interfaces;
+using TasnimBook.Data.Models.DTO;
 
 namespace TasnimBook.Data.RestRepository
 {
@@ -23,14 +24,34 @@ namespace TasnimBook.Data.RestRepository
         {
             var AppVersion = new AppVersion();
 
-            var uri = new Uri(string.Format(baseUrl + "AppVersion/get/{0}",platformId ));
+            var platform = platformId == (int)Platforms.Windows ? "windows" : "android";
+            var uri = new Uri(baseUrl + $"app-releases/latest?platform={platform}");
             try
             {
                 var response = await _client.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    AppVersion = JsonConvert.DeserializeObject<AppVersion>(content) ?? new AppVersion();
+                    var release = JsonConvert.DeserializeObject<AppReleaseDto>(content);
+                    if (release is not null)
+                    {
+                        AppVersion = new AppVersion
+                        {
+                            Id = release.Id,
+                            PlatformId = release.PlatformId,
+                            VersionName = release.Version,
+                            VersionNumber = release.Build,
+                            ReleaseNotes = release.ReleaseNotes,
+                            Url = release.DownloadUrl,
+                            ReleaseDate = release.PublishedAt,
+                            FileSize = release.FileSize,
+                            Sha256 = release.Sha256,
+                            ContentType = release.ContentType,
+                            IsMandatory = release.IsMandatory,
+                            IsPublished = true,
+                            IsActive = true
+                        };
+                    }
                 }
             }
             catch (Exception ex)

@@ -48,15 +48,28 @@ public sealed class HomeViewModel : ObservableObject
         _navigation = navigation;
         _account.SessionChanged += (_, _) => RefreshAccountState();
         LoadCommand = new AsyncCommand(LoadAsync);
-        OpenBookCommand = new AsyncCommand<BooksDTO>(dto => dto is null ? Task.CompletedTask : _navigation.OpenBookAsync(dto));
+        OpenBookCommand = new AsyncCommand<BooksDTO>(dto => dto is null ? Task.CompletedTask : OpenBookAsync(dto));
         NewBooksCommand = new AsyncCommand(() => _navigation.OpenBookListAsync("کتاب‌های تازه", Views.BookListMode.New));
         SuggestedBooksCommand = new AsyncCommand(() => _navigation.OpenBookListAsync("کتاب‌های پیشنهادی", Views.BookListMode.Suggested));
         AudioBooksCommand = new AsyncCommand(() => _navigation.OpenBookListAsync("کتاب‌های صوتی", Views.BookListMode.Audio));
-        CatalogCommand = new AsyncCommand(() => _navigation.OpenBookListAsync("فهرست کتاب‌ها", Views.BookListMode.New));
+        CatalogCommand = new AsyncCommand(_navigation.OpenCategoriesAsync);
         SearchCommand = new AsyncCommand(() => _navigation.OpenBookListAsync("جست‌وجوی کتاب", Views.BookListMode.Search));
         LibraryCommand = new AsyncCommand(OpenLibraryAsync);
         AccountCommand = new AsyncCommand(() => _navigation.OpenAccountAsync());
         SettingsCommand = new AsyncCommand(_navigation.OpenSettingsAsync);
+    }
+
+    public async Task OpenBookAsync(BooksDTO dto)
+    {
+        try
+        {
+            await _navigation.OpenBookAsync(dto);
+        }
+        catch (Exception exception)
+        {
+            System.Diagnostics.Debug.WriteLine(exception);
+            await _navigation.AlertAsync("باز کردن کتاب", "اطلاعات کتاب دریافت نشد. اتصال خود را بررسی کنید.");
+        }
     }
 
     public async Task RefreshAccountStateAsync()

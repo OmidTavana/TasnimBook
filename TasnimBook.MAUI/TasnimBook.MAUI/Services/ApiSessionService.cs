@@ -24,20 +24,27 @@ public sealed class ApiSessionService
             using var client = new HttpClient { BaseAddress = new Uri(baseAddress), Timeout = TimeSpan.FromSeconds(30) };
             client.DefaultRequestHeaders.Add("APIKey", apiKey);
             var response = await client.PostAsync("JwtUser/Register/" + Uri.EscapeDataString(deviceId), null);
-            string responseBody = await response.Content.ReadAsStringAsync();
+            var responseBody = await response.Content.ReadAsStringAsync();
             System.Diagnostics.Debug.WriteLine(responseBody);
             response.EnsureSuccessStatusCode();
-            var auth = JsonConvert.DeserializeObject<AuthResult>(await response.Content.ReadAsStringAsync());
+            var auth = JsonConvert.DeserializeObject<AuthResult>(responseBody);
             if (string.IsNullOrWhiteSpace(auth?.Token)) throw new InvalidOperationException("پاسخ توکن API معتبر نیست.");
             _repository = new RestRepository(baseAddress, apiKey, auth.Token);
-            return _repository;
-        }
-        catch(Exception ex)
-        {
             return _repository;
         }
         finally { _gate.Release(); }
     }
 
-    public void Reset() => _repository = null;
+    public void Reset()
+    {
+        var previous = Interlocked.Exchange(ref _repository, null);
+        (previous as IDisposable)?.Dispose();
+    }
+
+    public void Reset(IRepository failedRepository)
+    {
+        var previous = Interlocked.CompareExchange(ref _repository, null, failedRepository);
+        if (ReferenceEquals(previous, failedRepository))
+            (previous as IDisposable)?.Dispose();
+    }
 }

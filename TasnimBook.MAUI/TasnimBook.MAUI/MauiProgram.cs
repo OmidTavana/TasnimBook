@@ -1,6 +1,9 @@
 using Microsoft.Extensions.Logging;
 using TasnimBook.MAUI.Services;
 using TasnimBook.MAUI.ViewModels;
+#if ANDROID || IOS
+using MauiNativePdfView;
+#endif
 
 namespace TasnimBook.MAUI;
 
@@ -15,6 +18,10 @@ public static class MauiProgram
             fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
         });
 
+#if ANDROID || IOS
+        builder.UseMauiNativePdfView();
+#endif
+
         builder.Services.AddSingleton<ApiSessionService>();
         builder.Services.AddSingleton<AccountService>();
         builder.Services.AddSingleton<BookAssetService>();
@@ -22,6 +29,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<InAppMessageService>();
         builder.Services.AddSingleton<AppNavigationService>();
         builder.Services.AddSingleton<BookCatalogService>();
+        builder.Services.AddSingleton<CategoryCoverCacheService>();
         builder.Services.AddSingleton<AppUpdateService>();
         builder.Services.AddSingleton<AppNotificationService>();
         builder.Services.AddSingleton<HomeViewModel>();

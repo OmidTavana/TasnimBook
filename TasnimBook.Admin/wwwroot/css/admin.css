@@ -1652,3 +1652,25 @@ textarea:focus {
         animation-iteration-count: 1 !important;
     }
 }
+
+.release-latest-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.release-card { padding: 1.25rem; }
+.release-platform { display: flex; align-items: center; gap: .8rem; }
+.release-platform h2, .panel-heading h2 { margin: 0; }
+.release-platform-icon { width: 2.8rem; height: 2.8rem; display: grid; place-items: center; border-radius: 12px; background: var(--primary-soft); color: var(--primary-bright); font-weight: 900; }
+.release-version { display: block; margin-top: 1rem; font-size: 1.25rem; }
+.release-version small { color: var(--muted); font-size: .8rem; font-weight: 600; }
+.release-form { padding: 1.2rem; }
+.form-span-2 { grid-column: span 2; }
+.form-span-full { grid-column: 1 / -1; }
+.release-options { display: flex; gap: 1rem; margin: 1rem 0; }
+.check-row { display: flex; align-items: center; gap: .45rem; }
+.check-row input { width: 1rem; height: 1rem; margin: 0; }
+.upload-progress { margin: 1rem 0; }
+.upload-progress > div { display: flex; justify-content: space-between; color: var(--text-soft); }
+.upload-progress progress { width: 100%; height: .6rem; accent-color: var(--primary); }
+.form-feedback { min-height: 1.8rem; }
+.form-feedback.is-success { color: var(--success); }
+.form-feedback.is-error { color: var(--danger); }
+.table-actions { display: flex; gap: .4rem; }
+@media (max-width: 720px) { .release-latest-grid { grid-template-columns: 1fr; } .form-span-2 { grid-column: 1; } .release-options { align-items: flex-start; flex-direction: column; } }

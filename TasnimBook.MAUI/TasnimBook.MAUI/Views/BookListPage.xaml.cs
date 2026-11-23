@@ -2,7 +2,7 @@ using TasnimBook.MAUI.ViewModels;
 
 namespace TasnimBook.MAUI.Views;
 
-public enum BookListMode { New, Suggested, Audio, Search }
+public enum BookListMode { New, Suggested, Audio, Search, Category }
 
 public partial class BookListPage : ContentPage
 {

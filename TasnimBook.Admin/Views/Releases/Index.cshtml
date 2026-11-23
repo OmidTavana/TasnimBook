@@ -1,0 +1,58 @@
+@model ReleasePageViewModel
+@{
+    ViewData["Title"] = "انتشار نسخه‌ها";
+    string Size(long? bytes) => bytes is null ? "—" : bytes >= 1048576 ? $"{bytes / 1048576d:0.#} مگابایت" : $"{bytes / 1024d:0.#} کیلوبایت";
+}
+
+<header class="page-header">
+    <div><span class="eyebrow">مدیریت متمرکز انتشار</span><h1>نسخه‌های تسنیم‌بوک</h1><p>فایل Android و Windows را ثبت کنید؛ Landing و اپلیکیشن همان لحظه از همین منبع استفاده می‌کنند.</p></div>
+</header>
+
+@if (TempData["Success"] is string success) { <div class="alert alert-success">@success</div> }
+
+<section class="release-latest-grid" aria-label="آخرین نسخه‌ها">
+    @foreach (var item in new[] { ("Android", Model.Releases.LatestAndroid), ("Windows", Model.Releases.LatestWindows) })
+    {
+        <article class="panel release-card">
+            <div class="release-platform"><span class="release-platform-icon">@(item.Item1 == "Android" ? "A" : "W")</span><div><span class="eyebrow">آخرین انتشار</span><h2>@item.Item1</h2></div></div>
+            @if (item.Item2 is { } release)
+            {
+                <strong class="release-version">نسخه @release.Version <small>Build @release.Build</small></strong>
+                <p>@release.ReleaseNotes</p><span class="badge badge-success">فعال و منتشرشده</span>
+            }
+            else { <div class="empty-state-compact">هنوز نسخه‌ای منتشر نشده است.</div> }
+        </article>
+    }
+</section>
+
+<section class="panel mt-lg">
+    <div class="panel-heading"><div><span class="eyebrow">Publish new version</span><h2>ثبت نسخه جدید</h2></div></div>
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="release-form" data-release-upload>
+        <div class="form-grid">
+            <label><span>پلتفرم</span><select asp-for="Draft.PlatformId" name="PlatformId"><option value="1">Android (APK)</option><option value="2">Windows (EXE / MSIX)</option></select></label>
+            <label><span>شماره نسخه</span><input asp-for="Draft.Version" name="Version" placeholder="1.2.0" required /></label>
+            <label><span>شماره Build</span><input asp-for="Draft.Build" name="Build" type="number" min="1" required /></label>
+            <label class="form-span-2"><span>فایل نصب</span><input asp-for="Draft.File" name="File" type="file" accept=".apk,.exe,.msix,.msixbundle,.appx,.appxbundle" required /></label>
+            <label class="form-span-full"><span>توضیحات تغییرات</span><textarea asp-for="Draft.ReleaseNotes" name="ReleaseNotes" rows="5" maxlength="4000" required></textarea></label>
+        </div>
+        <div class="release-options"><label class="check-row"><input asp-for="Draft.Publish" name="Publish" /> انتشار فوری</label><label class="check-row"><input asp-for="Draft.IsMandatory" name="IsMandatory" /> آپدیت اجباری</label></div>
+        <div class="upload-progress" hidden data-upload-progress><div><span data-upload-label>در حال آپلود…</span><strong data-upload-percent>۰٪</strong></div><progress max="100" value="0"></progress></div>
+        <div class="form-feedback" role="status" aria-live="polite" data-upload-feedback></div>
+        <button class="button button-primary" type="submit" data-upload-submit>ثبت نسخه</button>
+    </form>
+</section>
+
+<section class="panel mt-lg">
+    <div class="panel-heading"><div><span class="eyebrow">Release history</span><h2>تاریخچه نسخه‌ها</h2></div></div>
+    <div class="table-scroll"><table><thead><tr><th>پلتفرم</th><th>نسخه</th><th>Build</th><th>حجم</th><th>تاریخ (UTC)</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>
+    @foreach (var release in Model.Releases.History)
+    {
+        <tr><td>@(release.PlatformId == 1 ? "Android" : "Windows")</td><td>@release.Version</td><td>@release.Build</td><td>@Size(release.FileSize)</td><td>@release.PublishedAt.ToString("yyyy/MM/dd HH:mm")</td><td><span class="badge @(release.IsPublished && release.IsActive ? "badge-success" : "badge-warning")">@(release.IsPublished ? (release.IsActive ? "منتشرشده" : "غیرفعال") : "پیش‌نویس")</span></td><td><div class="table-actions">
+            @if (!release.IsPublished) { <form asp-action="Publish" method="post"><input type="hidden" name="id" value="@release.Id" /><button class="button button-ghost button-sm" type="submit">انتشار</button></form> }
+            @if (release.IsPublished) { <form asp-action="SetActive" method="post"><input type="hidden" name="id" value="@release.Id" /><input type="hidden" name="value" value="@(!release.IsActive)" /><button class="button button-ghost button-sm" type="submit">@(release.IsActive ? "غیرفعال‌سازی" : "فعال‌سازی")</button></form> }
+        </div></td></tr>
+    }
+    </tbody></table></div>
+</section>
+
+<script src="~/js/releases.js" asp-append-version="true" defer></script>

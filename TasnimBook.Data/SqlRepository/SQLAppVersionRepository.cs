@@ -42,11 +42,11 @@ namespace TasnimBook.Data.Services
 
         public async Task<AppVersion> GetAppVersion(int platformId)
         {
-            var data = await dbContext.AppVersions
+            var versions = await dbContext.AppVersions
+                .AsNoTracking()
                 .Where(e => e.PlatformId == platformId)
-                .OrderByDescending(e => e.VersionNumber)
-                .FirstOrDefaultAsync();
-            return data;
+                .ToListAsync();
+            return AppVersionOrdering.Latest(versions)!;
         }
 
         

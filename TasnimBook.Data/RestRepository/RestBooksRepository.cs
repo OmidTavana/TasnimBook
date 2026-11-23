@@ -68,6 +68,7 @@ namespace TasnimBook.Data
             try
             {
                 var response = await _client.GetAsync(uri);
+                response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -77,6 +78,7 @@ namespace TasnimBook.Data
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                throw;
             }
 
             return book;
@@ -127,6 +129,7 @@ namespace TasnimBook.Data
             try
             {
                 var response = await _client.GetAsync(uri);
+                response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -136,6 +139,7 @@ namespace TasnimBook.Data
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                throw;
             }
 
             return Books;
@@ -147,6 +151,7 @@ namespace TasnimBook.Data
             try
             {
                 var response = await _client.GetAsync(new Uri(baseUrl + relativePath));
+                response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -156,6 +161,7 @@ namespace TasnimBook.Data
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                throw;
             }
 
             return Books;

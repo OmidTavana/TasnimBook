@@ -1,0 +1,148 @@
+@model LandingViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "تسنیم بوک | کتابخانه تخصصی رد الحاد و بی‌دینی | کتاب صوتی و PDF";
+    ViewData["Canonical"] = Model.CanonicalUrl;
+    var fa = CultureInfo.GetCultureInfo("fa-IR");
+    string Size(long? bytes) => bytes is null ? "حجم نامشخص" : bytes >= 1073741824 ? $"{bytes / 1073741824d:0.#} گیگابایت" : $"{bytes / 1048576d:0.#} مگابایت";
+    string Date(DateTime value) => value.ToString("d MMMM yyyy", fa);
+}
+
+<header class="site-header" data-header>
+    <div class="container nav-wrap">
+        <a class="brand" href="#top" aria-label="صفحه اصلی تسنیم بوک"><img src="~/images/appicon.png" alt="" width="46" height="46" /><span><strong>تسنیم بوک</strong><small>کتابخانه تخصصی رد الحاد و بی‌دینی</small></span></a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle><span></span><span></span><span></span><span class="sr-only">بازکردن منو</span></button>
+        <nav id="site-nav" class="site-nav" aria-label="منوی اصلی" data-nav>
+            <a href="#about">درباره</a><a href="#features">امکانات</a><a href="#screens">تصاویر</a><a href="#download">دانلود</a>
+        </nav>
+        <a class="nav-download" href="#download">دریافت برنامه</a>
+    </div>
+</header>
+
+<main id="main">
+    <section class="hero" id="top">
+        <div class="hero-orb hero-orb-one"></div><div class="hero-orb hero-orb-two"></div>
+        <div class="container hero-grid">
+            <div class="hero-copy reveal">
+                <span class="pill"><i></i> کتاب‌های صوتی و PDF در حوزه رد الحاد و بی‌دینی</span>
+                <h1>تسنیم بوک؛<br /><em>کتابخانه تخصصی</em><br />رد الحاد و بی‌دینی</h1>
+                <p>به مجموعه‌ای از کتاب‌های تخصصی در زمینه نقد الحاد، پاسخ به شبهات و مباحث اعتقادی دسترسی داشته باشید؛ کتاب‌های PDF را مطالعه کنید و به کتاب‌های صوتی گوش دهید، در موبایل یا رایانه.</p>
+                <div class="hero-actions">
+                    @if (Model.Android is { } android)
+                    {
+                        <a class="button button-primary" href="@android.DownloadUrl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 2.9 6 1.5l-.7.7 1.5 1.5A7.7 7.7 0 0 0 3 10h18a7.7 7.7 0 0 0-3.8-6.3l1.5-1.5-.7-.7-1.4 1.4A8.8 8.8 0 0 0 7.4 3ZM8 7.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm8 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2ZM3 11v8a2 2 0 0 0 2 2h1v2h2v-2h8v2h2v-2h1a2 2 0 0 0 2-2v-8H3Z" /></svg><span>دانلود Android<small>نسخه @android.Version</small></span></a>
+                    }
+                    else
+                    {
+
+                        <span class="button button-muted" aria-disabled="true">Android — در حال آماده‌سازی</span>
+                    }
+                    @if (Model.Windows is { } windows)
+                    {
+                        <a class="button button-outline" href="@windows.DownloadUrl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5.6 7.4-1v7.1H3V5.6Zm8.4-1.1L21 3v8.7h-9.6V4.5ZM3 12.7h7.4v7.1L3 18.8v-6.1Zm8.4 0H21V21l-9.6-1.3v-7Z" /></svg><span>دانلود Windows<small>نسخه @windows.Version</small></span></a>
+                    }
+                    else
+                    {
+
+                        <span class="button button-muted" aria-disabled="true">Windows — در حال آماده‌سازی</span>
+                    }
+                </div>
+                <div class="hero-note"><span class="ios-mark">●</span><span>نسخه iOS</span><strong>به‌زودی</strong></div>
+            </div>
+            <div class="hero-visual reveal" aria-label="نمایی گرافیکی از تجربه مطالعه در تسنیم بوک">
+                <div class="book-rays"></div>
+                <div class="phone-shell">
+                    <div class="phone-top"></div>
+                    <div class="phone-screen">
+                        <div class="mini-head"><img src="~/images/appicon.png" alt="" /><span>تسنیم بوک</span><b>•••</b></div>
+                        <div class="mini-welcome"><small>سلام، وقت مطالعه و شنیدن است</small><strong>کتاب بعدی‌ات را انتخاب کن</strong><div class="mini-search">جست‌وجو در کتاب‌ها <span>⌕</span></div></div>
+                        <div class="mini-label"><b>پیشنهاد برای شما</b><span>مشاهده همه</span></div>
+                        <div class="mini-books"><i></i><i></i><i></i></div>
+                        <div class="mini-progress"><div><span>ادامه مطالعه</span><b>۷۲٪</b></div><em><i></i></em></div>
+                    </div>
+                </div>
+                <div class="float-card float-one"><svg viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v16l-9-4-9 4V5a2 2 0 0 1 2-2Z" /></svg><span><small>کتابخانه من</small><strong>همراه همیشگی</strong></span></div>
+                <div class="float-card float-two"><span class="float-star">★</span><span><small>امتیاز کاربران</small><strong>انتخاب آگاهانه</strong></span></div>
+            </div>
+        </div>
+        <div class="scroll-cue"><span>بیشتر بخوانید</span><i></i></div>
+    </section>
+
+    <section class="section about" id="about">
+        <div class="container about-grid">
+            <div class="section-copy reveal"><span class="section-kicker">منبعی برای مطالعه و پژوهش اعتقادی</span><h2>دسترسی آسان‌تر<br />به منابع نقد الحاد</h2><p>تسنیم بوک یک کتابخانه دیجیتال تخصصی در حوزه رد الحاد و بی‌دینی است که با هدف دسترسی آسان‌تر به منابع نقد دیدگاه‌های الحادی، پاسخ به شبهات و موضوعات اعتقادی طراحی شده است. کتاب‌های موردنظر خود را جست‌وجو و دریافت کنید و مطالعه یا شنیدن آن‌ها را در محیطی منظم دنبال کنید.</p><p>این اپلیکیشن کتاب‌های PDF و صوتی را در اختیار شما قرار می‌دهد و برای Android و Windows طراحی شده است تا بتوانید متناسب با دستگاه خود از منابع استفاده کنید.</p></div>
+            <div class="about-composition reveal">
+                <div class="quote-card"><span>«</span><p>شناخت دقیق‌تر اندیشه‌ها، با مطالعه، پرسشگری و بررسی مستند آغاز می‌شود.</p></div>
+                <div class="about-stat"><b>Android</b><span>مطالعه همراه</span></div><div class="about-stat second"><b>Windows</b><span>مطالعه در صفحه بزرگ</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section features" id="features">
+        <div class="container">
+            <div class="section-heading reveal"><span class="section-kicker">امکانات واقعی اپلیکیشن</span><h2>امکاناتی برای مطالعه و شنیدن آسان‌تر</h2><p>کتاب‌های تخصصی را پیدا کنید، نسخه PDF را بخوانید، به محتوای صوتی گوش دهید و کتابخانه شخصی خود را مدیریت کنید.</p></div>
+            <div class="feature-grid">
+                <article class="feature-card featured reveal"><span class="feature-icon">⌕</span><h3>جست‌وجوی سریع کتاب‌ها</h3><p>با جست‌وجوی عنوان و دسته‌بندی، منابع مرتبط با نقد الحاد، پاسخ به شبهات و مباحث اعتقادی را راحت‌تر پیدا کنید.</p><div class="search-demo"><span>نام کتاب را بنویسید…</span><b>⌕</b></div></article>
+                <article class="feature-card reveal"><span class="feature-icon">◫</span><h3>مطالعه کتاب‌های PDF</h3><p>کتاب‌های PDF را در نمایشگر داخلی برنامه با تجربه‌ای متمرکز و خوانا مطالعه کنید.</p></article>
+                <article class="feature-card reveal"><span class="feature-icon">♫</span><h3>کتاب‌های صوتی</h3><p>علاوه بر نسخه‌های PDF، به کتاب‌های صوتی موجود در مجموعه گوش دهید و از محتوای آموزشی و پژوهشی بهره ببرید.</p></article>
+                <article class="feature-card reveal"><span class="feature-icon">⇩</span><h3>دریافت برای آفلاین</h3><p>فایل کتاب را با نمایش پیشرفت دانلود دریافت کنید و بدون اینترنت مطالعه کنید یا به محتوای دانلودشده گوش دهید.</p></article>
+                <article class="feature-card reveal"><span class="feature-icon">♡</span><h3>کتابخانه شخصی</h3><p>کتاب‌هایی را که دانلود کرده‌اید یا مطالعه‌شان را آغاز کرده‌اید، در کتابخانه شخصی خود دوباره پیدا کنید.</p></article>
+                <article class="feature-card reveal"><span class="feature-icon">◔</span><h3>ادامه از صفحه قبل</h3><p>صفحه مطالعه شما ذخیره می‌شود تا هنگام بازگشت به کتاب PDF، از همان‌جا ادامه دهید.</p></article>
+                <article class="feature-card reveal"><span class="feature-icon">★</span><h3>امتیاز و پسند</h3><p>نظر خود را با امتیاز و پسند ثبت کنید و بازخورد دیگر خوانندگان را ببینید.</p></article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section screens" id="screens">
+        <div class="container">
+            <div class="section-heading inline reveal"><div><span class="section-kicker">تصاویر اپلیکیشن</span><h2>نگاهی نزدیک‌تر به تسنیم بوک</h2></div><p>جایگاه زیر برای اسکرین‌شات‌های رسمی آماده شده است. با افزودن تصاویر واقعی، بدون تغییر ساختار صفحه نمایش داده می‌شوند.</p></div>
+            <div class="screens-track" aria-label="جایگاه اسکرین‌شات‌ها">
+                <div class="screen-placeholder reveal"><span>خانه</span><svg viewBox="0 0 90 90"><path d="M18 40 45 18l27 22v34H53V53H37v21H18V40Z" /></svg><p>اسکرین‌شات رسمی<br />به‌زودی افزوده می‌شود</p></div>
+                <div class="screen-placeholder raised reveal"><span>جزئیات کتاب</span><svg viewBox="0 0 90 90"><path d="M25 17h40v56H25zM33 28h24M33 37h18M33 55h24" /></svg><p>اسکرین‌شات رسمی<br />به‌زودی افزوده می‌شود</p></div>
+                <div class="screen-placeholder reveal"><span>مطالعه</span><svg viewBox="0 0 90 90"><path d="M15 22c13 0 23 4 30 12 7-8 17-12 30-12v48c-13 0-23 4-30 12-7-8-17-12-30-12V22Zm30 12v48" /></svg><p>اسکرین‌شات رسمی<br />به‌زودی افزوده می‌شود</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section download" id="download">
+        <div class="container">
+            <div class="download-heading reveal"><span class="section-kicker light">نسخه مناسب خودتان را دریافت کنید</span><h2>تسنیم بوک، روی دستگاه شما</h2><p>اطلاعات این بخش مستقیماً از سامانه انتشار مرکزی دریافت می‌شود.</p></div>
+            @if (Model.BackendUnavailable)
+            {
+                <div class="service-notice" role="status">ارتباط با سرور نسخه‌ها موقتاً برقرار نیست. صفحه همچنان در دسترس است؛ لطفاً کمی بعد دوباره بررسی کنید.</div>
+            }
+            <div class="download-grid">
+                <article class="download-card reveal">
+                    <div class="platform-symbol android">A</div><h3>Android</h3>
+                    @if (Model.Android is { } a)
+                    {
+                        <div class="release-meta"><span>نسخه <b>@a.Version</b></span><i></i><span>Build @a.Build</span></div><dl><div><dt>حجم فایل</dt><dd>@Size(a.FileSize)</dd></div><div><dt>تاریخ انتشار</dt><dd>@Date(a.PublishedAt)</dd></div></dl><a class="button button-primary wide" href="@a.DownloadUrl">دانلود فایل APK</a>
+                    }
+                    else
+                    {
+
+                        <p class="preparing">نسخه Android در حال آماده‌سازی است.</p><span class="button button-muted wide" aria-disabled="true">در حال آماده‌سازی</span>
+                    }
+                </article>
+                <article class="download-card reveal">
+                    <div class="platform-symbol windows">W</div><h3>Windows</h3>
+                    @if (Model.Windows is { } w)
+                    {
+                        <div class="release-meta"><span>نسخه <b>@w.Version</b></span><i></i><span>Build @w.Build</span></div><dl><div><dt>حجم فایل</dt><dd>@Size(w.FileSize)</dd></div><div><dt>تاریخ انتشار</dt><dd>@Date(w.PublishedAt)</dd></div></dl><a class="button button-primary wide" href="@w.DownloadUrl">دانلود نسخه Windows</a>
+                    }
+                    else
+                    {
+
+                        <p class="preparing">نسخه Windows در حال آماده‌سازی است.</p><span class="button button-muted wide" aria-disabled="true">در حال آماده‌سازی</span>
+                    }
+                </article>
+                <article class="download-card coming reveal"><div class="platform-symbol ios">●</div><h3>iOS</h3><div class="coming-pill">به‌زودی</div><p>نسخه iPhone و iPad در برنامه توسعه قرار دارد.</p><span class="button button-muted wide" aria-disabled="true">به‌زودی</span></article>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-top"><div class="footer-brand"><img src="~/images/appicon.png" alt="نشان تسنیم بوک" width="58" height="58" /><div><strong>تسنیم بوک</strong><span>منابع تخصصی رد الحاد و بی‌دینی، همراه شما</span></div></div><nav aria-label="پیوندهای پایین صفحه"><a href="#about">درباره</a><a href="#features">امکانات</a><a href="#download">دانلود</a></nav></div>
+    <div class="container footer-bottom"><p>کلیه حقوق این اپلیکیشن متعلق به انجمن رد الحاد آنتی شبهات می‌باشد.</p><span>TasnimBook © @DateTime.Now.Year</span></div>
+</footer>

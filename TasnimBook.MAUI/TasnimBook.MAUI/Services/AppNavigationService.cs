@@ -39,8 +39,17 @@ public sealed class AppNavigationService
         await Navigation.PushAsync(new BookDetailPage(new BookDetailViewModel(book, dto, _account, _assets, this)));
     }
 
-    public Task OpenBookListAsync(string title, BookListMode mode) =>
-        Navigation.PushAsync(new BookListPage(new BookListViewModel(_catalog, title, mode, this)));
+    public Task OpenBookListAsync(string title, BookListMode mode, int? categoryId = null) =>
+        Navigation.PushAsync(new BookListPage(new BookListViewModel(_catalog, title, mode, this, categoryId)));
+
+    public Task OpenCategoriesAsync() =>
+        Navigation.PushAsync(new CategoriesPage(new CategoriesViewModel(
+            _catalog,
+            _services.GetRequiredService<CategoryCoverCacheService>(),
+            this)));
+
+    public Task OpenCategoryBooksAsync(CategoryCardItem category) =>
+        OpenBookListAsync(category.CategoryName, BookListMode.Category, category.Id);
 
     public Task OpenAccountAsync(bool favoritesAvailable = true) =>
         Navigation.PushAsync(new AccountPage(new AccountViewModel(_account, this, favoritesAvailable)));

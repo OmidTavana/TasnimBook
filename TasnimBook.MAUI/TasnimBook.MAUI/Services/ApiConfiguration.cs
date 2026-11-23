@@ -5,8 +5,8 @@ namespace TasnimBook.MAUI.Services;
 /// </summary>
 internal static class ApiConfiguration
 {
-    internal const string BaseAddress = "http://192.168.1.71:8065/api/";
-    //internal const string BaseAddress = "https://api.tasnimbook.ir/api/";
+    //internal const string BaseAddress = "http://192.168.1.71:8065/api/";
+    internal const string BaseAddress = "https://api.tasnimbook.ir/api/";
     internal const string ApiKey = "993026bbc13371a5e4c298de5@4a1x6e-8b4b3d9a-e931-478d-a994-23akkkou#$b0";
 
     internal static bool TryResolveResourceUri(string? value, out Uri uri)

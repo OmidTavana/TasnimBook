@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels"
+             x:Class="TasnimBook.MAUI.Views.CategoriesPage"
+             x:DataType="viewModels:CategoriesViewModel"
+             Title="دسته‌بندی‌ها"
+             FlowDirection="RightToLeft"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageWarmBackground}, Dark={StaticResource DarkAppBackground}}">
+    <Grid RowDefinitions="Auto,Auto,*" MaximumWidthRequest="1100" HorizontalOptions="Fill">
+        <VerticalStackLayout Grid.Row="0" Padding="18,16,18,8" Spacing="5">
+            <Label Text="دسته‌بندی کتاب‌ها"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
+            <Label Text="موضوع مورد علاقه‌تان را انتخاب کنید"
+                   FontSize="14"
+                   TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" />
+        </VerticalStackLayout>
+
+        <SearchBar Grid.Row="1"
+                   Margin="14,4,14,10"
+                   Placeholder="جست‌وجوی دسته‌بندی…"
+                   Text="{Binding SearchText}" />
+
+        <RefreshView Grid.Row="2" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView Margin="10,0,10,14"
+                            ItemsSource="{Binding Categories}"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="1" VerticalItemSpacing="12" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="24,48" Spacing="10">
+                        <Label Text="{Binding EmptyMessage}"
+                               HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" />
+                        <Label Text="{Binding ErrorMessage}"
+                               HorizontalTextAlignment="Center"
+                               TextColor="{StaticResource Error}"
+                               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:CategoryCardItem">
+                        <Border HeightRequest="250"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource DarkSurface}}"
+                                Stroke="{AppThemeBinding Light={StaticResource CardStroke}, Dark={StaticResource DarkBorder}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 20">
+                            <Border.Shadow>
+                                <Shadow Brush="{StaticResource CardShadow}" Offset="0,3" Radius="9" Opacity="0.28" />
+                            </Border.Shadow>
+                            <Grid RowDefinitions="178,*">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,*" BackgroundColor="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource DarkPrimarySoft}}">
+                                    <!-- Code-drawn fallback: it doesn't depend on Android's image loader. -->
+                                    <Border Grid.ColumnSpan="2"
+                                            StrokeThickness="0"
+                                            BackgroundColor="{AppThemeBinding Light=#1F5E50, Dark=#173F35}">
+                                        <Grid RowDefinitions="*,Auto" Padding="24,18">
+                                            <Path Data="M4,3 C8,3 11,4.5 12,7 C13,4.5 16,3 20,3 L20,19 C16,19 13.5,20 12,22 C10.5,20 8,19 4,19 Z M12,7 L12,22"
+                                                  Stroke="#F6E7B0"
+                                                  StrokeThickness="1.8"
+                                                  Fill="Transparent"
+                                                  WidthRequest="92"
+                                                  HeightRequest="92"
+                                                  Aspect="Uniform"
+                                                  HorizontalOptions="Center"
+                                                  VerticalOptions="Center" />
+                                            <Label Grid.Row="1"
+                                                   Text="تسنیم‌بوک"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#F6E7B0"
+                                                   HorizontalTextAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Grid Grid.Column="0">
+                                        <Image Source="{Binding Cover1}" Aspect="AspectFill" />
+                                    </Grid>
+                                    <Grid Grid.Column="1" RowDefinitions="*,*">
+                                        <Grid Grid.Row="0">
+                                            <Image Source="{Binding Cover2}" Aspect="AspectFill" />
+                                        </Grid>
+                                        <Grid Grid.Row="1">
+                                            <Image Source="{Binding Cover3}" Aspect="AspectFill" />
+                                        </Grid>
+                                    </Grid>
+                                    <BoxView Grid.ColumnSpan="2" Color="#24000000" />
+                                </Grid>
+                                <Grid Grid.Row="1" Padding="12,8" ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                        <Label Text="{Binding CategoryName}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource DarkPrimaryText}}" />
+                                        <Label Text="{Binding BookCountText}"
+                                               FontSize="12"
+                                               TextColor="{AppThemeBinding Light={StaticResource BodyMuted}, Dark={StaticResource DarkMutedText}}" />
+                                    </VerticalStackLayout>
+                                    <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 15" BackgroundColor="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource DarkPrimarySoft}}">
+                                        <Label Text="‹" FontSize="25" FontAttributes="Bold"
+                                               TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource DarkPrimaryText}}"
+                                               HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator Grid.Row="2" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+                           Color="{StaticResource PrimaryDark}" HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

@@ -27,6 +27,7 @@ namespace TasnimBook.Data.RestRepository
             try
             {
                 var response = await _client.GetAsync(uri);
+                response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -36,6 +37,7 @@ namespace TasnimBook.Data.RestRepository
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                throw;
             }
 
             return Bookcats;

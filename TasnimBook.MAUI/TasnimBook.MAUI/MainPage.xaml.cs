@@ -29,4 +29,5 @@ public partial class MainPage : ContentPage
         await _notifications.CheckAsync();
         await _appUpdate.CheckForUpdateAsync();
     }
+
 }

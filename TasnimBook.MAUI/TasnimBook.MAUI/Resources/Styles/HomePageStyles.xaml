@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:models="clr-namespace:TasnimBook.Data.Models;assembly=TasnimBook.Data">
+                    xmlns:models="clr-namespace:TasnimBook.Data.Models;assembly=TasnimBook.Data"
+                    xmlns:viewModels="clr-namespace:TasnimBook.MAUI.ViewModels">
 
     <Style x:Key="HomeHeaderStyle" TargetType="Border">
         <Setter Property="BackgroundColor" Value="{StaticResource HomePrimaryColor}" />
@@ -29,7 +30,7 @@
         <Setter Property="FontSize" Value="21" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource HomeTextColor}, Dark={StaticResource DarkPrimaryText}}" />
-        <Setter Property="HorizontalTextAlignment" Value="End" />
+        <Setter Property="HorizontalTextAlignment" Value="Start" />
         <Setter Property="VerticalTextAlignment" Value="Center" />
     </Style>
 
@@ -42,8 +43,9 @@
     </Style>
 
     <Style x:Key="HomeBookCardStyle" TargetType="Border">
-        <Setter Property="WidthRequest" Value="110" />
-        <Setter Property="HeightRequest" Value="194" />
+        <Setter Property="FlowDirection" Value="RightToLeft" />
+        <Setter Property="WidthRequest" Value="146" />
+        <Setter Property="HeightRequest" Value="270" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
         <Setter Property="StrokeThickness" Value="0" />
@@ -51,18 +53,20 @@
 
     <Style x:Key="HomeBookCoverStyle" TargetType="Image">
         <Setter Property="Aspect" Value="AspectFill" />
-        <Setter Property="HeightRequest" Value="156" />
+        <Setter Property="HeightRequest" Value="205" />
         <Setter Property="HorizontalOptions" Value="Fill" />
         <Setter Property="VerticalOptions" Value="Fill" />
     </Style>
 
     <Style x:Key="HomeBookTitleStyle" TargetType="Label">
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource HomeMutedTextColor}, Dark={StaticResource DarkMutedText}}" />
-        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="FontAttributes" Value="None" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource HomeTextColor}, Dark={StaticResource DarkPrimaryText}}" />
+        <Setter Property="HorizontalTextAlignment" Value="Start" />
         <Setter Property="MaxLines" Value="1" />
         <Setter Property="LineBreakMode" Value="TailTruncation" />
-        <Setter Property="LineHeight" Value="1.1" />
+        <Setter Property="LineHeight" Value="1.05" />
+        <Setter Property="VerticalOptions" Value="Start" />
     </Style>
 
     <Style x:Key="HomeBottomBarStyle" TargetType="Border">
@@ -126,19 +130,39 @@
 
     <DataTemplate x:Key="HomeBookCardTemplate" x:DataType="models:BooksDTO">
         <Border Style="{StaticResource HomeBookCardStyle}">
-            <Grid RowDefinitions="156,*">
+            <Grid RowDefinitions="205,*">
                 <Border StrokeThickness="0"
-                        StrokeShape="RoundRectangle 2"
+                        StrokeShape="RoundRectangle 16"
                         BackgroundColor="{AppThemeBinding Light={StaticResource HomeImagePlaceholderColor}, Dark={StaticResource DarkPrimarySoft}}">
+                    <Border.Shadow>
+                        <Shadow Brush="#3A0F201B" Offset="0,4" Radius="9" Opacity="0.38" />
+                    </Border.Shadow>
                     <Grid>
                         <Image Source="book_cover_placeholder.png"
-                               Style="{StaticResource HomeBookCoverStyle}" />
+                               Style="{StaticResource HomeBookCoverStyle}"
+                               Margin="32" Opacity="0.4" />
                         <Image Source="{Binding ImageUrl}"
                                Style="{StaticResource HomeBookCoverStyle}" />
+                        <Border IsVisible="{Binding IsAudioBook}"
+                                Padding="8,4" Margin="8"
+                                HorizontalOptions="Start" VerticalOptions="Start"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 10"
+                                BackgroundColor="#E616483D">
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Text="♪" TextColor="White" FontSize="12" FontAttributes="Bold" />
+                                <Label Text="صوتی" TextColor="White" FontSize="10" FontAttributes="Bold" />
+                            </HorizontalStackLayout>
+                        </Border>
                     </Grid>
                 </Border>
-                <VerticalStackLayout Grid.Row="1" Padding="0,8,0,0" Spacing="0">
+                <VerticalStackLayout Grid.Row="1" Padding="3,10,3,0" Spacing="5">
                     <Label Text="{Binding Title}" Style="{StaticResource HomeBookTitleStyle}" />
+                    <Label Text="{Binding AuthorName}"
+                           FontSize="13"
+                           MaxLines="1"
+                           LineBreakMode="TailTruncation"
+                           HorizontalTextAlignment="Start"
+                           TextColor="{AppThemeBinding Light={StaticResource HomeMutedTextColor}, Dark={StaticResource DarkMutedText}}" />
                 </VerticalStackLayout>
             </Grid>
         </Border>

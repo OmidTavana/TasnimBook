@@ -177,6 +177,27 @@ namespace TasnimBook.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ContentType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("contenttype");
+
+                    b.Property<long?>("FileSize")
+                        .HasColumnType("bigint")
+                        .HasColumnName("filesize");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("isactive");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("bit")
+                        .HasColumnName("ismandatory");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit")
+                        .HasColumnName("ispublished");
+
                     b.Property<int>("PlatformId")
                         .HasColumnType("int")
                         .HasColumnName("platformid");
@@ -189,6 +210,16 @@ namespace TasnimBook.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("releasenotes");
+
+                    b.Property<string>("Sha256")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)")
+                        .HasColumnName("sha256");
+
+                    b.Property<string>("StoredFileName")
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)")
+                        .HasColumnName("storedfilename");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -205,6 +236,9 @@ namespace TasnimBook.Data.Migrations
                         .HasColumnName("versionnumber");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PlatformId", "IsPublished", "IsActive")
+                        .HasDatabaseName("IX_appversion_platform_release");
 
                     b.ToTable("appversion");
                 });
